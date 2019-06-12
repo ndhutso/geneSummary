@@ -18,6 +18,7 @@
 #'@import "knitr"
 #'@import "kableExtra"
 #'@import "magrittr"
+#'@import "gsubfn"
 #'
 #'@export
 

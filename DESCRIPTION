@@ -9,6 +9,18 @@ Description: More about what it does (maybe more than one line)
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
+Imports:
+    plyr,
+    tidyverse,
+    purrr,
+    dplyr,
+    sSeq,
+    matrixStats,
+    varhandle,
+    knitr,
+    kableExtra,
+    magrittr,
+    gsubfn
 Suggests: 
     knitr,
     rmarkdown

@@ -10,9 +10,8 @@
 #'
 #'@export
 
-analyze <- function(D2a,D2c,D1a){
-  dat2a <- D2c[[2]]
-  D2c <- D2c[[1]]
+analyze <- function(D2a,D2c,dat2a,D1a){
+
   D2L <- lapply(dat2a, function(x){
     unlist(strsplit(x, split="\t"))  #splits large chr up by /t and then unlists to make a list
   })
@@ -101,11 +100,14 @@ analyze <- function(D2a,D2c,D1a){
   colLabel <- c("Mean","SD", "Median")
   colLabel <- c(colLabel,colLabel,colLabel)
   colnames(testTableF)[1:10] <- c("Symbol",colLabel)
-  detach("package:plyr") #doesn't work with dplyr definition of rename
+
+  #detach("package:plyr", unload = TRUE) #doesn't work with dplyr definition of rename
+  #unloadNamespace("plyr")
   testTibbleF <- testTibbleF %>%
-    rename(Symbol=`ID_REF`) %>%
+    dplyr::rename(Symbol=`ID_REF`) %>%
     mutate_if(is.character,as.numeric)
-  library(plyr)
+  #library(plyr)
+
   testTibbleF1 <- testTibbleF  %>% select(Symbol, Mean.DBTRG, Mean.U87)  %>%
     gather(Group.Mean, Mean, -1) %>% #separates expression data based on group
     mutate(group=c(replicate(11,"DBTRG"),replicate(11,"U87")))
@@ -115,5 +117,5 @@ analyze <- function(D2a,D2c,D1a){
     mutate(group=c(replicate(11,"DBTRG"),replicate(11,"U87")))
 
   testTibbleF3 <- join(testTibbleF1,testTibbleF2, by=c("Symbol", "group"))
-  return(c(Data.total.bar,Data.total.box,testTableF,testTibbleF3))
+  return(list(Data.total.bar,Data.total.box,testTableF,testTibbleF3))
 }

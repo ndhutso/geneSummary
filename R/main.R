@@ -11,9 +11,9 @@
 main <- function(){
   import()
   D2a <- extExp()
-  D2c <- extSample()
+  list[D2c,dat2a] <- extSample()
   D1a <- extGene()
-  data <- analyze(D2a,D2c,D1a)
-  visualize(data[[1]],data[[2]])
-  compare(data[[3]],data[[4]])
+  list[Data.total.bar,Data.total.box,testTableF,testTibbleF3] <- analyze(D2a,D2c,dat2a,D1a)
+  visualize(Data.total.bar,Data.total.box)
+  compare(testTableF,testTibbleF3)
 }
