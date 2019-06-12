@@ -1,5 +1,7 @@
 ---
 title: "geneSummaryVign"
+author: "Nicholas Hutson"
+date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{geneSummaryVign}
@@ -17,3 +19,21 @@ knitr::opts_chunk$set(
 ```{r setup}
 library(geneSummary)
 ```
+
+## Import data
+This data is imported from the NCBI GEO database with GEO accession GSE43452. It is put in a directory called "data" and is in the form of a tab-deliminated file. 
+
+## Extract expression matrix
+This function extracts the numerical gene expression data. It is in BioConductor format with genes as rows and samples as columns.
+
+## Extract sample matrix
+This function extracts the annotations for each sample. This is information about each sample such as sample characteristics and cell type.
+
+## Extract gene annotation
+This function extracts the annotations for each gene. This is information about the measurement of each gene such as sequencing of the gene and probe ID. 
+
+## Visualization
+This function visualizes the concentration of the gene TP53. It creates a histogram to compare the concentration between samples and a box plot to compare the concentration between the two groups of samples. 
+
+## Comparison
+This function creates a table and histogram from the gene concentration for the ten genes with the greatest variances between samples and TP53. The table compares the mean, standard deviation, and median between the two groups of samples and the total gene expression data for each gene. The histogram compares the average gene expression for each of the genes and includes error bars.  
