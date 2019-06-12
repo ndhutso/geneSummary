@@ -16,5 +16,5 @@ extSample <- function(){
   dat2a <- dat2[idx_start]
   D2c <- read.csv(textConnection(dat2a), sep="\t")
   D2c <- t(D2c)
-  return(D2c)
+  return(c(D2c,dat2a))
 }

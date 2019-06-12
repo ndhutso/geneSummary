@@ -2,15 +2,17 @@
 #'
 #'@description Analyzes the data
 #'
-#'@usage analyze()
+#'@usage analyze(D2a,D2c,D1a)
 #'
 #'@author Nicholas Hutson
 #'
-#'@examples analyze()
+#'@examples analyze(D2a,D2c,D1a)
 #'
 #'@export
 
-analyze <- function(){
+analyze <- function(D2a,D2c,D1a){
+  dat2a <- D2c[[2]]
+  D2c <- D2c[[1]]
   D2L <- lapply(dat2a, function(x){
     unlist(strsplit(x, split="\t"))  #splits large chr up by /t and then unlists to make a list
   })
@@ -113,4 +115,5 @@ analyze <- function(){
     mutate(group=c(replicate(11,"DBTRG"),replicate(11,"U87")))
 
   testTibbleF3 <- join(testTibbleF1,testTibbleF2, by=c("Symbol", "group"))
+  return(c(Data.total.bar,Data.total.box,testTableF,testTibbleF3))
 }

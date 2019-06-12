@@ -10,7 +10,7 @@
 #'
 #'@export
 
-visualize <- function(){
+visualize <- function(Data.total.bar,Data.total.box){
   par(mfrow = c(1, 1),mar = c(12,4,2,2))
   barplot(Data.total.bar,ylab="Concentration",main = "TP53 Concentration in Samples",xaxt="n")
   labels <- colnames(Data.total.bar)

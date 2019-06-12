@@ -10,7 +10,7 @@
 #'
 #'@export
 
-compare <- function(){
+compare <- function(testTableF,testTibbleF3){
   #write a description of the kind of test used and if there's assumed variance or not
   kable(testTableF,align=rep('c', 5))%>%
     kable_styling(bootstrap_options = c("striped", "hover"),full_width = F, position = "center",font_size = 10)%>%
