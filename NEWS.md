@@ -1,3 +1,6 @@
+# geneSummary 0.1.2.0000
+# import Biobase
+
 # geneSummary 0.1.1.0002
 # implement fixes to make functions work together in main()
 

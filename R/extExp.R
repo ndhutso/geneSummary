@@ -19,6 +19,7 @@
 #'@import "kableExtra"
 #'@import "magrittr"
 #'@import "gsubfn"
+#'@import "Biobase"
 #'
 #'@export
 

@@ -20,7 +20,8 @@ Imports:
     knitr,
     kableExtra,
     magrittr,
-    gsubfn
+    gsubfn,
+    Biobase
 Suggests: 
     knitr,
     rmarkdown
