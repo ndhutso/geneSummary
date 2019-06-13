@@ -1,3 +1,6 @@
+# geneSummary 0.1.2.0005
+# start phasing out analyze
+
 # geneSummary 0.1.2.0004
 # split up compare and visualization
 

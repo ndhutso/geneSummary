@@ -1,17 +1,17 @@
 data <- import()
 
-D2a <- extExp(data)
+D2a <- extExp(data) #gene expression
 
-D2b <- extSample(data)
+D2b <- extSample(data) #sample annotations
 
-D1a <- extGene(data)
+D1a <- extGene(data) #gene annotations
 
 library(gsubfn)
 list[Data.total.bar,Data.total.box,testTableF,testTibbleF3] <- analyze(D2a,D2b,D1a) #list[] not actually used in geneSummary package, just this script
 
-bar(Data.total.bar)
-box(Data.total.box)
+bar(D1a,D2a)
+box(D1a,D2a)
 
-compare(testTableF)
-hist(testTibbleF3)
+compare(D1a,D2a)
+hist(D1a,D2a)
 
