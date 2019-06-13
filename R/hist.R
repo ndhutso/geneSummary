@@ -85,7 +85,7 @@ hist <- function(D1a,D2a){
   testTableF <- rbind(testTable,testTable2,stringsAsFactors = FALSE)
 
   #convert gene ID to actual symbols
-  geneSymbol <- D1a$Symbol[match(testTableF$ID_REF, D1a$ID)]
+  geneSymbol <- D1a$Symbol[match(testTableF$ID_REF, D1a$ID)] #assigns symbols of gene
   testTableF$ID_REF <- geneSymbol
   testTibbleF <- as_tibble(testTableF)
   colLabel <- c("Mean","SD", "Median")
@@ -95,7 +95,7 @@ hist <- function(D1a,D2a){
   #detach("package:plyr", unload = TRUE) #doesn't work with dplyr definition of rename
   #unloadNamespace("plyr")
   testTibbleF <- testTibbleF %>%
-    dplyr::rename(Symbol=`ID_REF`) %>%
+    dplyr::rename(Symbol=`ID_REF`) %>% #is breaking symbols
     mutate_if(is.character,as.numeric)
   #library(plyr)
 
