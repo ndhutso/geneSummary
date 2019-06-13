@@ -1,3 +1,6 @@
+# geneSummary 0.1.2.0002
+# updates and fixes for extraction functions
+
 # geneSummary 0.1.2.0001
 # fixes to Biobase conversion
 

@@ -24,5 +24,5 @@ extGene = function(data, dName = "GSE43452"){
       sampleNote <- rbind(sampleNote,pData(featureData(data3[[i]])))
     }
   }
-  return(geneNote)
+  return(sampleNote)
 }

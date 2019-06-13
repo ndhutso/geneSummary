@@ -10,7 +10,7 @@
 #'
 #'@export
 
-analyze <- function(D2a,D2c,dat2a,D1a){
+analyze <- function(D2a,D2c,D1a){
 
   D2L <- lapply(dat2a, function(x){
     unlist(strsplit(x, split="\t"))  #splits large chr up by /t and then unlists to make a list

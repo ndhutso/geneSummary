@@ -29,8 +29,9 @@ extExp = function(data, geneSymbol=NA, dName=NA) {
   if(is.na(dName)){
     data3 <- data
 
-    data1 <- lapply(data3, pData(featureData))
-    data2 <- lapply(data3, exprs)
+    data1 <- lapply(data3, featureData)
+    data1 <- data.frame(lapply(data1, pData))
+    data2 <- data.frame(lapply(data3, exprs))
   }else if(length(dName)==1){
     data3 <- data[[grep(dName,names(data),ignore.case = TRUE)]] #big list of all the data sets
 
@@ -39,29 +40,27 @@ extExp = function(data, geneSymbol=NA, dName=NA) {
   }else{
     data3 <- data[[grep(dName,names(data),ignore.case = TRUE)]] #big list of all the data sets
 
-    data1 <- data.frame()
-    data2 <- data.frame()
     #have to use for loop or apply function to go through each data set, maybe use rbind to combine data
-    for(i in 1:length(data3))
-    {
-      data1 <- rbind(data1, pData(featureData(data3[[i]])))
-      data2 <- rbind(data2, exprs(data3[[i]]))
-    }
+    data1 <- lapply(data3, pData(featureData))
+    data2 <- lapply(data3, exprs)
   }
 
   if(is.na(geneSymbol))
   {
-    geneName <- data1$ID
-    geneSymbol <- data1$Symbol
+    if(is.na(dName)){
+      expData <- data2
+    }else{
+      geneName <- data1$ID
+      geneSymbol <- data1$Symbol
 
-    expData <- data.frame(data2[match(geneName,rownames(data2)),]) #may have to use if statement for t() if there is one or more appearances of a symbol
-    expData <- add_column(expData,Symbol = replicate(length(rownames(expData)), geneSymbol), .before = colnames(expData)[[1]])
+      expData <- data.frame(data2[match(geneName,rownames(data2)),]) #may have to use if statement for t() if there is one or more appearances of a symbol
+      expData <- add_column(expData,Symbol = replicate(length(rownames(expData)), geneSymbol), .before = colnames(expData)[[1]])
+    }
   }else{
 
     geneName <- data1$ID[match(geneSymbol,data1$Symbol)] #might not account for multiple genes with same symbol
 
-    if(length(geneName)==1)
-    {
+    if(length(geneName)==1){
       expData <- data.frame(t(data2[match(geneName,rownames(data2)),]))
       expData <- add_column(expData,Symbol = replicate(length(rownames(expData)), geneSymbol), .before = colnames(expData)[[1]])
     }else{
