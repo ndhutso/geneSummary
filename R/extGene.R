@@ -10,19 +10,19 @@
 #'
 #'@export
 
-extGene <- function(){
-  dat1 <- readLines("data/GSE43452_family.soft.gz")
-  idx_start <- grep("table_begin", dat1)
-  idx_end <- grep("table_end", dat1)
-  dat1a <- c()
-  for(i in 1:length(idx_start))
-  {
-    dat1a <- c(dat1a, dat1[(idx_start[i]+1):(idx_end[i]-1)])
+annotateGene = function(data, dName = "GSE43452"){
+  if(is.na(dName)){
+    data3 <- data
+  }else if(length(dName)==1){
+    data3 <- data[[grep(dName,names(data),ignore.case = TRUE)]]
+    sampleNote <- pData(featureData(data3))
+  }else{
+    data3 <- data[[grep(dName,names(data),ignore.case = TRUE)]]
+    sampleNote <- data.frame()
+    for(i in 1:length(data3))
+    {
+      sampleNote <- rbind(sampleNote,pData(featureData(data3[[i]])))
+    }
   }
-  D1L <- lapply(dat1a, function(x){
-    unlist(strsplit(x, split="\t"))
-  })
-  D1a <- data.frame(do.call(rbind, D1L[2:length(D1L)]))
-  colnames(D1a) <- D1L[[1]]
-  return(D1a)
+  return(geneNote)
 }

@@ -8,14 +8,14 @@ library(plyr)
 library(purrr)
 library(dplyr)
 library(ggplot2)
-library(sSeq) 
+library(sSeq)
 library(matrixStats)
 library(varhandle)
 library(knitr)
 library(kableExtra)
 
 ##get sample annotations pData(phenoData(data[[1]]))
-anotateSample = function(dName){
+anotateSample = function(data, dName){
   if(is.na(dName)){
     data3 <- data
   }else if(length(dName)==1){
@@ -33,7 +33,7 @@ anotateSample = function(dName){
 }
 
 ##get gene annotations pData(featureData(data[[1]]))
-annotateGene = function(dName){
+annotateGene = function(data, dName){
   if(is.na(dName)){
     data3 <- data
   }else if(length(dName)==1){
@@ -53,18 +53,18 @@ annotateGene = function(dName){
 ##function to get gene expression data based on gene name - only searches first annotated data frame, could use grep to search names()
 #might be able to merge geneExp and mergeExp
 expGene = function(data, geneSymbol=NA, dName=NA) {
-  
+
   if(is.na(dName)){
     data3 <- data
   }else if(length(dName)==1){
     data3 <- data[[grep(dName,names(data),ignore.case = TRUE)]] #big list of all the data sets
-    
+
     data1 <- pData(featureData(data3))
     data2 <- exprs(data3)
   }else{
     data3 <- data[[grep(dName,names(data),ignore.case = TRUE)]] #big list of all the data sets
-    
-    data1 <- data.frame() 
+
+    data1 <- data.frame()
     data2 <- data.frame()
     #have to use for loop or apply function to go through each data set, maybe use rbind to combine data
     for(i in 1:length(data3))
@@ -73,18 +73,18 @@ expGene = function(data, geneSymbol=NA, dName=NA) {
       data2 <- rbind(data2, exprs(data3[[i]]))
     }
   }
-  
+
   if(is.na(geneSymbol))
   {
     geneName <- data1$ID
     geneSymbol <- data1$Symbol
-    
+
     expData <- data.frame(data2[match(geneName,rownames(data2)),]) #may have to use if statement for t() if there is one or more appearances of a symbol
     expData <- add_column(expData,Symbol = replicate(length(rownames(expData)), geneSymbol), .before = colnames(expData)[[1]])
   } else {
-    
+
     geneName <- data1$ID[match(geneSymbol,data1$Symbol)] #might not account for multiple genes with same symbol
-    
+
     if(length(geneName)==1)
     {
       expData <- data.frame(t(data2[match(geneName,rownames(data2)),]))
@@ -95,7 +95,7 @@ expGene = function(data, geneSymbol=NA, dName=NA) {
       expData <- add_column(expData,Symbol = geneSymbol, .before = colnames(expData)[[1]])
     }
   }
-  
+
   return(expData)
 }
 
@@ -105,17 +105,17 @@ dName <- "GSE43452"
 something(data,geneSymbol = c("TP53","STAR"),dName = "GSE43452")
 
 
-##function to extract mean, std, median 
+##function to extract mean, std, median
 geneSummary = function(expData)
 {
   idx <- which(colnames(expData)!="Symbol")
-  
+
   summary <- as_tibble(expData) %>%
     mutate_if(is.double,as.numeric) %>%
-    mutate(Mean = rowMeans(expData[,idx])) %>% 
+    mutate(Mean = rowMeans(expData[,idx])) %>%
     mutate(SD = rowSds(as.matrix(expData[,idx]))) %>%
     mutate(Median = rowMedians(as.matrix(expData[,idx])))
-  
+
   return(summary)
 }
 
@@ -124,9 +124,9 @@ geneExp = function(geneSymbol, data)
 {
   data1 <- pData(featureData(data[[1]])) #D1a
   data2 <- exprs(data[[1]]) #D2a
-  
+
   geneName <- data1$ID[which(data1$Symbol==geneSymbol,arr.ind = TRUE)]
-  
+
   if(length(geneName)==1)
   {
     expData <- data.frame(t(data2[match(geneName,rownames(data2)),]))
@@ -136,7 +136,7 @@ geneExp = function(geneSymbol, data)
     expData <- add_column(expData,Symbol = replicate(length(rownames(expData)), geneSymbol), .before = colnames(expData)[[1]])
     #turning single row data frames into lists
   }
-  
+
   return(expData)
 }
 
@@ -154,8 +154,8 @@ geneSummary(expData)
 mergeExp = function(dataA, dataB, geneSymbol = NA)
 {
   data3 <- combine(dataA, dataB)
-  
-  data1 <- data.frame() 
+
+  data1 <- data.frame()
   data2 <- data.frame()
   #have to use for loop or apply function to go through each data set, maybe use rbind to combine data
   for(i in 1:length(data3))
@@ -163,18 +163,18 @@ mergeExp = function(dataA, dataB, geneSymbol = NA)
     data1 <- rbind(data1, pData(featureData(data3[[i]])))
     data2 <- rbind(data2, exprs(data3[[i]]))
   }
-  
+
   if(is.na(geneSymbol))
   {
     geneName <- data1$ID
     geneSymbol <- data1$Symbol
-    
+
     expData <- data.frame(data2[match(geneName,rownames(data2)),]) #may have to use if statement for t() if there is one or more appearances of a symbol
     expData <- add_column(expData,Symbol = replicate(length(rownames(expData)), geneSymbol), .before = colnames(expData)[[1]])
   } else {
-    
+
     geneName <- data1$ID[match(geneSymbol,data1$Symbol)] #might not account for multiple genes with same symbol
-    
+
     if(length(geneName)==1)
     {
       expData <- data.frame(t(data2[match(geneName,rownames(data2)),]))
@@ -185,7 +185,7 @@ mergeExp = function(dataA, dataB, geneSymbol = NA)
       expData <- add_column(expData,Symbol = geneSymbol, .before = colnames(expData)[[1]])
     }
   }
-  
+
   return(expData)
 }
 
