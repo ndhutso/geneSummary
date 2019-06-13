@@ -1,3 +1,6 @@
+# geneSummary 0.1.2.0004
+# split up compare and visualization
+
 # geneSummary 0.1.2.0003
 # update analyze to use Biobase data 
 

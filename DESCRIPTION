@@ -20,9 +20,9 @@ Imports:
     knitr,
     kableExtra,
     magrittr,
-    gsubfn,
     Biobase,
-    GEOquery
+    GEOquery,
+    ggplot2
 Suggests: 
     knitr,
     rmarkdown

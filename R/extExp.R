@@ -18,9 +18,9 @@
 #'@import "knitr"
 #'@import "kableExtra"
 #'@import "magrittr"
-#'@import "gsubfn"
 #'@import "Biobase"
 #'@import "GEOquery"
+#'@import "ggplot2"
 #'
 #'@export
 
