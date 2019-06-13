@@ -19,6 +19,7 @@ analyze <- function(D2a,D2c,dat2a,D1a){
   D2b <- t(D2b) #use reshape package to transpose rows and columns
   colnames(D2b) <- D2b[1,] #first row of list is names so set column names to it
   D2b <- data.frame(D2b[-1,])
+
   ## extract expression level for DBTRG group and U87 group separately - START TIDYING
   #get data of groups combined - change
   Data.DBTRG <- data.frame(D2a[,1],D2a[,2:5])
@@ -33,17 +34,21 @@ analyze <- function(D2a,D2c,dat2a,D1a){
   colnames(Data.DBTRG.TP53) <- names(Data.DBTRG)[-1]
   Data.U87.TP53 <- t(as.numeric(Data.U87[idx.U,-1]))
   colnames(Data.U87.TP53) <- names(Data.U87)[-1]
+
   ## Barplot for TP53 in these samples, label samples
   par(mfrow = c(1, 1),mar = c(12,2,2,2))
   Data.total.bar <- t(c(Data.DBTRG.TP53,Data.U87.TP53))
   colnames(Data.total.bar) <- as.character(D2b$X.Sample_title)
+
   ## Boxplot for the two groups, combine
   par(mfrow = c(1, 1))
   Data.total.box <- data.frame(c(Data.total.bar[1,1:4],c(NA,NA,NA,NA)),Data.total.bar[1,5:12])
   rownames(Data.total.box) <- NULL
   colnames(Data.total.box) <- c("DBTRG","U87")
+
   ## t test between the two groups
   test <- t.test(Data.DBTRG.TP53,Data.U87.TP53)
+
   ## sumarized table: https://www.statalist.org/forums/forum/general-stata-discussion/general/1395253-descriptive-statistics-table-generation
   #change sig to p-value
   test.Data.DBTRG.TP53 <- c(mean(Data.DBTRG.TP53),sd(Data.DBTRG.TP53),median(Data.DBTRG.TP53))
@@ -55,6 +60,7 @@ analyze <- function(D2a,D2c,dat2a,D1a){
   testTable <- t(testTable)
   colnames(testTable) <- colLabel
   #END TIDYING
+
   ##find top 10 variance and corresponding gene, add to summary table, visualize with ggplot
   #should be able to use var function
   D2a <- read.csv("~/Downloads/GSE43452_series_matrix.txt.gz", sep="\t", comment.char = "!")

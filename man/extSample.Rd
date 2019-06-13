@@ -4,7 +4,7 @@
 \alias{extSample}
 \title{Extract Sample Matrix}
 \usage{
-extSample()
+extSample(data)
 }
 \description{
 Extracts the sample annotation matrix

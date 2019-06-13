@@ -1,3 +1,6 @@
+# geneSummary 0.1.2.0001
+# fixes to Biobase conversion
+
 # geneSummary 0.1.2.0000
 # import Biobase
 

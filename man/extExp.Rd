@@ -4,7 +4,7 @@
 \alias{extExp}
 \title{Extract Expression Matrix}
 \usage{
-extExp()
+extExp(data, geneSymbol=NA, dName=NA)
 }
 \description{
 Extracts the gene expression matrix

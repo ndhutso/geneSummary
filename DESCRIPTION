@@ -21,7 +21,8 @@ Imports:
     kableExtra,
     magrittr,
     gsubfn,
-    Biobase
+    Biobase,
+    GEOquery
 Suggests: 
     knitr,
     rmarkdown
