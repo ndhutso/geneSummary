@@ -1,3 +1,6 @@
+# geneSummary 0.1.2.0003
+# update analyze to use Biobase data 
+
 # geneSummary 0.1.2.0002
 # updates and fixes for extraction functions
 
