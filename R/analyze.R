@@ -109,14 +109,14 @@ analyze <- function(D2a,D2b,D1a){
   #library(plyr)
 
   testTibbleF1 <- testTibbleF  %>% select(Symbol, Mean.DBTRG, Mean.U87)  %>%
-    gather(Group.Mean, Mean, -1) %>% #separates expression data based on group
+    tidyr::gather(Group.Mean, Mean, -1) %>% #separates expression data based on group
     mutate(group=c(replicate(11,"DBTRG"),replicate(11,"U87")))
 
   testTibbleF2 <- testTibbleF  %>% select(Symbol, SD.DBTRG, SD.U87) %>%
-    gather(Group.SD, SD, -1) %>%
+    tidyr::gather(Group.SD, SD, -1) %>%
     mutate(group=c(replicate(11,"DBTRG"),replicate(11,"U87")))
 
   testTibbleF3 <- plyr::join(testTibbleF1,testTibbleF2, by=c("Symbol", "group"))
-  return(list(Data.total.bar,Data.total.box,testTableF,testTibbleF3))
+  return(list(Data.total.bar, Data.total.box, testTableF, testTibbleF3))
 }
 
