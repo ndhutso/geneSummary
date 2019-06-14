@@ -1,3 +1,6 @@
+# geneSummary 0.1.2.0010
+# change bar to ggplot
+
 # geneSummary 0.1.2.0009
 # fix box and tidy up hist and compare
 
