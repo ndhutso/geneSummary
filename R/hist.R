@@ -45,11 +45,13 @@ hist <- function(D1a,D2a){
 
   ##find top 10 variance and corresponding gene, add to summary table, visualize with ggplot
   #should be able to use var function
-  D2a <- read.csv("~/Downloads/GSE43452_series_matrix.txt.gz", sep="\t", comment.char = "!")
+  geneName <- rownames(D2a)
   topVariance <- as_tibble(D2a) %>%
     mutate(Variance = rowVars(as.matrix(D2a[,-1]))) %>%
+    mutate(ID_REF = geneName) %>%
     arrange(desc(Variance)) %>%
     slice(1:10)
+    topVariance <- topVariance %>% select(ID_REF,colnames(topVariance))
 
   #separate data into groups, find mean median sd p-value, add
   #Data.U87 and Data.DBTRG are set

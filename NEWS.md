@@ -1,3 +1,6 @@
+# geneSummary 0.1.2.0007
+# update hist to use Biobase data
+
 # geneSummary 0.1.2.0006
 # add fix to hist
 
