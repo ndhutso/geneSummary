@@ -10,7 +10,8 @@
 #'
 #'@export
 
-
+#put on pause for now because this is more for comparing groups of samples with a common variable rather than all the samples
+  #could also be used to compare different genes
 box <- function(D1a,D2a){
 
   ## extract expression level for DBTRG group and U87 group separately - START TIDYING

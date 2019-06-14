@@ -10,6 +10,7 @@
 #'
 #'@export
 
+#start by having it do the mean, sd, median of all data, then create method to compare a number of groups and the total, also have optional sample select
 compare <- function(D1a,D2a){
 
   Data.DBTRG <- data.frame(rownames(D2a),D2a[,1:4])
@@ -85,7 +86,9 @@ compare <- function(D1a,D2a){
   geneSymbol <- D1a$Symbol[match(testTableF$ID_REF, D1a$ID)] #assigns symbols of gene
   colLabel <- c("Mean","SD", "Median")
   colLabel <- c(colLabel,colLabel,colLabel)
-  colnames(testTableF)[1:10] <- c("Symbol",colLabel)
+  colnames(testTableF) = c("Symbol",colLabel,"p.value")
+  testTableF <- testTableF %>%
+    mutate(Symbol = geneSymbol)
 
   #write a description of the kind of test used and if there's assumed variance or not
   kable(testTableF,align=rep('c', 5))%>%
@@ -96,3 +99,4 @@ compare <- function(D1a,D2a){
     add_header_above(c(" " = 1, "DBTRG" = 3, "U87" = 3, "Total" = 4))
   #Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
 }
+
