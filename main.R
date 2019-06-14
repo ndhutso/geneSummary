@@ -1,4 +1,4 @@
-data <- import()
+data <- getGEO("GSE43452")
 
 D2a <- extExp(data) #gene expression
 
