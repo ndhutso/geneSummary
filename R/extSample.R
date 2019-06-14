@@ -10,7 +10,7 @@
 #'
 #'@export
 
-extSample = function(data, dName="GSE43452"){
+extSample = function(data, dName=NA){
   if(is.na(dName)){
     data3 <- data
   }else if(length(dName)==1){

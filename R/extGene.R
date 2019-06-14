@@ -10,7 +10,7 @@
 #'
 #'@export
 
-extGene = function(data, dName = "GSE43452"){
+extGene = function(data, dName = NA){
   if(is.na(dName)){
     data3 <- data
   }else if(length(dName)==1){
