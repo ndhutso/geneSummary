@@ -11,7 +11,7 @@
 #'@export
 
 #start by having it do the mean, sd, median of all data, then create method to compare a number of groups and the total, also have optional sample select
-compare <- function(D1a,D2a){
+compare <- function(data, type = "gene or symbol", list =  c("TP53","IER3","IL1B","BASP1"), separate = "group"){
 
   Data.DBTRG <- data.frame(rownames(D2a),D2a[,1:4])
   Data.U87 <- data.frame(rownames(D2a),D2a[,5:12])

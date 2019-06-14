@@ -12,7 +12,48 @@
 
 #put on pause for now because this is more for comparing groups of samples with a common variable rather than all the samples
   #could also be used to compare different genes
-box <- function(D1a,D2a){
+box <- function(data,x = "group",xlist = c("DBTRG","U87"), y = "concentration,mean,sd,median,pval,...", geneSymbol = "TP53"){
+
+  x <- "group"
+  xlist <- c("DBTRG","U87")
+  y <- "concentration"
+  geneSymbol <- "TP53"
+
+  #start by writing code assuming all variables are defined
+  D2a <- extExp(data,geneSymbol,dName) #gene expression
+  D2b <- extSample(data,dName) #sample annotations
+  D1a <- extGene(data,dName) #gene annotations
+
+  geneName <- D1a$ID[[match(geneSymbol,D1a$Symbol)]] #test with geneSymbol being a vector or add if statement to method that works with a vector
+  Data.symbol <- data.frame(D2a[match(geneName,rownames(D2a)),])
+  colnames(Data.symbol) <- as.character(D2b$title)
+
+  if(x == "group"){
+    #separate data up by groups in xlist
+    sampleName <-D2b$title[which(D2b$`cell line:ch1`==xlist,arr.ind = TRUE)] #not matching all rows correctly
+    Data.symbol <- Data.symbol[,match(sampleName,colnames(Data.symbol))]
+
+    geneSymbol <- D1a$Symbol[match(geneName,D1a$ID)]
+
+    Data.group <- as_tibble(t(Data.symbol)) %>%
+      mutate(Group = D2b$`cell line:ch1`[match(sampleName,D2b$title)]) %>%
+      merge(Group) #not correct way to merge common rows
+
+
+
+    par(mfrow = c(1, 1),mar=c(2,4,2,2))
+    ggplot(aes(x = Group, y = ))
+    boxplot(Data.total.box$DBTRG,Data.total.box$U87,names=xlist,ylab=y,main = "TP53 Concentration in Groups")
+
+  }else if(x == "gene"){
+
+  }else if(x == "Symbol"){
+
+  }else{
+
+  }
+
+
 
   ## extract expression level for DBTRG group and U87 group separately - START TIDYING
   #get data of groups combined - change

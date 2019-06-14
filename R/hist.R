@@ -12,11 +12,11 @@
 
 #create a default that compares the mean of a list of gene symbols
   #add back in ability to specify groups to compare
-  #is having SD or median graphed useful?
+  #is having SD, median, or p value graphed useful?
   #add in utility to sort by a certain variable such as variance
 
 #should probably combine with bar in the long-term, but for now this will be the more comparitive bar graph
-hist <- function(D1a,D2a){
+hist <- function(data, y = "mean,sd,median,pval,...", xlist = c("TP53","IER3","IL1B","BASP1"), fill = "group or any other variable in D2b", flist = c("DBTRG","U87")){
 
   Data.DBTRG <- data.frame(rownames(D2a),D2a[,1:4])
   Data.U87 <- data.frame(rownames(D2a),D2a[,5:12])
