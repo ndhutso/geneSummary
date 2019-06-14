@@ -1,3 +1,6 @@
+# geneSummary 0.1.2.0008
+# fix barplot x labels
+
 # geneSummary 0.1.2.0007
 # update hist to use Biobase data
 
