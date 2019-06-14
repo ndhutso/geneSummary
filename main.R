@@ -6,9 +6,12 @@ D2b <- extSample(data) #sample annotations
 
 D1a <- extGene(data) #gene annotations
 
-bar(D1a,D2a,D2b)
-box(D1a,D2a)
+geneSymbol <- "TP53"
+dName <- "GSE43452"
 
-compare(D1a,D2a)
-hist(D1a,D2a)
+bar(data,"TP53","GSE43452")
+box(data,"TP53","GSE43452")
+
+compare(data,"TP53","GSE43452")
+hist(data,"TP53","GSE43452")
 

@@ -1,3 +1,6 @@
+# geneSummary 0.1.3.0000
+# change bar to take in data name and gene symbol inputs
+
 # geneSummary 0.1.2.0010
 # change bar to ggplot
 

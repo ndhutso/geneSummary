@@ -7,3 +7,4 @@
     [x] update extraction functions to take a list of BioConductor formatted data, combine them, and look for a specific data set or extract a variable from the combined data
     [ ] update visual functions to take inputs and call the extraction functions to visualize specified sets of data
 [ ]create shiny interface to search, tabularize, and graph different sets of data
+[ ]find way for user to group different sets of data based on a specified variable 
