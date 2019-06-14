@@ -86,7 +86,6 @@ hist <- function(D1a,D2a){
 
   #convert gene ID to actual symbols
   geneSymbol <- D1a$Symbol[match(testTableF$ID_REF, D1a$ID)] #assigns symbols of gene
-  testTableF$ID_REF <- geneSymbol
   testTibbleF <- as_tibble(testTableF)
   colLabel <- c("Mean","SD", "Median")
   colLabel <- c(colLabel,colLabel,colLabel)
@@ -97,7 +96,7 @@ hist <- function(D1a,D2a){
   testTibbleF <- testTibbleF %>%
     dplyr::rename(Symbol=`ID_REF`) %>% #is breaking symbols
     mutate_if(is.character,as.numeric)
-  #library(plyr)
+  testTibbleF$Symbol <- geneSymbol
 
   testTibbleF1 <- testTibbleF  %>% select(Symbol, Mean.DBTRG, Mean.U87)  %>%
     tidyr::gather(Group.Mean, Mean, -1) %>% #separates expression data based on group

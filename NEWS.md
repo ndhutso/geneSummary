@@ -1,3 +1,6 @@
+# geneSummary 0.1.2.0006
+# add fix to hist
+
 # geneSummary 0.1.2.0005
 # start phasing out analyze
 
