@@ -21,6 +21,7 @@
 #'@import "Biobase"
 #'@import "GEOquery"
 #'@import "ggplot2"
+#'@import "tibble"
 #'
 #'@export
 

@@ -1,3 +1,6 @@
+# geneSummary 0.1.2.0009
+# fix box and tidy up hist and compare
+
 # geneSummary 0.1.2.0008
 # fix barplot x labels
 

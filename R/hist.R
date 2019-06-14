@@ -12,14 +12,12 @@
 
 hist <- function(D1a,D2a){
 
-  ## extract expression level for DBTRG group and U87 group separately - START TIDYING
-  #get data of groups combined - change
   Data.DBTRG <- data.frame(rownames(D2a),D2a[,1:4])
   Data.U87 <- data.frame(rownames(D2a),D2a[,5:12])
 
   #list of gene names for TP53 exactly
   geneName <- D1a$ID[which(D1a$Symbol=="TP53",arr.ind=TRUE)]
-  geneName <-as.character(geneName)
+  geneName <- as.character(geneName)
 
   #get expression levels of TP53
   idx <- match(geneName,Data.DBTRG$rownames.D2a.)
@@ -31,41 +29,38 @@ hist <- function(D1a,D2a){
   ## t test between the two groups
   test <- t.test(Data.DBTRG.TP53,Data.U87.TP53)
 
-  ## sumarized table: https://www.statalist.org/forums/forum/general-stata-discussion/general/1395253-descriptive-statistics-table-generation
   #change sig to p-value
-  test.Data.DBTRG.TP53 <- c(mean(Data.DBTRG.TP53),sd(Data.DBTRG.TP53),median(Data.DBTRG.TP53))
-  test.Data.U87.TP53 <- c(mean(Data.U87.TP53),sd(Data.U87.TP53),median(Data.U87.TP53))
-  total <- c(Data.DBTRG.TP53,Data.U87.TP53)
-  test.total <- c(mean(total),sd(total),median(total))
-  testTable <- c(geneName, test.Data.DBTRG.TP53,test.Data.U87.TP53,test.total,test$p.value[1])
-  colLabel <- c("ID_REF","Mean.DBTRG","SD.DBTRG","Median.DBTRG","Mean.U87","SD.U87","Median.U87","Mean","SD","Median","p.value")
-  testTable <- t(testTable)
-  colnames(testTable) <- colLabel
-  #END TIDYING
+  test.Data.DBTRG.TP53 <- tibble(Mean.DBTRG = mean(Data.DBTRG.TP53),SD.DBTRG = sd(Data.DBTRG.TP53),Median.DBTRG = median(Data.DBTRG.TP53))
+  test.Data.U87.TP53 <- tibble(Mean.U87 = mean(Data.U87.TP53),SD.U87 = sd(Data.U87.TP53),Median.U87 = median(Data.U87.TP53))
+
+  total <- cbind(Data.DBTRG.TP53,Data.U87.TP53)
+  test.total <- tibble(Mean = mean(total),SD = sd(total),Median = median(total))
+
+  testTable <- cbind(ID_REF = geneName, test.Data.DBTRG.TP53,test.Data.U87.TP53,test.total,p.value = test$p.value[1])
 
   ##find top 10 variance and corresponding gene, add to summary table, visualize with ggplot
-  #should be able to use var function
   geneName <- rownames(D2a)
   topVariance <- as_tibble(D2a) %>%
     mutate(Variance = rowVars(as.matrix(D2a[,-1]))) %>%
     mutate(ID_REF = geneName) %>%
     arrange(desc(Variance)) %>%
     slice(1:10)
-    topVariance <- topVariance %>% select(ID_REF,colnames(topVariance))
+  topVariance <- topVariance %>% select(ID_REF,colnames(topVariance))
 
   #separate data into groups, find mean median sd p-value, add
   #Data.U87 and Data.DBTRG are set
-  geneName <- D1a$ID[match(topVariance$ID_REF,D1a$ID)]
-  geneName <-as.character(geneName)
+  geneName <- as.character(D1a$ID[match(topVariance$ID_REF,D1a$ID)])
   idx.D <- match(geneName,Data.DBTRG$rownames.D2a.)
   idx.U <- match(geneName,Data.U87$rownames.D2a.)
   Data.DBTRG.Top <- Data.DBTRG[idx.D,-1]
   Data.U87.Top <- Data.U87[idx.U,-1]
+
   test <- c()
   for(i in 1:10) {
     test <- c(test, t.test(Data.DBTRG.Top[i,], Data.U87.Top[i,]))
   }
   test <- data.frame(test)
+
   Data.DBTRG.Top <- as_tibble(Data.DBTRG.Top) %>%
     mutate(ID_REF = topVariance$ID_REF) %>%
     mutate("Mean.DBTRG" = rowMeans(Data.DBTRG.Top),"SD.DBTRG" = rowSds(as.matrix(Data.DBTRG.Top)), "Median.DBTRG" = rowMedians(as.matrix(Data.DBTRG.Top))) %>%

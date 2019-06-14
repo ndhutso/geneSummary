@@ -29,6 +29,10 @@ box <- function(D1a,D2a){
   Data.U87.TP53 <- t(as.numeric(Data.U87[idx,-1]))
   colnames(Data.U87.TP53) <- names(Data.U87)[-1]
 
+  ## Barplot for TP53 in these samples, label samples
+  Data.total.bar <- t(c(Data.DBTRG.TP53,Data.U87.TP53))
+  colnames(Data.total.bar) <- as.character(D2b$title)
+
   ## Boxplot for the two groups, combine
   Data.total.box <- data.frame(c(Data.total.bar[1,1:4],c(NA,NA,NA,NA)),Data.total.bar[1,5:12])
   rownames(Data.total.box) <- NULL
