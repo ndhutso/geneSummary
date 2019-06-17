@@ -39,12 +39,14 @@ extExp = function(data, geneSymbol=NA, dName=NA) {
 
     data1 <- pData(featureData(data3))
     data2 <- exprs(data3)
-  }else{
+  }else if(length(dName)>1){
     data3 <- data[[grep(dName,names(data),ignore.case = TRUE)]] #big list of all the data sets
 
     #have to use for loop or apply function to go through each data set, maybe use rbind to combine data
     data1 <- lapply(data3, pData(featureData))
     data2 <- lapply(data3, exprs)
+  }else{
+    return(NA)
   }
 
   ##fix column names

@@ -13,5 +13,5 @@ compare(D1a,D2a)
 hist(D1a,D2a)
 
 x <- "TP53, STAR"
-y <- strsplit(x,", ",fixed = TRUE)[[1]]
-extExp(data,y)
+geneSymbol <- strsplit(x,", ",fixed = TRUE)[[1]]
+extExp(data,geneSymbol)

@@ -5,7 +5,7 @@ library(geneSummary)
 ui <- fluidPage(
 
   # App title ----
-  titlePanel("Data Tables"),
+  titlePanel("Data"),
 
   # Sidebar layout with input and output definitions ----
   sidebarLayout(
@@ -13,19 +13,31 @@ ui <- fluidPage(
     # Sidebar panel for inputs ----
     sidebarPanel(
 
-      h3("Select data and type of table"),
-      selectInput(inputId = "tableType", label = "Type of data table:", choices = c("Gene Expression" ,"Gene Annotations","Sample Annotations")),
-      textInput(inputId = "geneSymbol", label = "Gene Symbol:", placeholder = "All"),
+      selectInput(inputId = "tableType", label = "Type of data table:", choices = c("Gene Expression" ,"Gene Annotations","Sample Annotations"), selected = "Gene Expression"),
+      textInput(inputId = "DataID", label = "GEO accession ID:"),
       textInput(inputId = "DataName", label = "Data set name:", placeholder = "All"),
-      textInput(inputId = "DataID", label = "GEO accession ID:")
+      textInput(inputId = "geneSymbol", label = "Gene Symbol:", placeholder = "All"),
+      strong("Graph:"),
+      br(),
+      actionButton("graph1", label = "TP53 Concentration"),
+      br(),
+      br(),
+      actionButton("graph2", label = "TP53 in DBTRG and U87"),
+      br(),
+      br(),
+      actionButton("graph3", label = "Top Variance Expressions")
 
     ),
 
     # Main panel for displaying outputs ----
     mainPanel(
 
+      tags$style(type="text/css",
+                 ".shiny-output-error { visibility: hidden; }",
+                 ".shiny-output-error:before { visibility: hidden; }"),
       # Output: Data table ----
-      tableOutput("table")
+      tableOutput("table"),
+      plotOutput("graph")
 
     )
   )
@@ -42,8 +54,8 @@ server <- function(input, output) {
   #    re-executed when inputs (input$bins) change
   # 2. Its output type is a plot
   data <- reactive({getGEO(input$DataID)})
-  symbol <- reactive({strsplit(input$geneSymbol,", ")[[1]]})
-  name <- reactive({strsplit(input$DataName,", ")[[1]]})
+  symbol <- reactive({strsplit(input$geneSymbol,", ",fixed = TRUE)[[1]]})
+  name <- reactive({strsplit(input$DataName,", ",fixed = TRUE)[[1]]})
 
   table <- reactive({
 
@@ -51,13 +63,19 @@ server <- function(input, output) {
     y <- symbol()
     z <- name()
 
-    switch(input$tableType, "Gene Expression" = extExp(x,y,z), "Gene Annotations" = extGene(x,y,z),"Sample Annotations" = extSample(x,z) )
-
+    switch(input$tableType, "Gene Expression" = extExp(x,y,z), "Gene Annotations" = extGene(x,y,z),"Sample Annotations" = extSample(x,z))
+    ##PROBLEM:  DOESNT LIKE THE IF AND ELSE STATEMENTS
   })
 
   output$table <- renderTable({
 
     table()
+
+  })
+
+  output$graph <- renderPlot({
+
+    switch(input$action)
 
   })
 
