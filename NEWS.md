@@ -1,5 +1,8 @@
+# geneSummary 0.1.3.0001
+# add geneSymbol input for extGene, add more inputs for Shiny interface
+
 # geneSummary 0.1.3.0000
-# fix extGene and extSample when no gene name is entered and implement first version of Shiny interface
+# fix extGene and extSample when no data name is entered and implement first version of Shiny interface
 
 # geneSummary 0.1.2.0010
 # change bar to ggplot

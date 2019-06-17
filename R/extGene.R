@@ -10,24 +10,33 @@
 #'
 #'@export
 
-extGene = function(data, dName = NA){
+extGene = function(data, geneSymbol = NA, dName = NA){
   if(is.na(dName)){
-    data3 <- data
-    sampleNote <- data.frame()
-    for(i in 1:length(data3))
-    {
-      sampleNote <- rbind(sampleNote,pData(featureData(data3[[i]])))
-    }
+      data3 <- data
+      sampleNote <- data.frame()
+      for(i in 1:length(data3))
+      {
+        sampleNote <- rbind(sampleNote,pData(featureData(data3[[i]])))
+      }
+      if(!is.na(geneSymbol)){
+        sampleNote <- sampleNote[which(sampleNote$Symbol==geneSymbol,arr.ind = TRUE),]
+      }
   }else if(length(dName)==1){
-    data3 <- data[[grep(dName,names(data),ignore.case = TRUE)]]
-    sampleNote <- pData(featureData(data3))
+      data3 <- data[[grep(dName,names(data),ignore.case = TRUE)]]
+      sampleNote <- pData(featureData(data3))
+      if(!is.na(geneSymbol)){
+        sampleNote <- sampleNote[which(sampleNote$Symbol==geneSymbol,arr.ind = TRUE),]
+      }
   }else{
-    data3 <- data[[grep(dName,names(data),ignore.case = TRUE)]]
-    sampleNote <- data.frame()
-    for(i in 1:length(data3))
-    {
-      sampleNote <- rbind(sampleNote,pData(featureData(data3[[i]])))
-    }
+      data3 <- data[[grep(dName,names(data),ignore.case = TRUE)]]
+      sampleNote <- data.frame()
+      for(i in 1:length(data3))
+      {
+        sampleNote <- rbind(sampleNote,pData(featureData(data3[[i]])))
+      }
+      if(!is.na(geneSymbol)){
+        sampleNote <- sampleNote[which(sampleNote$Symbol==geneSymbol,arr.ind = TRUE),]
+      }
   }
   return(sampleNote)
 }

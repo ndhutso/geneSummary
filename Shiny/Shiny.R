@@ -13,8 +13,10 @@ ui <- fluidPage(
     # Sidebar panel for inputs ----
     sidebarPanel(
 
-      h1("Select data and type of table"),
-      selectInput(inputId = "tableType", label = "Type of data table", choices = c("Gene Expression" ,"Gene Annotations","Sample Annotations")),
+      h3("Select data and type of table"),
+      selectInput(inputId = "tableType", label = "Type of data table:", choices = c("Gene Expression" ,"Gene Annotations","Sample Annotations")),
+      textInput(inputId = "geneSymbol", label = "Gene Symbol:", placeholder = "All"),
+      textInput(inputId = "DataName", label = "Data set name:", placeholder = "All"),
       textInput(inputId = "DataID", label = "GEO accession ID:")
 
     ),
@@ -43,7 +45,9 @@ server <- function(input, output) {
   table <- reactive({
 
     x <- getGEO(input$DataID)
-    switch(input$tableType, "Gene Expression" = extExp(x), "Gene Annotations" = extGene(x),"Sample Annotations" = extSample(x) )
+    y <- input$geneSymbol
+    z <- input$DataName
+    switch(input$tableType, "Gene Expression" = extExp(x,y,z), "Gene Annotations" = extGene(x,y,z),"Sample Annotations" = extSample(x,z) )
 
   })
 
