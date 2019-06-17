@@ -10,3 +10,4 @@
     [ ] change the amount of inputs based on the type of data table selected
     [ ] create different titles for different types of data tables
     [ ] implement pre-defined graphs
+    [ ] clean up column names for extExp to make it more readable in interface

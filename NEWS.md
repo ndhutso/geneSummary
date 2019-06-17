@@ -1,3 +1,6 @@
+# geneSummary 0.1.3.0003
+# delete preceding update
+
 # geneSummary 0.1.3.0002
 # clean up column names for data table output of extExp
 

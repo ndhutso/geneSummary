@@ -41,10 +41,11 @@ server <- function(input, output) {
   # 1. It is "reactive" and therefore should be automatically
   #    re-executed when inputs (input$bins) change
   # 2. Its output type is a plot
+  data <- reactive({getGEO(input$DataID)})
 
   table <- reactive({
 
-    x <- getGEO(input$DataID)
+    x <- data()
     y <- input$geneSymbol
     z <- input$DataName
     switch(input$tableType, "Gene Expression" = extExp(x,y,z), "Gene Annotations" = extGene(x,y,z),"Sample Annotations" = extSample(x,z) )
