@@ -1,3 +1,6 @@
+# geneSummary 0.1.3.0000
+# fix extGene and extSample when no gene name is entered and implement first version of Shiny interface
+
 # geneSummary 0.1.2.0010
 # change bar to ggplot
 

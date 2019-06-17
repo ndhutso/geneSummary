@@ -13,6 +13,11 @@
 extGene = function(data, dName = NA){
   if(is.na(dName)){
     data3 <- data
+    sampleNote <- data.frame()
+    for(i in 1:length(data3))
+    {
+      sampleNote <- rbind(sampleNote,pData(featureData(data3[[i]])))
+    }
   }else if(length(dName)==1){
     data3 <- data[[grep(dName,names(data),ignore.case = TRUE)]]
     sampleNote <- pData(featureData(data3))
