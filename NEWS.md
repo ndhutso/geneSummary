@@ -1,3 +1,6 @@
+# geneSummary 0.1.3.0002
+# clean up column names for data table output of extExp
+
 # geneSummary 0.1.3.0001
 # add geneSymbol input for extGene, add more inputs for Shiny interface
 

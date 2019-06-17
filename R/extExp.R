@@ -71,6 +71,8 @@ extExp = function(data, geneSymbol=NA, dName=NA) {
       expData <- add_column(expData,Symbol = geneSymbol, .before = colnames(expData)[[1]])
     }
   }
-
+  colnames(expData) <- as.character(colnames(expData))
+  colnames(expData) <- substr(colnames(expData), start = 31, stop = 40)
   return(expData)
 }
+
