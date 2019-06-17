@@ -47,6 +47,15 @@ extExp = function(data, geneSymbol=NA, dName=NA) {
     data2 <- lapply(data3, exprs)
   }
 
+  ##fix column names
+  for(i in 1: length(colnames(data1))){
+    colnames(data1)[i] <- strsplit(colnames(data1)[i],"gz.")[[1]][2]
+  }
+
+  for(i in 1: length(colnames(data2))){
+    colnames(data2)[i] <- strsplit(colnames(data2)[i],"gz.")[[1]][2]
+  }
+
   if(is.na(geneSymbol))
   {
     if(is.na(dName)){

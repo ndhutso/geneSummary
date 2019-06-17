@@ -42,12 +42,15 @@ server <- function(input, output) {
   #    re-executed when inputs (input$bins) change
   # 2. Its output type is a plot
   data <- reactive({getGEO(input$DataID)})
+  symbol <- reactive({strsplit(input$geneSymbol,", ")[[1]]})
+  name <- reactive({strsplit(input$DataName,", ")[[1]]})
 
   table <- reactive({
 
     x <- data()
-    y <- input$geneSymbol
-    z <- input$DataName
+    y <- symbol()
+    z <- name()
+
     switch(input$tableType, "Gene Expression" = extExp(x,y,z), "Gene Annotations" = extGene(x,y,z),"Sample Annotations" = extSample(x,z) )
 
   })
