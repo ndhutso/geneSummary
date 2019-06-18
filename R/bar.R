@@ -42,11 +42,13 @@ bar <- function(D1a,D2a,D2b){
 
 
  Data.total.bar <- tibble(Sample = colnames(Data.total.bar), Concentration = Data.total.bar[1,])
- Data.total.bar %>%
+ graph <- Data.total.bar %>%
     ggplot(aes(x = Sample, y=Concentration)) +
     geom_bar(stat="identity", position ="dodge") +
     theme(axis.text.x = element_text(angle = 45, hjust = 1),plot.title = element_text(hjust = 0.5)) +
     ggtitle("TP53 Concentration in Samples")
+ graph
+ return(graph)
 }
 
 

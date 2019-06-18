@@ -16,7 +16,10 @@ ui <- fluidPage(
       selectInput(inputId = "tableType", label = "Type of data table:", choices = c("Gene Expression" ,"Gene Annotations","Sample Annotations"), selected = "Gene Expression"),
       textInput(inputId = "DataID", label = "GEO accession ID:"),
       textInput(inputId = "DataName", label = "Data set name:", placeholder = "All"),
-      textInput(inputId = "geneSymbol", label = "Gene Symbol:", placeholder = "All"),
+      conditionalPanel(
+        condition = "input.tableType != 'Sample Annotations'",
+        textInput(inputId = "geneSymbol", label = "Gene Symbol:", placeholder = "All")
+      ),
       strong("Graph:"),
       br(),
       actionButton("graph1", label = "TP53 Concentration"),
@@ -25,7 +28,10 @@ ui <- fluidPage(
       actionButton("graph2", label = "TP53 in DBTRG and U87"),
       br(),
       br(),
-      actionButton("graph3", label = "Top Variance Expressions")
+      actionButton("graph3", label = "Top Variance Expressions"),
+      br(),
+      br(),
+      actionButton("reset", label = "Reset")
 
     ),
 
@@ -64,7 +70,7 @@ server <- function(input, output) {
     z <- name()
 
     switch(input$tableType, "Gene Expression" = extExp(x,y,z), "Gene Annotations" = extGene(x,y,z),"Sample Annotations" = extSample(x,z))
-    ##PROBLEM:  DOESNT LIKE THE IF AND ELSE STATEMENTS
+    ##PROBLEM:  DOESNT LIKE THE IF AND ELSE STATEMENTS, also, GEOQuery doesnt like to be imported anymore
   })
 
   output$table <- renderTable({
@@ -73,9 +79,51 @@ server <- function(input, output) {
 
   })
 
+  ##ONLY WORKS FOR GSE43452
+  #use reactive values to define graph and just call the variable in render plot
+  v <- reactiveValues(data = NULL)
+
+  observeEvent(input$graph1, {
+    x <- data()
+    y <- symbol()
+    z <- name()
+
+    D1a <- extGene(x,y,z)
+    D2a <- extExp(x,y,z)
+    D2b <- extSample(x,z)
+
+    v$graph <- bar(D1a,D2a,D2b)
+  })
+  observeEvent(input$graph2, {
+    x <- data()
+    y <- symbol()
+    z <- name()
+
+    D1a <- extGene(x,y,z)
+    D2a <- extExp(x,y,z)
+    D2b <- extSample(x,z)
+
+    v$graph <- box(D1a,D2a)
+  })
+  observeEvent(input$graph3, {
+    x <- data()
+    y <- symbol()
+    z <- name()
+
+    D1a <- extGene(x,y,z)
+    D2a <- extExp(x,y,z)
+    D2b <- extSample(x,z)
+
+    v$graph <- hist(D1a,D2a)
+  })
+
+  observeEvent(input$reset, {
+    v$graph <- NULL
+  })
+
   output$graph <- renderPlot({
 
-    switch(input$action)
+    v$graph
 
   })
 

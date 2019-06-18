@@ -8,7 +8,7 @@
     [ ] update visual functions to take inputs and call the extraction functions to visualize specified sets of data
 [ ]create shiny interface to search, tabularize, and graph different sets of data
     [x] clean up column names for extExp to make it more readable in interface (necessary to fix extExp function)
-    [ ] change the amount of inputs based on the type of data table selected
+    [x] change the amount of inputs based on the type of data table selected
     [ ] create different titles for different types of data tables
     [ ] implement pre-defined graphs
     [ ] give user ability to save data 

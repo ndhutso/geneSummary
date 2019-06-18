@@ -40,5 +40,7 @@ box <- function(D1a,D2a){
 
   #graph
   par(mfrow = c(1, 1),mar=c(2,4,2,2))
-  boxplot(Data.total.box$DBTRG,Data.total.box$U87,names=c("DBTRG","U87"),ylab="Concentration",main = "TP53 Concentration in Groups")
+  graph <- boxplot(Data.total.box$DBTRG,Data.total.box$U87,names=c("DBTRG","U87"),ylab="Concentration",main = "TP53 Concentration in Groups")
+  graph
+  return(graph)
 }
