@@ -4,7 +4,6 @@ library(geneSummary)
 # Define UI for app that allows a user to get data tables for gene expression, gene annotations, or sample annotations ----
 ui <- fluidPage(
 
-  # App title ----
   titlePanel("Data"),
 
   # Sidebar layout with input and output definitions ----
@@ -20,7 +19,10 @@ ui <- fluidPage(
         condition = "input.tableType != 'Sample Annotations'",
         textInput(inputId = "geneSymbol", label = "Gene Symbol:", placeholder = "All")
       ),
-      strong("Graph:"),
+      actionButton("submit", label = "Submit"),
+      br(),
+      br(),
+      strong("Graphs for GSE43452:"),
       br(),
       actionButton("graph1", label = "TP53 Concentration"),
       br(),
@@ -38,11 +40,34 @@ ui <- fluidPage(
     # Main panel for displaying outputs ----
     mainPanel(
 
-      tags$style(type="text/css",
-                 ".shiny-output-error { visibility: hidden; }",
-                 ".shiny-output-error:before { visibility: hidden; }"),
+      conditionalPanel(
+        condition = "output.table",
+        conditionalPanel(
+          condition = "input.tableType == 'Gene Expression'",
+          titlePanel("Gene Expression Data")
+        ),
+        conditionalPanel(
+          condition = "input.tableType == 'Gene Annotations'",
+          titlePanel("Gene Annotations")
+        ),
+        conditionalPanel(
+          condition = "input.tableType == 'Sample Annotations'",
+          titlePanel("Sample Annotations")
+        )
+      ),
+
+      #Hide errors
+      #tags$style(type="text/css",
+      #           ".shiny-output-error { visibility: hidden; }",
+      #           ".shiny-output-error:before { visibility: hidden; }"),
       # Output: Data table ----
       tableOutput("table"),
+
+      conditionalPanel(
+        condition = "output.table",
+        actionButton("save", label = "Save Data")
+      ),
+
       plotOutput("graph")
 
     )
@@ -59,34 +84,67 @@ server <- function(input, output) {
   # 1. It is "reactive" and therefore should be automatically
   #    re-executed when inputs (input$bins) change
   # 2. Its output type is a plot
+
   data <- reactive({getGEO(input$DataID)})
-  symbol <- reactive({strsplit(input$geneSymbol,", ",fixed = TRUE)[[1]]})
-  name <- reactive({strsplit(input$DataName,", ",fixed = TRUE)[[1]]})
 
-  table <- reactive({
+  observeEvent(input$submit, {
+    output$table <- renderTable({
 
-    x <- data()
-    y <- symbol()
-    z <- name()
+      x <- data()
 
-    switch(input$tableType, "Gene Expression" = extExp(x,y,z), "Gene Annotations" = extGene(x,y,z),"Sample Annotations" = extSample(x,z))
-    ##PROBLEM:  DOESNT LIKE THE IF AND ELSE STATEMENTS, also, GEOQuery doesnt like to be imported anymore
+      y <- strsplit(input$geneSymbol,", ",fixed = TRUE)[[1]]
+
+      z <- strsplit(input$DataName,", ",fixed = TRUE)[[1]]
+
+      #browser()
+
+      if(identical(y, character(0))){
+        if(identical(z, character(0))){
+          switch(input$tableType, "Gene Expression" = extExp(x), "Gene Annotations" = extGene(x),"Sample Annotations" = extSample(x))
+        }else{
+          switch(input$tableType, "Gene Expression" = extExp(x,dName = z), "Gene Annotations" = extGene(x,dName = z),"Sample Annotations" = extSample(x,z))
+        }
+
+      }else if(identical(z, character(0))){
+        switch(input$tableType, "Gene Expression" = extExp(x,y), "Gene Annotations" = extGene(x,y),"Sample Annotations" = extSample(x))
+      }else{
+        switch(input$tableType, "Gene Expression" = extExp(x,y,z), "Gene Annotations" = extGene(x,y,z),"Sample Annotations" = extSample(x,z))
+      }
+
+      ##PROBLEM: GEOQuery doesnt like to be imported anymore
+    }, rownames = TRUE)
   })
 
-  output$table <- renderTable({
+  observeEvent(input$save, {
+    x <- data()
 
-    table()
+    y <- strsplit(input$geneSymbol,", ",fixed = TRUE)[[1]]
+
+    z <- strsplit(input$DataName,", ",fixed = TRUE)[[1]]
+
+    D1a <- extGene(x,y,z)
+    D2a <- extExp(x,y,z)
+    D2b <- extSample(x,z)
+
+    dir.create("data")
+    setwd("data")
+    save(D1a, file = "geneAnnotation.RData")
+    save(D2a, file = "geneExpression.RData")
+    save(D2b, file = "sampleAnnotation.RData")
 
   })
 
   ##ONLY WORKS FOR GSE43452
   #use reactive values to define graph and just call the variable in render plot
   v <- reactiveValues(data = NULL)
+  dataDef <- reactive({getGEO("GSE43452")})
 
   observeEvent(input$graph1, {
-    x <- data()
-    y <- symbol()
-    z <- name()
+    x <- dataDef()
+
+    y <- NA
+
+    z <- NA
 
     D1a <- extGene(x,y,z)
     D2a <- extExp(x,y,z)
@@ -95,9 +153,11 @@ server <- function(input, output) {
     v$graph <- bar(D1a,D2a,D2b)
   })
   observeEvent(input$graph2, {
-    x <- data()
-    y <- symbol()
-    z <- name()
+    x <- dataDef()
+
+    y <- NA
+
+    z <- NA
 
     D1a <- extGene(x,y,z)
     D2a <- extExp(x,y,z)
@@ -106,9 +166,11 @@ server <- function(input, output) {
     v$graph <- box(D1a,D2a)
   })
   observeEvent(input$graph3, {
-    x <- data()
-    y <- symbol()
-    z <- name()
+    x <- dataDef()
+
+    y <- NA
+
+    z <- NA
 
     D1a <- extGene(x,y,z)
     D2a <- extExp(x,y,z)

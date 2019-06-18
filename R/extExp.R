@@ -74,7 +74,7 @@ extExp = function(data, geneSymbol=NA, dName=NA) {
     geneName <- data1$ID[match(geneSymbol,data1$Symbol)] #might not account for multiple genes with same symbol
 
     if(length(geneName)==1){
-      expData <- data.frame(t(data2[match(geneName,rownames(data2)),]))
+      expData <- data.frame(data2[match(geneName,rownames(data2)),])
       expData <- add_column(expData,Symbol = replicate(length(rownames(expData)), geneSymbol), .before = colnames(expData)[[1]])
     }else{
       geneSymbol <- data1$Symbol[match(geneName,data1$ID)] #have to set geneSymbol to length of columns bc some gene symbols repeat

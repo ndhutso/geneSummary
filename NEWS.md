@@ -1,3 +1,6 @@
+# geneSummary 0.1.3.0006
+# first version of graph implementation, fix for one version of inputs for extExp
+
 # geneSummary 0.1.3.0005
 # number of inputs change with type of table, more progress on implementing graphs, change graph functions so they return the graph
 
