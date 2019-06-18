@@ -1,3 +1,6 @@
+# geneSummary 0.1.3.0007
+# first fix for long data inputs for extExp
+
 # geneSummary 0.1.3.0006
 # first version of graph implementation, fix for one version of inputs for extExp
 
