@@ -6,11 +6,11 @@
     [x] split up analysis and visualize into separate functions to prep data and graph/tabularize in different ways
     [x] update extraction functions to take a list of BioConductor formatted data, combine them, and look for a specific data set or extract a variable from the combined data
     [ ] update visual functions to take inputs and call the extraction functions to visualize specified sets of data
-    [ ] change any $Symbol variable to grep search of column names because some data sets use gene symbol instead of just symbol
+    [x] change any $Symbol variable to grep search of column names because some data sets use gene symbol instead of just symbol
 [ ] create shiny interface to search, tabularize, and graph different sets of data
     [x] change the amount of inputs based on the type of data table selected
     [x] create different titles for different types of data tables
-    [ ] implement pre-defined graphs
+    [ ] implement pre-defined graphs (change box to ggplot)
     [ ] give user ability to save data 
     [x] find way to include row names
     [ ] give user ability to choose pages of a data set with multiple data frames 
