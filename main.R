@@ -1,6 +1,6 @@
-data <- getGEO("GSE43453")
+data <- getGEO("GSE43452")
 
-D2a <- extExp(data, "TP53") #gene expression
+D2a <- extExp(data) #gene expression
 
 D2b <- extSample(data) #sample annotations
 

@@ -15,15 +15,16 @@ box <- function(D1a,D2a){
 
   ## extract expression level for DBTRG group and U87 group separately - START TIDYING
   #get data of groups combined - change
-  Data.DBTRG <- data.frame(rownames(D2a),D2a[,1:4])
-  Data.U87 <- data.frame(rownames(D2a),D2a[,5:12])
+  Data.DBTRG <- D2a[,1:5]
+  Data.U87 <- data.frame(D2a[,1],D2a[,6:13])
+  colnames(Data.U87)[1] = "Symbol"
 
   #list of gene names for TP53 exactly
   geneName <- D1a$ID[which(D1a$Symbol=="TP53",arr.ind=TRUE)]
   geneName <-as.character(geneName)
 
   #get expression levels of TP53
-  idx <- match(geneName,Data.DBTRG$rownames.D2a.)
+  idx <- match(geneName,rownames(Data.DBTRG))
   Data.DBTRG.TP53 <- t(as.numeric(Data.DBTRG[idx,-1]))
   colnames(Data.DBTRG.TP53) <- names(Data.DBTRG)[-1]
   Data.U87.TP53 <- t(as.numeric(Data.U87[idx,-1]))
@@ -34,16 +35,15 @@ box <- function(D1a,D2a){
   colnames(Data.total.bar) <- as.character(D2b$title)
 
   ## Boxplot for the two groups, combine
-  Data.total.box <- data.frame(c(Data.total.bar[1,1:4],c(NA,NA,NA,NA)),Data.total.bar[1,5:12])
-  rownames(Data.total.box) <- NULL
-  colnames(Data.total.box) <- c("DBTRG","U87")
+  Data.total.box <- data.frame(c(replicate(4, "DBTRG"),replicate(8, "U87")),c(Data.total.bar[1,1:4],Data.total.bar[1,5:12]))
+  colnames(Data.total.box) <- c("Group","TP53_Concentration")
 
   #graph
   par(mfrow = c(1, 1),mar=c(2,4,2,2))
   graph <- Data.total.box %>%
-    ggplot() +
-    geom_boxplot()
+    ggplot(aes(Group, TP53_Concentration)) +
+    geom_boxplot() +
+    labs(title = "TP53 Concentration in Groups", y = "TP53 Concentration")
   graph
-  boxplot(Data.total.box$DBTRG,Data.total.box$U87,names=c("DBTRG","U87"),ylab="Concentration",main = "TP53 Concentration in Groups")
   return(graph)
 }

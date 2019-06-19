@@ -1,5 +1,8 @@
+# geneSummary 0.1.3.0009
+# convert box plot to ggplot
+
 # geneSummary 0.1.3.0008
-# fixed symbol column for extExp
+# fixed symbol column generation for extExp
 
 # geneSummary 0.1.3.0007
 # first fix for long data inputs for extExp

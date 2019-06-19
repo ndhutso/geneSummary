@@ -10,7 +10,7 @@
 [ ] create shiny interface to search, tabularize, and graph different sets of data
     [x] change the amount of inputs based on the type of data table selected
     [x] create different titles for different types of data tables
-    [ ] implement pre-defined graphs (change box to ggplot)
+    [x] implement pre-defined graphs (change box to ggplot)
     [ ] give user ability to save data 
     [x] find way to include row names
     [ ] give user ability to choose pages of a data set with multiple data frames 
