@@ -11,12 +11,13 @@
     [x] change the amount of inputs based on the type of data table selected
     [x] create different titles for different types of data tables
     [x] implement pre-defined graphs (change box to ggplot)
-    [ ] give user ability to save data 
+    [x] give user ability to save data 
     [x] find way to include row names
-    [ ] give user ability to choose pages of a data set with multiple data frames 
-[ ] extExp does not work when a list with multiple data sets is input without a data name input
+    [x] give user ability to choose pages of a data set with multiple data frames 
+    [ ] implement generalized graphing
+[x] fix extraction functions to work with lists with multiple data sets as input
     [x] change if statements and output because some inputs cant have all their data sets combined
     [x] clean up column names for extExp (necessary to fix extExp function)
     [x] fix symbol column
     [x] check if other functions need a similar update
-    [ ] test extGene and extSample for multiple data sets
+    [x] test extGene and extSample for multiple data sets

@@ -1,3 +1,6 @@
+# geneSummary 0.1.3.0012
+# fix bug for singular data sets, first working version of save function
+
 # geneSummary 0.1.3.0011
 # delete unneeded code in extraction functions that was aimed at handling multiple data sets but was never used, fixes for extraction functions
 

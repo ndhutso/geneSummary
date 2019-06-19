@@ -112,7 +112,8 @@ server <- function(input, output) {
         t <- switch(input$tableType, "Gene Expression" = extExp(x,y,z), "Gene Annotations" = extGene(x,y,z),"Sample Annotations" = extSample(x,z))
       }
 
-      if(length(t)>1){
+      #browser()
+      if(!is.data.frame(t)){
         n <- as.numeric(input$page)
         t <- t[[n]]
       }
@@ -124,20 +125,31 @@ server <- function(input, output) {
 
   observeEvent(input$save, {
     x <- data()
-
     y <- strsplit(input$geneSymbol,", ",fixed = TRUE)[[1]]
-
     z <- strsplit(input$DataName,", ",fixed = TRUE)[[1]]
+
+    if(identical(y, character(0))){
+      if(identical(z, character(0))){
+        y <- NA
+        z <- NA
+      }else{
+        y <- NA
+      }
+    }else if(identical(z, character(0))){
+      z <- NA
+    }
 
     D1a <- extGene(x,y,z)
     D2a <- extExp(x,y,z)
     D2b <- extSample(x,z)
 
+    browser()
+
     dir.create("data")
     setwd("data")
-    save(D1a, file = "geneAnnotation.RData")
-    save(D2a, file = "geneExpression.RData")
-    save(D2b, file = "sampleAnnotation.RData")
+    saveRDS(D1a, file = "geneAnnotation.rds")
+    saveRDS(D2a, file = "geneExpression.rds")
+    saveRDS(D2b, file = "sampleAnnotation.rds")
 
   })
 
