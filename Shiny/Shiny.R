@@ -53,10 +53,12 @@ ui <- fluidPage(
         conditionalPanel(
           condition = "input.tableType == 'Sample Annotations'",
           titlePanel("Sample Annotations")
-        ),
+        )#,
         #page selector, have it default to 1 so the first element of the list will be ouput by render graph at first
-        selectInput(inputId = "page", label = "Page:",choices = 1:10, selected = 1)
+
       ),
+
+      uiOutput("length"),
 
       #Hide errors
       #tags$style(type="text/css",
@@ -89,8 +91,36 @@ server <- function(input, output) {
 
   data <- reactive({getGEO(input$DataID)})
 
-  ##create function to "render" data table before it is displayed to pass the length of the list back to the UI
   observeEvent(input$submit, {
+    ##create function to "render" data table before it is displayed to pass the length of the list back to the UI
+    output$length <- renderUI({
+
+      x <- data()
+
+      y <- strsplit(input$geneSymbol,", ",fixed = TRUE)[[1]]
+
+      z <- strsplit(input$DataName,", ",fixed = TRUE)[[1]]
+
+      #browser()
+
+      if(identical(y, character(0))){
+        if(identical(z, character(0))){
+          tbl <- switch(input$tableType, "Gene Expression" = extExp(x), "Gene Annotations" = extGene(x),"Sample Annotations" = extSample(x))
+        }else{
+          tbl <- switch(input$tableType, "Gene Expression" = extExp(x,dName = z), "Gene Annotations" = extGene(x,dName = z),"Sample Annotations" = extSample(x,z))
+        }
+      }else if(identical(z, character(0))){
+        tbl <- switch(input$tableType, "Gene Expression" = extExp(x,y), "Gene Annotations" = extGene(x,y),"Sample Annotations" = extSample(x))
+      }else{
+        tbl <- switch(input$tableType, "Gene Expression" = extExp(x,y,z), "Gene Annotations" = extGene(x,y,z),"Sample Annotations" = extSample(x,z))
+      }
+
+      if(!is.data.frame(tbl)){
+        selectInput(inputId = "page", label = "Page:",choices = 1:length(tbl), selected = 1)
+      }
+      NULL
+    })
+
     output$table <- DT::renderDataTable({
 
       x <- data()
@@ -115,17 +145,16 @@ server <- function(input, output) {
 
       #browser()
       if(!is.data.frame(tbl)){
-        if(as.numeric(input$page)<=length(tbl)){
-          n <- as.numeric(input$page)
+          n <- as.numeric(input$page) #being delayed so is passing a NULL
+          #browser()
+          if(is.null(n)){
+            n <- 1
+          }
+          #browser()
           tbl <- tbl[[n]]
-        }else{
-          n <- length(tbl)
-          tbl <- tbl[[n]]
-        }
       }
       tbl
 
-      ##PROBLEM: GEOQuery doesnt like to be imported anymore
     }, rownames = TRUE)
   })
 
