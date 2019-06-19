@@ -1,3 +1,6 @@
+# geneSummary 0.1.3.0013
+# fixes for graphs
+
 # geneSummary 0.1.3.0012
 # fix bug for singular data sets, first working version of save function
 

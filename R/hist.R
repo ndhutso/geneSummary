@@ -12,15 +12,18 @@
 
 hist <- function(D1a,D2a){
 
-  Data.DBTRG <- data.frame(rownames(D2a),D2a[,1:4])
-  Data.U87 <- data.frame(rownames(D2a),D2a[,5:12])
+  ## extract expression level for DBTRG group and U87 group separately - START TIDYING
+  #get data of groups combined - change
+  Data.DBTRG <- D2a[,1:5]
+  Data.U87 <- data.frame(D2a[,1],D2a[,6:13])
+  colnames(Data.U87)[1] = "Symbol"
 
   #list of gene names for TP53 exactly
   geneName <- D1a$ID[which(D1a$Symbol=="TP53",arr.ind=TRUE)]
-  geneName <- as.character(geneName)
+  geneName <-as.character(geneName)
 
   #get expression levels of TP53
-  idx <- match(geneName,Data.DBTRG$rownames.D2a.)
+  idx <- match(geneName,rownames(Data.DBTRG))
   Data.DBTRG.TP53 <- t(as.numeric(Data.DBTRG[idx,-1]))
   colnames(Data.DBTRG.TP53) <- names(Data.DBTRG)[-1]
   Data.U87.TP53 <- t(as.numeric(Data.U87[idx,-1]))
@@ -50,8 +53,8 @@ hist <- function(D1a,D2a){
   #separate data into groups, find mean median sd p-value, add
   #Data.U87 and Data.DBTRG are set
   geneName <- as.character(D1a$ID[match(topVariance$ID_REF,D1a$ID)])
-  idx.D <- match(geneName,Data.DBTRG$rownames.D2a.)
-  idx.U <- match(geneName,Data.U87$rownames.D2a.)
+  idx.D <- match(geneName,rownames(Data.DBTRG))
+  idx.U <- match(geneName,rownames(Data.U87))
   Data.DBTRG.Top <- Data.DBTRG[idx.D,-1]
   Data.U87.Top <- Data.U87[idx.U,-1]
 
@@ -71,10 +74,11 @@ hist <- function(D1a,D2a){
     select(-c(colnames(Data.U87.Top[grep("GSM", colnames(Data.U87.Top))])))
   Data.total.Top <- as_tibble(topVariance) %>%
     select(2:13) %>%
-    mutate(Mean = rowMeans(topVariance[,2:13]),"SD" = rowSds(as.matrix(topVariance[,2:13])), Median = rowMedians(as.matrix(topVariance[,2:13]))) %>%
+    mutate(Mean = rowMeans(topVariance[,3:14]),"SD" = rowSds(as.matrix(topVariance[,3:14])), Median = rowMedians(as.matrix(topVariance[,3:14]))) %>%
     mutate("p.value" = t(test[1,grep("p.value",colnames(test))]),ID_REF = topVariance$ID_REF)
   Data.total.Top <- Data.total.Top %>%
-    select(-c(colnames(Data.total.Top[grep("GSM", colnames(Data.total.Top))])))
+    select(-c(colnames(Data.total.Top[grep("GSM", colnames(Data.total.Top))]))) %>%
+    select(-c(colnames(Data.total.Top[grep("Symbol", colnames(Data.total.Top))])))
   testTable2 <- plyr::join(Data.DBTRG.Top, Data.U87.Top, by = "ID_REF")
   testTable2 <- plyr::join(testTable2, Data.total.Top, by = "ID_REF")
 

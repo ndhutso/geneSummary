@@ -89,6 +89,7 @@ server <- function(input, output) {
 
   data <- reactive({getGEO(input$DataID)})
 
+  ##create function to "render" data table before it is displayed to pass the length of the list back to the UI
   observeEvent(input$submit, {
     output$table <- DT::renderDataTable({
 
@@ -102,22 +103,27 @@ server <- function(input, output) {
 
       if(identical(y, character(0))){
         if(identical(z, character(0))){
-          t <- switch(input$tableType, "Gene Expression" = extExp(x), "Gene Annotations" = extGene(x),"Sample Annotations" = extSample(x))
+          tbl <- switch(input$tableType, "Gene Expression" = extExp(x), "Gene Annotations" = extGene(x),"Sample Annotations" = extSample(x))
         }else{
-          t <- switch(input$tableType, "Gene Expression" = extExp(x,dName = z), "Gene Annotations" = extGene(x,dName = z),"Sample Annotations" = extSample(x,z))
+          tbl <- switch(input$tableType, "Gene Expression" = extExp(x,dName = z), "Gene Annotations" = extGene(x,dName = z),"Sample Annotations" = extSample(x,z))
         }
       }else if(identical(z, character(0))){
-        t <- switch(input$tableType, "Gene Expression" = extExp(x,y), "Gene Annotations" = extGene(x,y),"Sample Annotations" = extSample(x))
+        tbl <- switch(input$tableType, "Gene Expression" = extExp(x,y), "Gene Annotations" = extGene(x,y),"Sample Annotations" = extSample(x))
       }else{
-        t <- switch(input$tableType, "Gene Expression" = extExp(x,y,z), "Gene Annotations" = extGene(x,y,z),"Sample Annotations" = extSample(x,z))
+        tbl <- switch(input$tableType, "Gene Expression" = extExp(x,y,z), "Gene Annotations" = extGene(x,y,z),"Sample Annotations" = extSample(x,z))
       }
 
       #browser()
-      if(!is.data.frame(t)){
-        n <- as.numeric(input$page)
-        t <- t[[n]]
+      if(!is.data.frame(tbl)){
+        if(as.numeric(input$page)<=length(tbl)){
+          n <- as.numeric(input$page)
+          tbl <- tbl[[n]]
+        }else{
+          n <- length(tbl)
+          tbl <- tbl[[n]]
+        }
       }
-      t
+      tbl
 
       ##PROBLEM: GEOQuery doesnt like to be imported anymore
     }, rownames = TRUE)
