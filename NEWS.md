@@ -1,3 +1,6 @@
+# geneSummary 0.1.3.0011
+# delete unneeded code in extraction functions that was aimed at handling multiple data sets but was never used, fixes for extraction functions
+
 # geneSummary 0.1.3.0010
 # more fixes to multiple data set generation in extExp, convert extGene and extSample to analyze multiple data sets, fixes to Shiny to display multiple data sets
 

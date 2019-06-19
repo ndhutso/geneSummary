@@ -112,11 +112,10 @@ server <- function(input, output) {
         t <- switch(input$tableType, "Gene Expression" = extExp(x,y,z), "Gene Annotations" = extGene(x,y,z),"Sample Annotations" = extSample(x,z))
       }
 
-      if(length(x)>1){
+      if(length(t)>1){
         n <- as.numeric(input$page)
         t <- t[[n]]
       }
-      output$length <- length(t)
       t
 
       ##PROBLEM: GEOQuery doesnt like to be imported anymore

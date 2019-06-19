@@ -100,17 +100,9 @@ extExp = function(data, geneSymbol=NA, dName=NA) {
 
     if(is.na(geneSymbol))
     {
-      if(is.na(dName)){
         expData <- as.data.frame(data2)
         geneSymbol <- data1[,idxSym]
         expData <- add_column(expData,Symbol = geneSymbol, .before = colnames(expData)[[1]])
-      }else{
-        geneName <- data1$ID
-        geneSymbol <- data1[,idxSym]
-
-        expData <- data.frame(data2[match(geneName,rownames(data2)),]) #may have to use if statement for t() if there is one or more appearances of a symbol
-        expData <- add_column(expData,Symbol = replicate(length(rownames(expData)), geneSymbol), .before = colnames(expData)[[1]])
-      }
     }else{
 
       geneName <- data1$ID[match(geneSymbol,data1[,idxSym])] #might not account for multiple genes with same symbol
@@ -125,7 +117,6 @@ extExp = function(data, geneSymbol=NA, dName=NA) {
       }
     }
   }
-
   return(expData)
 }
 
