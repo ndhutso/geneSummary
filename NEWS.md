@@ -1,3 +1,6 @@
+# geneSummary 0.1.3.0008
+# fixed symbol column for extExp
+
 # geneSummary 0.1.3.0007
 # first fix for long data inputs for extExp
 

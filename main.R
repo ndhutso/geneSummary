@@ -1,6 +1,6 @@
 data <- getGEO("GSE43453")
 
-D2a <- extExp(data) #gene expression
+D2a <- extExp(data, "TP53") #gene expression
 
 D2b <- extSample(data) #sample annotations
 
@@ -16,8 +16,8 @@ x <- "TP53"
 geneSymbol <- strsplit(x,", ",fixed = TRUE)[[1]]
 extExp(data, geneSymbol)
 
-data <- getGEO("GSE43451")
-D2a <- extExp(data)
+data <- getGEO("GSE40006") #list of 2
+D2a <- extExp(data,geneSymbol = c("DUSP22", "TP53"))
 
 D2b <- extSample(data) #sample annotations
 
