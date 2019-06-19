@@ -1,3 +1,4 @@
+library(DT)
 library(shiny)
 library(geneSummary)
 
@@ -34,7 +35,6 @@ ui <- fluidPage(
       br(),
       br(),
       actionButton("reset", label = "Reset")
-
     ),
 
     # Main panel for displaying outputs ----
@@ -53,7 +53,9 @@ ui <- fluidPage(
         conditionalPanel(
           condition = "input.tableType == 'Sample Annotations'",
           titlePanel("Sample Annotations")
-        )
+        ),
+        #page selector, have it default to 1 so the first element of the list will be ouput by render graph at first
+        selectInput(inputId = "page", label = "Page:",choices = 1:10, selected = 1)
       ),
 
       #Hide errors
@@ -61,7 +63,7 @@ ui <- fluidPage(
       #           ".shiny-output-error { visibility: hidden; }",
       #           ".shiny-output-error:before { visibility: hidden; }"),
       # Output: Data table ----
-      tableOutput("table"),
+      DT::dataTableOutput("table"),
 
       conditionalPanel(
         condition = "output.table",
@@ -88,7 +90,7 @@ server <- function(input, output) {
   data <- reactive({getGEO(input$DataID)})
 
   observeEvent(input$submit, {
-    output$table <- renderTable({
+    output$table <- DT::renderDataTable({
 
       x <- data()
 
@@ -100,16 +102,22 @@ server <- function(input, output) {
 
       if(identical(y, character(0))){
         if(identical(z, character(0))){
-          switch(input$tableType, "Gene Expression" = extExp(x), "Gene Annotations" = extGene(x),"Sample Annotations" = extSample(x))
+          t <- switch(input$tableType, "Gene Expression" = extExp(x), "Gene Annotations" = extGene(x),"Sample Annotations" = extSample(x))
         }else{
-          switch(input$tableType, "Gene Expression" = extExp(x,dName = z), "Gene Annotations" = extGene(x,dName = z),"Sample Annotations" = extSample(x,z))
+          t <- switch(input$tableType, "Gene Expression" = extExp(x,dName = z), "Gene Annotations" = extGene(x,dName = z),"Sample Annotations" = extSample(x,z))
         }
-
       }else if(identical(z, character(0))){
-        switch(input$tableType, "Gene Expression" = extExp(x,y), "Gene Annotations" = extGene(x,y),"Sample Annotations" = extSample(x))
+        t <- switch(input$tableType, "Gene Expression" = extExp(x,y), "Gene Annotations" = extGene(x,y),"Sample Annotations" = extSample(x))
       }else{
-        switch(input$tableType, "Gene Expression" = extExp(x,y,z), "Gene Annotations" = extGene(x,y,z),"Sample Annotations" = extSample(x,z))
+        t <- switch(input$tableType, "Gene Expression" = extExp(x,y,z), "Gene Annotations" = extGene(x,y,z),"Sample Annotations" = extSample(x,z))
       }
+
+      if(length(x)>1){
+        n <- as.numeric(input$page)
+        t <- t[[n]]
+      }
+      output$length <- length(t)
+      t
 
       ##PROBLEM: GEOQuery doesnt like to be imported anymore
     }, rownames = TRUE)

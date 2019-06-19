@@ -18,4 +18,5 @@
     [x] change if statements and output because some inputs cant have all their data sets combined
     [x] clean up column names for extExp (necessary to fix extExp function)
     [x] fix symbol column
-    [ ] check if other functions need a similar update
+    [x] check if other functions need a similar update
+    [ ] test extGene and extSample for multiple data sets

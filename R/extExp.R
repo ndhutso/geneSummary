@@ -57,9 +57,9 @@ extExp = function(data, geneSymbol=NA, dName=NA) {
       if(is.na(geneSymbol))
       {
         if(is.na(dName)){
-          expData[[i]] <- data2[[i]]
+          expData[[i]] <- as.data.frame(data2[[i]])
           geneSymbol <- data1[[i]][,idxSym]
-          expData[[i]] <- add_column(expData[[i]],Symbol = geneSymbol, .before = colnames(expData[[i]])[[1]])
+          expData[[i]] <- add_column(expData[[i]],Symbol = geneSymbol, .before = colnames(expData[[i]])[[1]]) #somehow changing into a list here
         }else{
           geneName <- data1[[i]]$ID
           geneSymbol <- data1[[i]][,idxSym]
@@ -101,7 +101,7 @@ extExp = function(data, geneSymbol=NA, dName=NA) {
     if(is.na(geneSymbol))
     {
       if(is.na(dName)){
-        expData <- data2
+        expData <- as.data.frame(data2)
         geneSymbol <- data1[,idxSym]
         expData <- add_column(expData,Symbol = geneSymbol, .before = colnames(expData)[[1]])
       }else{

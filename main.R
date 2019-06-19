@@ -16,8 +16,8 @@ x <- "TP53"
 geneSymbol <- strsplit(x,", ",fixed = TRUE)[[1]]
 extExp(data, geneSymbol)
 
-data <- getGEO("GSE40006") #list of 2
-D2a <- extExp(data,geneSymbol = c("DUSP22", "TP53"))
+data <- getGEO("GSE40006") #list of 2, good for extExp test
+D2a <- extExp(data)
 
 D2b <- extSample(data) #sample annotations
 
