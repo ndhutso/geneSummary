@@ -118,7 +118,9 @@ server <- function(input, output) {
       if(!is.data.frame(tbl)){
         selectInput(inputId = "page", label = "Page:",choices = 1:length(tbl), selected = 1)
       }
-      NULL
+      else{
+        selectInput(inputId = "page", label = "Page:",choices = 1, selected = 1)
+      }
     })
 
     output$table <- DT::renderDataTable({
