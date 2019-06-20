@@ -19,6 +19,10 @@ ui <- fluidPage(
         condition = "input.tableType != 'Sample Annotations'",
         textInput(inputId = "geneSymbol", label = "Gene Symbol:", placeholder = "All")
       ),
+      conditionalPanel(
+        condition = "input.tableType == 'Sample Annotations'",
+        textInput(inputId = "sampleName", label = "Sample Name:", placeholder = "All")
+      ),
       actionButton("submit", label = "Submit"),
       br(),
       br(),
