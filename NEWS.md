@@ -1,3 +1,6 @@
+# geneSummary 0.1.3.0015
+# remove unneeded data set name input from extraction functions and app, fix graphing 
+
 # geneSummary 0.1.3.0014
 # improved Shiny app
 

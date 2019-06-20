@@ -10,7 +10,7 @@
 #'
 #'@export
 
-extGene = function(data, geneSymbol = NA, dName = NA){
+extGene = function(data, geneSymbol = NA){
 
   name <- names(data)
   name <- str_remove(name, "_series_matrix.txt.gz")
@@ -18,7 +18,6 @@ extGene = function(data, geneSymbol = NA, dName = NA){
     sampleNote <- list()
     data3 <- list()
     for(n in 1:length(data)){
-      if(is.na(dName)){
         data3[[n]] <- data[[n]]
         sampleNote[[n]] <- data.frame()
         sampleNote[[n]] <- rbind(sampleNote[[n]],pData(featureData(data3[[n]])))
@@ -26,24 +25,6 @@ extGene = function(data, geneSymbol = NA, dName = NA){
         if(!is.na(geneSymbol)){
           sampleNote[[n]] <- sampleNote[[n]][which(sampleNote[[n]][,idxSym]==geneSymbol,arr.ind = TRUE),]
         }
-
-      }else if(length(dName)==1){
-        data3[[n]] <- data[[n]][[grep(dName,names(data[[n]]),ignore.case = TRUE)]]
-        sampleNote[[n]] <- pData(featureData(data3[[n]]))
-        idxSym <- grep("Symbol", colnames(sampleNote[[n]]))
-        if(!is.na(geneSymbol)){
-          sampleNote[[n]] <- sampleNote[[n]][which(sampleNote[[n]][,idxSym]==geneSymbol,arr.ind = TRUE),]
-        }
-
-      }else{
-        data3[[n]] <- data[[n]][[grep(dName,names(data[[n]]),ignore.case = TRUE)]]
-        sampleNote[[n]] <- data.frame()
-        sampleNote[[n]] <- rbind(sampleNote[[n]],pData(featureData(data3[[n]])))
-        idxSym <- grep("Symbol", colnames(sampleNote[[n]]))
-        if(!is.na(geneSymbol)){
-          sampleNote[[n]] <- sampleNote[[n]][which(sampleNote[[n]][,idxSym]==geneSymbol,arr.ind = TRUE),]
-        }
-      }
     }
   }else{
     data3 <- data

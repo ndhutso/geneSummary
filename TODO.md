@@ -17,6 +17,7 @@
     [ ] implement generalized graphing
     [x] improved moving through multiple data sets
     [x] pass names of data sets back when returning a list
+    [ ] use selectInput to choose which data set and what type of data set to save
 [x] fix extraction functions to work with lists with multiple data sets as input
     [x] change if statements and output because some inputs cant have all their data sets combined
     [x] clean up column names for extExp (necessary to fix extExp function)

@@ -26,29 +26,16 @@
 #'
 #'@export
 
-extExp = function(data, geneSymbol=NA, dName=NA) {
+extExp = function(data, geneSymbol=NA) {
 
   name <- names(data)
   name <- str_remove(name, "_series_matrix.txt.gz")
   if(length(data)>1){
-    if(is.na(dName)){
       data3 <- data
 
       data1 <- lapply(data3, fData)
       #CURSED CODE
       data2 <- lapply(data3, exprs)
-    }else if(length(dName)==1){
-      data3 <- data[[grep(dName,names(data),ignore.case = TRUE)]] #big list of all the data sets
-
-      data1 <- pData(featureData(data3))
-      data2 <- exprs(data3)
-    }else if(length(dName)>1){
-      data3 <- data[[grep(dName,names(data),ignore.case = TRUE)]] #big list of all the data sets
-
-      #have to use for loop or apply function to go through each data set, maybe use rbind to combine data
-      data1 <- lapply(data3, pData(featureData))
-      data2 <- lapply(data3, exprs)
-    }
 
     ##maybe put in for loop to go through every part of the list
     expData <- list()
@@ -58,17 +45,10 @@ extExp = function(data, geneSymbol=NA, dName=NA) {
 
       if(is.na(geneSymbol))
       {
-        if(is.na(dName)){
           expData[[i]] <- as.data.frame(data2[[i]])
           geneSymbol <- data1[[i]][,idxSym]
           expData[[i]] <- add_column(expData[[i]],Symbol = geneSymbol, .before = colnames(expData[[i]])[[1]]) #somehow changing into a list here
-        }else{
-          geneName <- data1[[i]]$ID
-          geneSymbol <- data1[[i]][,idxSym]
 
-          expData[[i]] <- data.frame(data2[[i]][match(geneName,rownames(data2[[i]])),]) #may have to use if statement for t() if there is one or more appearances of a symbol
-          expData[[i]] <- add_column(expData[[i]],Symbol = replicate(length(rownames(expData[[i]])), geneSymbol), .before = colnames(expData[[i]])[[1]])
-        }
       }else{
 
         geneName <- data1[[i]]$ID[match(geneSymbol,data1[[i]][,idxSym])] #might not account for multiple genes with same symbol

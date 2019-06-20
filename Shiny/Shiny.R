@@ -15,7 +15,6 @@ ui <- fluidPage(
 
       selectInput(inputId = "tableType", label = "Type of data table:", choices = c("Gene Expression" ,"Gene Annotations","Sample Annotations"), selected = "Gene Expression"),
       textInput(inputId = "DataID", label = "GEO accession ID:"),
-      textInput(inputId = "DataName", label = "Data set name:", placeholder = "All"),
       conditionalPanel(
         condition = "input.tableType != 'Sample Annotations'",
         textInput(inputId = "geneSymbol", label = "Gene Symbol:", placeholder = "All")
@@ -39,6 +38,11 @@ ui <- fluidPage(
 
     # Main panel for displaying outputs ----
     mainPanel(
+
+      tags$style(type="text/css",
+                 ".shiny-output-error { visibility: hidden; }",
+                 ".shiny-output-error:before { visibility: hidden; }"
+      ),
 
       conditionalPanel(
         condition = "output.table",
@@ -99,20 +103,12 @@ server <- function(input, output) {
 
       y <- strsplit(input$geneSymbol,", ",fixed = TRUE)[[1]]
 
-      z <- strsplit(input$DataName,", ",fixed = TRUE)[[1]]
-
       #browser()
 
       if(identical(y, character(0))){
-        if(identical(z, character(0))){
           tbl <- switch(input$tableType, "Gene Expression" = extExp(x), "Gene Annotations" = extGene(x),"Sample Annotations" = extSample(x))
-        }else{
-          tbl <- switch(input$tableType, "Gene Expression" = extExp(x,dName = z), "Gene Annotations" = extGene(x,dName = z),"Sample Annotations" = extSample(x,z))
-        }
-      }else if(identical(z, character(0))){
-        tbl <- switch(input$tableType, "Gene Expression" = extExp(x,y), "Gene Annotations" = extGene(x,y),"Sample Annotations" = extSample(x))
       }else{
-        tbl <- switch(input$tableType, "Gene Expression" = extExp(x,y,z), "Gene Annotations" = extGene(x,y,z),"Sample Annotations" = extSample(x,z))
+        tbl <- switch(input$tableType, "Gene Expression" = extExp(x,y), "Gene Annotations" = extGene(x,y),"Sample Annotations" = extSample(x))
       }
 
         #browser()
@@ -125,20 +121,12 @@ server <- function(input, output) {
 
       y <- strsplit(input$geneSymbol,", ",fixed = TRUE)[[1]]
 
-      z <- strsplit(input$DataName,", ",fixed = TRUE)[[1]]
-
       #browser()
 
       if(identical(y, character(0))){
-        if(identical(z, character(0))){
-          tbl <- switch(input$tableType, "Gene Expression" = extExp(x), "Gene Annotations" = extGene(x),"Sample Annotations" = extSample(x))
-        }else{
-          tbl <- switch(input$tableType, "Gene Expression" = extExp(x,dName = z), "Gene Annotations" = extGene(x,dName = z),"Sample Annotations" = extSample(x,z))
-        }
-      }else if(identical(z, character(0))){
-        tbl <- switch(input$tableType, "Gene Expression" = extExp(x,y), "Gene Annotations" = extGene(x,y),"Sample Annotations" = extSample(x))
+        tbl <- switch(input$tableType, "Gene Expression" = extExp(x), "Gene Annotations" = extGene(x),"Sample Annotations" = extSample(x))
       }else{
-        tbl <- switch(input$tableType, "Gene Expression" = extExp(x,y,z), "Gene Annotations" = extGene(x,y,z),"Sample Annotations" = extSample(x,z))
+        tbl <- switch(input$tableType, "Gene Expression" = extExp(x,y), "Gene Annotations" = extGene(x,y),"Sample Annotations" = extSample(x))
       }
 
       #browser()
@@ -163,22 +151,14 @@ server <- function(input, output) {
   observeEvent(input$save, {
     x <- data()
     y <- strsplit(input$geneSymbol,", ",fixed = TRUE)[[1]]
-    z <- strsplit(input$DataName,", ",fixed = TRUE)[[1]]
 
     if(identical(y, character(0))){
-      if(identical(z, character(0))){
         y <- NA
-        z <- NA
-      }else{
-        y <- NA
-      }
-    }else if(identical(z, character(0))){
-      z <- NA
     }
 
-    D1a <- extGene(x,y,z)
-    D2a <- extExp(x,y,z)
-    D2b <- extSample(x,z)
+    D1a <- extGene(x,y)
+    D2a <- extExp(x,y)
+    D2b <- extSample(x)
 
     browser()
 
@@ -200,39 +180,33 @@ server <- function(input, output) {
 
     y <- NA
 
-    z <- NA
+    D1a <- extGene(x,y)
+    D2a <- extExp(x,y)
+    D2b <- extSample(x)
 
-    D1a <- extGene(x,y,z)
-    D2a <- extExp(x,y,z)
-    D2b <- extSample(x,z)
-
-    v$graph <- bar(D1a,D2a,D2b)
+    v$graph <- bar(D1a[[2]],D2a[[2]],D2b[[2]])
   })
   observeEvent(input$graph2, {
     x <- dataDef()
 
     y <- NA
 
-    z <- NA
+    D1a <- extGene(x,y)
+    D2a <- extExp(x,y)
+    D2b <- extSample(x)
 
-    D1a <- extGene(x,y,z)
-    D2a <- extExp(x,y,z)
-    D2b <- extSample(x,z)
-
-    v$graph <- box(D1a,D2a)
+    v$graph <- box(D1a[[2]],D2a[[2]])
   })
   observeEvent(input$graph3, {
     x <- dataDef()
 
     y <- NA
 
-    z <- NA
+    D1a <- extGene(x,y)
+    D2a <- extExp(x,y)
+    D2b <- extSample(x)
 
-    D1a <- extGene(x,y,z)
-    D2a <- extExp(x,y,z)
-    D2b <- extSample(x,z)
-
-    v$graph <- hist(D1a,D2a)
+    v$graph <- hist(D1a[[2]],D2a[[2]])
   })
 
   observeEvent(input$reset, {
