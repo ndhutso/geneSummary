@@ -19,6 +19,7 @@
     [x] pass names of data sets back when returning a list
     [x] use selectInput to choose which data set and what type of data set to save
     [ ] add search by sample ID
+    [ ] use selectizeInput for geneSymbol and sampleName to give text/dropdown input
     [ ] allow user to choose which variable they want to search by instead of just geneSymbol, potentially allow addition of more filters 
 [x] fix extraction functions to work with lists with multiple data sets as input
     [x] change if statements and output because some inputs cant have all their data sets combined

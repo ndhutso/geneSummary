@@ -1,3 +1,6 @@
+# geneSummary 0.1.3.0017
+# implement sample name search
+
 # geneSummary 0.1.3.0016
 # improved file naming and directory generation in save function
 
