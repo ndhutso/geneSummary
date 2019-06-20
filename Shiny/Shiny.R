@@ -1,3 +1,17 @@
+#'Histogram of Data
+#'
+#'@description Shiny app to go through GEOquery datasets
+#'
+#'@usage Shiny()
+#'
+#'@author Nicholas Hutson
+#'
+#'@examples Shiny()
+#'
+#'@export
+#'@import "DT"
+#'@import "shiny"
+
 library(DT)
 library(shiny)
 library(geneSummary)
