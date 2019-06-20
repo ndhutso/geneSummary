@@ -4,13 +4,20 @@
 \alias{extSample}
 \title{Extract Sample Matrix}
 \usage{
-extSample(data)
+extSample(data,sampleName)
+}
+\arguments{
+\item{data}{data imported using GEOquery}
+
+\item{sampleName}{the sample name}
 }
 \description{
 Extracts the sample annotation matrix
 }
 \examples{
-extSample()
+data <- getGEO("GSE443452")
+sampleName <- "DBTRG untreated rep1"
+extSample(data,sampleName)
 
 }
 \author{

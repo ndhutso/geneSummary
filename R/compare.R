@@ -1,12 +1,15 @@
 #'Compare Data
 #'
-#'@description Compares the data in a table
+#'@description Compares the the genes with the top 10 variances and TP53 in a table
 #'
-#'@usage compare()
+#'@usage compare(D1a,D2a)
 #'
 #'@author Nicholas Hutson
 #'
-#'@examples compare()
+#'@examples data <- getGEO("GSE43452")
+#'D2a <- extExp(data)[[2]]
+#'D1a <- extGene(data)[[2]]
+#'compare(D1a,D2a)
 #'
 #'@export
 

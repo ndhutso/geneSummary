@@ -2,11 +2,16 @@
 #'
 #'@description Extracts the gene annotation matrix
 #'
-#'@usage extSample()
+#'@usage extGene(data, geneSymbol = NA)
 #'
 #'@author Nicholas Hutson
 #'
-#'@examples extSample()
+#'@examples data <- getGEO("GSE443452")
+#'geneSymbol <- "TP53"
+#'extGene(data, geneSymbol)
+#'
+#'@param data data imported using GEOquery
+#'@param geneSymbol the gene "name" or "symbol"
 #'
 #'@export
 

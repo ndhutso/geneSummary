@@ -1,11 +1,11 @@
 Package: geneSummary
 Type: Package
-Title: What the Package Does (Title Case)
-Version: 0.1.3.0013
+Title: Summarize GEOquery data
+Version: 0.1.3.0017
 Author: Nicholas Hutson
 Maintainer: <nicholas.hutson@roswellpark.org>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
+Description: This package extracts three different types of data from GEOquery data. These include a gene expression matrix, a sample annotation matrix,and a gene annotation matrix.
+    These data tables can be searched for different genes or samples.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
@@ -22,7 +22,9 @@ Imports:
     magrittr,
     Biobase,
     GEOquery,
-    ggplot2
+    ggplot2,
+    shiny,
+    DT
 Suggests: 
     knitr,
     rmarkdown

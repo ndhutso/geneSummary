@@ -4,13 +4,16 @@
 \alias{hist}
 \title{Histogram of Data}
 \usage{
-compare()
+hist(D1a,D2a)
 }
 \description{
 Compares the data in a histogram
 }
 \examples{
-compare()
+data <- getGEO("GSE43452")
+D2a <- extExp(data)[[2]]
+D1a <- extGene(data)[[2]]
+hist(D1a,D2a)
 
 }
 \author{

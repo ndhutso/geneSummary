@@ -2,11 +2,14 @@
 #'
 #'@description Visualizes the data
 #'
-#'@usage box()
+#'@usage box(D1a,D2a)
 #'
 #'@author Nicholas Hutson
 #'
-#'@examples box()
+#'@examples data <- getGEO("GSE43452")
+#'D2a <- extExp(data)[[2]]
+#'D1a <- extGene(data)[[2]]
+#'box(D1a,D2a)
 #'
 #'@export
 

@@ -1,21 +1,3 @@
-#'Histogram of Data
-#'
-#'@description Shiny app to go through GEOquery datasets
-#'
-#'@usage Shiny()
-#'
-#'@author Nicholas Hutson
-#'
-#'@examples Shiny()
-#'
-#'@export
-#'@import "DT"
-#'@import "shiny"
-
-library(DT)
-library(shiny)
-library(geneSummary)
-
 # Define UI for app that allows a user to get data tables for gene expression, gene annotations, or sample annotations ----
 ui <- fluidPage(
 
@@ -115,7 +97,7 @@ server <- function(input, output) {
   observe({
     input$DataID
     counter$countervalue <- 0
-    setwd("/home/bios/Documents/geneSummary/Shiny") #find way to do this on any computer, not just this file path
+    setwd("/home/bios/Documents/geneSummary/Shiny") #find way to do this on any computer, not just this file path CREATE.DIR or SHINY CLIENT DETAILS
   })
 
   observeEvent(input$submit, {

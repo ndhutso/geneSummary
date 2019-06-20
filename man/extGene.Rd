@@ -4,13 +4,20 @@
 \alias{extGene}
 \title{Extract Gene Annotation Matrix}
 \usage{
-extSample()
+extGene(data, geneSymbol = NA)
+}
+\arguments{
+\item{data}{data imported using GEOquery}
+
+\item{geneSymbol}{the gene "name" or "symbol"}
 }
 \description{
 Extracts the gene annotation matrix
 }
 \examples{
-extSample()
+data <- getGEO("GSE443452")
+geneSymbol <- "TP53"
+extGene(data, geneSymbol)
 
 }
 \author{

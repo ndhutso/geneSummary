@@ -2,11 +2,16 @@
 #'
 #'@description Extracts the sample annotation matrix
 #'
-#'@usage extSample(data)
+#'@usage extSample(data,sampleName)
 #'
 #'@author Nicholas Hutson
 #'
-#'@examples extSample()
+#'@examples data <- getGEO("GSE443452")
+#'sampleName <- "DBTRG untreated rep1"
+#'extSample(data,sampleName)
+#'
+#'@param data data imported using GEOquery
+#'@param sampleName the sample name
 #'
 #'@export
 

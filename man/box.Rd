@@ -4,13 +4,16 @@
 \alias{box}
 \title{Box Plot Data}
 \usage{
-box()
+box(D1a,D2a)
 }
 \description{
 Visualizes the data
 }
 \examples{
-box()
+data <- getGEO("GSE43452")
+D2a <- extExp(data)[[2]]
+D1a <- extGene(data)[[2]]
+box(D1a,D2a)
 
 }
 \author{

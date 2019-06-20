@@ -2,11 +2,16 @@
 #'
 #'@description Extracts the gene expression matrix
 #'
-#'@usage extExp(data, geneSymbol=NA, dName=NA)
+#'@usage extExp(data, geneSymbol=NA)
 #'
 #'@author Nicholas Hutson
 #'
-#'@examples extExp()
+#'@examples data <- getGEO("GSE443452")
+#'geneSymbol <- "TP53"
+#'extExp(data, geneSymbol)
+#'
+#'@param data data imported using GEOquery
+#'@param geneSymbol the gene "name" or "symbol"
 #'
 #'@import "plyr"
 #'@import "tidyverse"
@@ -23,6 +28,7 @@
 #'@import "ggplot2"
 #'@import "tibble"
 #'@import "shiny"
+#'@import "DT"
 #'
 #'@export
 

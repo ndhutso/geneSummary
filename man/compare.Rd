@@ -4,13 +4,16 @@
 \alias{compare}
 \title{Compare Data}
 \usage{
-compare()
+compare(D1a,D2a)
 }
 \description{
-Compares the data in a table
+Compares the the genes with the top 10 variances and TP53 in a table
 }
 \examples{
-compare()
+data <- getGEO("GSE43452")
+D2a <- extExp(data)[[2]]
+D1a <- extGene(data)[[2]]
+compare(D1a,D2a)
 
 }
 \author{

@@ -4,13 +4,17 @@
 \alias{bar}
 \title{Bar Plot Data}
 \usage{
-bar()
+bar(D1a,D2a,D2b)
 }
 \description{
 Visualizes the data
 }
 \examples{
-bar()
+data <- getGEO("GSE43452")
+D2a <- extExp(data)[[2]] #gene expression
+D2b <- extSample(data)[[2]] #sample annotations
+D1a <- extGene(data)[[2]]
+bar(D1a,D2a,D2b)
 
 }
 \author{
