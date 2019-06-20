@@ -1,3 +1,6 @@
+# geneSummary 0.1.4.0000
+# add a function to run Shiny app
+
 # geneSummary 0.1.3.0017
 # implement sample name search
 
