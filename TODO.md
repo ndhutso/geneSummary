@@ -15,7 +15,8 @@
     [x] find way to include row names
     [x] give user ability to choose pages of a data set with multiple data frames 
     [ ] implement generalized graphing
-    [ ] improved moving through multiple data sets
+    [x] improved moving through multiple data sets
+    [x] pass names of data sets back when returning a list
 [x] fix extraction functions to work with lists with multiple data sets as input
     [x] change if statements and output because some inputs cant have all their data sets combined
     [x] clean up column names for extExp (necessary to fix extExp function)

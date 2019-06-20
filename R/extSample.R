@@ -11,8 +11,12 @@
 #'@export
 
 extSample = function(data, dName=NA){
+
+  name <- names(data)
+  name <- str_remove(name, "_series_matrix.txt.gz")
   if(length(data)>1){
     sampleNote <- list()
+    data3 <- list()
     for(n in 1:length(data)){
       if(is.na(dName)){
         data3[[n]] <- data[[n]]
@@ -33,5 +37,5 @@ extSample = function(data, dName=NA){
       data3 <- data
       sampleNote <- pData(phenoData(data3[[1]]))
     }
-  return(sampleNote)
+  return(list(name,sampleNote))
 }

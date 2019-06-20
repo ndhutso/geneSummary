@@ -28,6 +28,8 @@
 
 extExp = function(data, geneSymbol=NA, dName=NA) {
 
+  name <- names(data)
+  name <- str_remove(name, "_series_matrix.txt.gz")
   if(length(data)>1){
     if(is.na(dName)){
       data3 <- data
@@ -117,6 +119,6 @@ extExp = function(data, geneSymbol=NA, dName=NA) {
       }
     }
   }
-  return(expData)
+  return(list(name,expData))
 }
 

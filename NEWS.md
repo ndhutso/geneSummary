@@ -1,4 +1,7 @@
 # geneSummary 0.1.3.0014
+# improved Shiny app
+
+# geneSummary 0.1.3.0014
 # first iteration of working Shiny
 
 # geneSummary 0.1.3.0013

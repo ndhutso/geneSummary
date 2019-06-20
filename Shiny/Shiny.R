@@ -115,12 +115,8 @@ server <- function(input, output) {
         tbl <- switch(input$tableType, "Gene Expression" = extExp(x,y,z), "Gene Annotations" = extGene(x,y,z),"Sample Annotations" = extSample(x,z))
       }
 
-      if(!is.data.frame(tbl)){
-        selectInput(inputId = "page", label = "Page:",choices = 1:length(tbl), selected = 1)
-      }
-      else{
-        selectInput(inputId = "page", label = "Page:",choices = 1, selected = 1)
-      }
+        #browser()
+        selectInput(inputId = "page", label = "Dataset:",choices = tbl[[1]])
     })
 
     output$table <- DT::renderDataTable({
@@ -146,15 +142,19 @@ server <- function(input, output) {
       }
 
       #browser()
-      if(!is.data.frame(tbl)){
-          n <- as.numeric(input$page) #being delayed so is passing a NULL
+      if(!is.data.frame(tbl[[2]])){
+          n <- input$page #being delayed so is passing a NULL
+          n <- match(n, tbl[[1]])
           #browser()
           if(is.null(n)){
             n <- 1
           }
           #browser()
-          tbl <- tbl[[n]]
+          tbl <- tbl[[2]][[n]]
+      }else{
+        tbl <- tbl[[2]]
       }
+
       tbl
 
     }, rownames = TRUE)

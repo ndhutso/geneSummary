@@ -11,8 +11,12 @@
 #'@export
 
 extGene = function(data, geneSymbol = NA, dName = NA){
+
+  name <- names(data)
+  name <- str_remove(name, "_series_matrix.txt.gz")
   if(length(data)>1){
     sampleNote <- list()
+    data3 <- list()
     for(n in 1:length(data)){
       if(is.na(dName)){
         data3[[n]] <- data[[n]]
@@ -49,5 +53,5 @@ extGene = function(data, geneSymbol = NA, dName = NA){
       sampleNote <- sampleNote[which(sampleNote[,idxSym]==geneSymbol,arr.ind = TRUE),]
     }
   }
-  return(sampleNote)
+  return(list(name,sampleNote))
 }
