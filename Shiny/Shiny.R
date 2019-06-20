@@ -31,11 +31,11 @@ ui <- fluidPage(
       textInput(inputId = "DataID", label = "GEO accession ID:"),
       conditionalPanel(
         condition = "input.tableType != 'Sample Annotations'",
-        textInput(inputId = "geneSymbol", label = "Gene Symbol:", placeholder = "All")
+        selectizeInput(inputId = "geneSymbol", label = "Gene Symbol",choices = NULL)
       ),
       conditionalPanel(
         condition = "input.tableType == 'Sample Annotations'",
-        textInput(inputId = "sampleName", label = "Sample Name:", placeholder = "All")
+        selectizeInput(inputId = "sampleName", label = "Sample Name",choices = NULL)
       ),
       actionButton("submit", label = "Submit"),
       br(),
@@ -142,17 +142,21 @@ server <- function(input, output) {
         tbl <- switch(input$tableType, "Gene Expression" = extExp(x,y), "Gene Annotations" = extGene(x,y),"Sample Annotations" = extSample(x,z))
       }
 
-        #browser()
-        selectInput(inputId = "page", label = "Dataset:",choices = tbl[[1]])
+      #browser()
+
+      updateSelectizeInput("geneSymbol",choices = tbl[[2]]$Symbol,server = TRUE) #may also have to create a separate function to update this based on the page selected
+      updateSelectizeInput("sampleName",choices = tbl[[2]]$title,server = TRUE) #not realistic for over 50 options
+
+      selectInput(inputId = "page", label = "Dataset:",choices = tbl[[1]])
     })
 
     output$table <- DT::renderDataTable({
 
       x <- data()
 
-      y <- strsplit(input$geneSymbol,", ",fixed = TRUE)[[1]]
+      y <- input$geneSymbol
 
-      z <- strsplit(input$sampleName,", ",fixed = TRUE)[[1]]
+      z <- input$sampleName
 
       #browser()
 
@@ -181,6 +185,8 @@ server <- function(input, output) {
       }else{
         tbl <- tbl[[2]]
       }
+
+      #browser()
 
       tbl
 
