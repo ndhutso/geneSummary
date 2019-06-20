@@ -64,17 +64,17 @@ ui <- fluidPage(
 
       uiOutput("length"),
 
+      conditionalPanel(
+        condition = "output.table",
+        actionButton("save", label = "Save Data")
+      ),
+
       #Hide errors
       #tags$style(type="text/css",
       #           ".shiny-output-error { visibility: hidden; }",
       #           ".shiny-output-error:before { visibility: hidden; }"),
       # Output: Data table ----
       DT::dataTableOutput("table"),
-
-      conditionalPanel(
-        condition = "output.table",
-        actionButton("save", label = "Save Data")
-      ),
 
       plotOutput("graph")
 
@@ -94,6 +94,11 @@ server <- function(input, output) {
   # 2. Its output type is a plot
 
   data <- reactive({getGEO(input$DataID)})
+  observe({
+    input$DataID
+    counter$countervalue <- 0
+    setwd("/home/bios/Documents/geneSummary/Shiny") #find way to do this on any computer, not just this file path
+  })
 
   observeEvent(input$submit, {
     ##create function to "render" data table before it is displayed to pass the length of the list back to the UI
@@ -148,26 +153,43 @@ server <- function(input, output) {
     }, rownames = TRUE)
   })
 
+  counter <- reactiveValues(countervalue = 0, countervalueG = 0,countervalueE = 0, countervalueA = 0)
+
   observeEvent(input$save, {
+
     x <- data()
+
     y <- strsplit(input$geneSymbol,", ",fixed = TRUE)[[1]]
+
+    if(identical(y, character(0))){
+      tbl <- switch(input$tableType, "Gene Expression" = extExp(x), "Gene Annotations" = extGene(x),"Sample Annotations" = extSample(x))
+    }else{
+      tbl <- switch(input$tableType, "Gene Expression" = extExp(x,y), "Gene Annotations" = extGene(x,y),"Sample Annotations" = extSample(x))
+    }
+
+    if(counter$countervalue == 0){
+      counter$countervalue <- counter$countervalue + 1
+      dir.create(paste("data.",input$page,sep = ""))
+      setwd(paste("data.",input$page,sep = ""))
+    }
 
     if(identical(y, character(0))){
         y <- NA
     }
 
-    D1a <- extGene(x,y)
-    D2a <- extExp(x,y)
-    D2b <- extSample(x)
-
-    browser()
-
-    dir.create("data")
-    setwd("data")
-    saveRDS(D1a, file = "geneAnnotation.rds")
-    saveRDS(D2a, file = "geneExpression.rds")
-    saveRDS(D2b, file = "sampleAnnotation.rds")
-
+    if(input$tableType == "Gene Expression"){
+      tbl <- extExp(x,y)
+      #browser()
+      saveRDS(tbl, file = paste("geneExpression.",paste(y,collapse = "."),".rds", sep="")) #makes 2 names if geneSymbol is larger than 1
+    }else if(input$tableType == "Gene Annotations"){
+      tbl <- extGene(x,y)
+      saveRDS(tbl, file = paste("geneAnnotation.",paste(y,collapse = "."),".rds", sep=""))
+    }else{
+      counter$countervalueA <- counter$countervalueA + 1
+      #browser()
+      tbl <- extSample(x)
+      saveRDS(tbl, file = paste("sampleAnnotation",counter$countervalueE,".rds", sep=""))
+    }
   })
 
   ##ONLY WORKS FOR GSE43452

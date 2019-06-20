@@ -1,3 +1,6 @@
+# geneSummary 0.1.3.0016
+# improved file naming and directory generation in save function
+
 # geneSummary 0.1.3.0015
 # remove unneeded data set name input from extraction functions and app, fix graphing 
 
