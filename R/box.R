@@ -14,7 +14,7 @@
 #'@export
 
 
-box <- function(D1a,D2a){
+box <- function(D1a,D2a,D2b){
 
   ## extract expression level for DBTRG group and U87 group separately - START TIDYING
   #get data of groups combined - change

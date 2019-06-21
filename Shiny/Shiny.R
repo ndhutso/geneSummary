@@ -294,7 +294,7 @@ server <- function(input, output) {
     D2a <- extExp(x)
     D2b <- extSample(x)
 
-    v$graph <- box(D1a[[2]],D2a[[2]])
+    v$graph <- box(D1a[[2]],D2a[[2]],D2b[[2]])
   })
   observeEvent(input$graph3, {
     x <- dataDef()

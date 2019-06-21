@@ -1,3 +1,6 @@
+# geneSummary 0.1.5.0002
+# graphing fixes
+
 # geneSummary 0.1.5.0001
 # update save feature to work on Windows
 
