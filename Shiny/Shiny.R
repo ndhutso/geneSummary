@@ -161,7 +161,7 @@ server <- function(input, output) {
 
       tbl
 
-    }, rownames = TRUE)
+    })
   })
 
   observe({
