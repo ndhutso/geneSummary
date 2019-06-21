@@ -1,3 +1,6 @@
+# geneSummary 0.1.5.0001
+# update save feature to work on Windows
+
 # geneSummary 0.1.5.0000
 # save feature includes choosing directory to save data in
 

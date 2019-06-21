@@ -177,7 +177,11 @@ server <- function(input, output) {
     #browser()
 
     if(counter$countervalue == 1){
-      counter$choice <- tk_choose.dir(default = "", caption = "Select folder")
+      if (exists('utils::choose.dir')) {
+        counter$choice <- choose.dir(caption = "Select folder")
+      } else {
+        counter$choice <- tk_choose.dir(caption = "Select folder")
+      }
       setwd(counter$choice)
         #only call choose.dir if input$DataID is changed after save is hit
 
