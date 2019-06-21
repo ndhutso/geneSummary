@@ -7,7 +7,7 @@
 runShiny()
 }
 \description{
-Runs a Shiny app that allows the user to search the NCBI GEO database for data sets and creates data tables from them.
+Runs a Shiny app that allows the user to search the NCBI GEO database for data sets and creates data tables from them
 }
 \examples{
 runShiny()

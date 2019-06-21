@@ -1,3 +1,6 @@
+# geneSummary 0.1.5.0000
+# save feature includes choosing directory to save data in
+
 # geneSummary 0.1.4.0000
 # add a function to run Shiny app
 

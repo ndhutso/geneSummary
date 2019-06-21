@@ -94,11 +94,6 @@ server <- function(input, output) {
   # 2. Its output type is a plot
 
   data <- reactive({getGEO(input$DataID)})
-  observe({
-    input$DataID
-    counter$countervalue <- 0
-    setwd("/home/bios/Documents/geneSummary/Shiny") #find way to do this on any computer, not just this file path CREATE.DIR or SHINY CLIENT DETAILS
-  })
 
   observeEvent(input$submit, {
     ##create function to "render" data table before it is displayed to pass the length of the list back to the UI
@@ -169,15 +164,36 @@ server <- function(input, output) {
     }, rownames = TRUE)
   })
 
-  counter <- reactiveValues(countervalue = 0, countervalueG = 0,countervalueE = 0, countervalueA = 0)
+  observe({
+    input$DataID
+    counter$countervalue <- 1 #sets to one whenever DataID is changed
+    #setwd(counter$choice) #have to pass choice to here
+  })
+
+  counter <- reactiveValues(countervalue = 0,choice = getwd())
 
   observeEvent(input$save, {
 
-    if(counter$countervalue == 0){
-      counter$countervalue <- counter$countervalue + 1
-      dir.create(paste("data.",input$page,sep = ""))
-      setwd(paste("data.",input$page,sep = ""))
+    #browser()
+
+    if(counter$countervalue == 1){
+      counter$choice <- tk_choose.dir(default = "", caption = "Select folder")
+      setwd(counter$choice)
+        #only call choose.dir if input$DataID is changed after save is hit
+
+      d <- paste("data.",input$page,sep = "")
+      dir.create(d)
+      setwd(d)
+    }else if(counter$countervalue > 1){
+      setwd(counter$choice)
+      d <- paste("data.",input$page,sep = "")
+      dir.create(d)
+      setwd(d)
     }
+
+    counter$countervalue <- counter$countervalue + 1
+
+    #browser()
 
     x <- data()
 
@@ -196,18 +212,60 @@ server <- function(input, output) {
       z <- NA
     }
 
-    if(input$tableType == "Gene Expression"){
-      tbl <- extExp(x,y)
-      #browser()
-      saveRDS(tbl, file = paste("geneExpression.",paste(y,collapse = "."),".rds", sep="")) #makes 2 names if geneSymbol is larger than 1
-    }else if(input$tableType == "Gene Annotations"){
-      tbl <- extGene(x,y)
-      saveRDS(tbl, file = paste("geneAnnotation.",paste(y,collapse = "."),".rds", sep=""))
+    if(is.na(y)){
+      if(is.na(z)){
+        if(input$tableType == "Gene Expression"){
+          tbl <- extExp(x,y)
+          #browser()
+          saveRDS(tbl, file = paste("geneExpression.rds", sep=""))
+        }else if(input$tableType == "Gene Annotations"){
+          tbl <- extGene(x,y)
+          saveRDS(tbl, file = paste("geneAnnotation.rds", sep=""))
+        }else{
+          #browser()
+          tbl <- extSample(x,z)
+          saveRDS(tbl, file = paste("sampleAnnotation.rds", sep=""))
+        }
+      }else{
+        if(input$tableType == "Gene Expression"){
+          tbl <- extExp(x,y)
+          #browser()
+          saveRDS(tbl, file = paste("geneExpression.rds", sep=""))
+        }else if(input$tableType == "Gene Annotations"){
+          tbl <- extGene(x,y)
+          saveRDS(tbl, file = paste("geneAnnotation.rds", sep=""))
+        }else{
+          #browser()
+          tbl <- extSample(x,z)
+          saveRDS(tbl, file = paste("sampleAnnotation.",paste(z,collapse = "."),".rds", sep=""))
+        }
+      }
+    }else if(is.na(z)){
+      if(input$tableType == "Gene Expression"){
+        tbl <- extExp(x,y)
+        #browser()
+        saveRDS(tbl, file = paste("geneExpression.",paste(y,collapse = "."),".rds", sep=""))
+      }else if(input$tableType == "Gene Annotations"){
+        tbl <- extGene(x,y)
+        saveRDS(tbl, file = paste("geneAnnotation.",paste(y,collapse = "."),".rds", sep=""))
+      }else{
+        #browser()
+        tbl <- extSample(x,z)
+        saveRDS(tbl, file = paste("sampleAnnotation.rds", sep=""))
+      }
     }else{
-      counter$countervalueA <- counter$countervalueA + 1
-      #browser()
-      tbl <- extSample(x,z)
-      saveRDS(tbl, file = paste("sampleAnnotation",counter$countervalueE,".rds", sep=""))
+      if(input$tableType == "Gene Expression"){
+        tbl <- extExp(x,y)
+        #browser()
+        saveRDS(tbl, file = paste("geneExpression.",paste(y,collapse = "."),".rds", sep=""))
+      }else if(input$tableType == "Gene Annotations"){
+        tbl <- extGene(x,y)
+        saveRDS(tbl, file = paste("geneAnnotation.",paste(y,collapse = "."),".rds", sep=""))
+      }else{
+        #browser()
+        tbl <- extSample(x,z)
+        saveRDS(tbl, file = paste("sampleAnnotation.",paste(z,collapse = "."),".rds", sep=""))
+      }
     }
   })
 
