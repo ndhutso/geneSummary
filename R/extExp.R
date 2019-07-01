@@ -29,10 +29,11 @@
 #'@import "tibble"
 #'@import "shiny"
 #'@import "DT"
+#'@import "reshape2"
 #'
 #'@export
 
-extExp = function(data, geneSymbol=NA) {
+extExp = function(data, geneSymbol=NA, long = FALSE) {
 
   name <- names(data)
   name <- str_remove(name, "_series_matrix.txt.gz")
@@ -48,12 +49,15 @@ extExp = function(data, geneSymbol=NA) {
     for(i in 1:length(data1)){
 
       idxSym <- grep("Symbol", colnames(data1[[i]]))
+      idxName <- match("ID", colnames(data1[[i]]))
 
       if(is.na(geneSymbol))
       {
           expData[[i]] <- as.data.frame(data2[[i]])
           geneSymbol <- data1[[i]][,idxSym]
+          geneName <- data1[[i]][,idxName]
           expData[[i]] <- add_column(expData[[i]],Symbol = geneSymbol, .before = colnames(expData[[i]])[[1]]) #somehow changing into a list here
+          expData[[i]] <- add_column(expData[[i]],ID = geneName, .before = colnames(expData[[i]])[[1]])
 
       }else{
 
@@ -62,12 +66,17 @@ extExp = function(data, geneSymbol=NA) {
         if(length(geneName)==1){
           expData[[i]] <- data.frame(t(data2[[i]][match(geneName,rownames(data2[[i]])),]))
           expData[[i]] <- add_column(expData[[i]],Symbol = replicate(length(rownames(expData[[i]])), geneSymbol), .before = colnames(expData[[i]])[[1]])
+          expData[[i]] <- add_column(expData[[i]],ID = replicate(length(rownames(expData[[i]])), geneName), .before = colnames(expData[[i]])[[1]])
         }else{
           geneSymbol <- data1[[i]][match(geneName,data1[[i]]$ID),idxSym] #have to set geneSymbol to length of columns bc some gene symbols repeat
           expData[[i]] <- data.frame(data2[[i]][match(geneName,rownames(data2[[i]])),]) #may have to use if statement for t() if there is one or more appearances of a symbol
           expData[[i]] <- add_column(expData[[i]],Symbol = geneSymbol, .before = colnames(expData[[i]])[[1]])
+          expData[[i]] <- add_column(expData[[i]],ID = geneName, .before = colnames(expData[[i]])[[1]])
         }
       }
+    }
+    if(long){
+
     }
   }else{ #this section is good for one data set at a time
     data3 <- data
@@ -85,12 +94,15 @@ extExp = function(data, geneSymbol=NA) {
     }
 
     idxSym <- grep("Symbol", colnames(data1))
+    idxName <- match("ID", colnames(data1))
 
     if(is.na(geneSymbol))
     {
         expData <- as.data.frame(data2)
         geneSymbol <- data1[,idxSym]
+        geneName <- data1[,idxName]
         expData <- add_column(expData,Symbol = geneSymbol, .before = colnames(expData)[[1]])
+        expData <- add_column(expData,ID = geneName, .before = colnames(expData)[[1]])
     }else{
 
       geneName <- data1$ID[match(geneSymbol,data1[,idxSym])] #might not account for multiple genes with same symbol
@@ -98,11 +110,32 @@ extExp = function(data, geneSymbol=NA) {
       if(length(geneName)==1){
         expData <- data.frame(data2[match(geneName,rownames(data2)),])
         expData <- add_column(expData,Symbol = replicate(length(rownames(expData)), geneSymbol), .before = colnames(expData)[[1]])
+        expData <- add_column(expData,ID = replicate(length(rownames(expData)), geneName), .before = colnames(expData)[[1]])
       }else{
         geneSymbol <- data1[match(geneName,data1$ID),idxSym] #have to set geneSymbol to length of columns bc some gene symbols repeat
         expData <- data.frame(data2[match(geneName,rownames(data2)),]) #may have to use if statement for t() if there is one or more appearances of a symbol
         expData <- add_column(expData,Symbol = geneSymbol, .before = colnames(expData)[[1]])
+        expData <- add_column(expData,ID = geneName, .before = colnames(expData)[[1]])
       }
+    }
+    if(long){
+      #expression data is going to be a column so gene symbol and ID have to be repeated for the number of samples there are
+      #first lets get symbol and ID vectors
+      #samples are a repeat of column names for how many genes there are
+      #exp data is going to be each row turn into a column and stacked
+
+      geneName <- c()
+      geneSymbol <- c()
+      sample <- c()
+      exp <- c()
+      for(i in 1:length(expData$Symbol)){
+        geneName <- c(geneName, replicate(length(colnames(expData)), expData$ID[i]))
+        geneSymbol <- c(geneSymbol, replicate(length(colnames(expData)), expData$Symbol[i]))
+        sample <- c(sample, as.character(colnames(expData)))
+        exp <- c(exp, as.numeric(expData[i,-1]))
+      }
+
+      expData <- tibble(ID = geneName,Symbol = geneSymbol,Sample = sample,Expression = exp)
     }
   }
   return(list(name,expData))

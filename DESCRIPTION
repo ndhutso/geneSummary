@@ -24,7 +24,8 @@ Imports:
     GEOquery,
     ggplot2,
     shiny,
-    DT
+    DT,
+    reshape2
 Suggests: 
     knitr,
     rmarkdown

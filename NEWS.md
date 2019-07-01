@@ -1,3 +1,6 @@
+# geneSummary 1.0.0.0001
+# first attempt at allowing user to select long data format for gene expression data
+
 # geneSummary 0.1.5.0002
 # graphing fixes
 

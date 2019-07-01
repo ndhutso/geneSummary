@@ -22,6 +22,7 @@
     [ ] use selectizeInput for geneSymbol and sampleName to give text/dropdown input
     [ ] allow user to choose which variable they want to search by instead of just geneSymbol, potentially allow addition of more filters
     [ ] give checkbox option for long format of data which is easier for graphing
+    [x] add ID column to extExp or move gene symbols to rownames
 [x] fix extraction functions to work with lists with multiple data sets as input
     [x] change if statements and output because some inputs cant have all their data sets combined
     [x] clean up column names for extExp (necessary to fix extExp function)

@@ -1,4 +1,5 @@
 # Define UI for app that allows a user to get data tables for gene expression, gene annotations, or sample annotations ----
+#GEOquery, stringr
 ui <- fluidPage(
 
   titlePanel("Data"),
@@ -18,6 +19,10 @@ ui <- fluidPage(
       conditionalPanel(
         condition = "input.tableType == 'Sample Annotations'",
         textInput(inputId = "sampleName", label = "Sample Name:", placeholder = "All")
+      ),
+      conditionalPanel(
+        condition = "input.tableType = 'Gene Expression'",
+        checkboxInput("long", "Long format data", value = FALSE)
       ),
       actionButton("submit", label = "Submit"),
       br(),
@@ -57,9 +62,7 @@ ui <- fluidPage(
         conditionalPanel(
           condition = "input.tableType == 'Sample Annotations'",
           titlePanel("Sample Annotations")
-        )#,
-        #page selector, have it default to 1 so the first element of the list will be ouput by render graph at first
-
+        )
       ),
 
       uiOutput("length"),
@@ -135,14 +138,14 @@ server <- function(input, output) {
 
       if(identical(y, character(0))){
         if(identical(z, character(0))){
-          tbl <- switch(input$tableType, "Gene Expression" = extExp(x), "Gene Annotations" = extGene(x),"Sample Annotations" = extSample(x))
+          tbl <- switch(input$tableType, "Gene Expression" = extExp(x,long = input$long), "Gene Annotations" = extGene(x,long = input$long),"Sample Annotations" = extSample(x,long = input$long))
         }else{
-          tbl <- switch(input$tableType, "Gene Expression" = extExp(x), "Gene Annotations" = extGene(x),"Sample Annotations" = extSample(x,z))
+          tbl <- switch(input$tableType, "Gene Expression" = extExp(x,long = input$long), "Gene Annotations" = extGene(x,long = input$long),"Sample Annotations" = extSample(x,z,long = input$long))
         }
       }else if(identical(z, character(0))){
-        tbl <- switch(input$tableType, "Gene Expression" = extExp(x,y), "Gene Annotations" = extGene(x,y),"Sample Annotations" = extSample(x))
+        tbl <- switch(input$tableType, "Gene Expression" = extExp(x,y,long = input$long), "Gene Annotations" = extGene(x,y,long = input$long),"Sample Annotations" = extSample(x,long = input$long))
       }else{
-        tbl <- switch(input$tableType, "Gene Expression" = extExp(x,y), "Gene Annotations" = extGene(x,y),"Sample Annotations" = extSample(x,z))
+        tbl <- switch(input$tableType, "Gene Expression" = extExp(x,y,long = input$long), "Gene Annotations" = extGene(x,y,long = input$long),"Sample Annotations" = extSample(x,z,long = input$long))
       }
 
       #browser()
@@ -161,7 +164,7 @@ server <- function(input, output) {
 
       tbl
 
-    })
+    }, rownames = FALSE)
   })
 
   observe({
@@ -219,55 +222,71 @@ server <- function(input, output) {
     if(is.na(y)){
       if(is.na(z)){
         if(input$tableType == "Gene Expression"){
-          tbl <- extExp(x,y)
+          tbl <- extExp(x,y,long = input$long)
           #browser()
-          saveRDS(tbl, file = paste("geneExpression.rds", sep=""))
+          if(input$long){
+            saveRDS(tbl, file = paste("geneExpression.long.rds", sep=""))
+          }else{
+            saveRDS(tbl, file = paste("geneExpression.rds", sep=""))
+          }
         }else if(input$tableType == "Gene Annotations"){
-          tbl <- extGene(x,y)
+          tbl <- extGene(x,y,long = input$long)
           saveRDS(tbl, file = paste("geneAnnotation.rds", sep=""))
         }else{
           #browser()
-          tbl <- extSample(x,z)
+          tbl <- extSample(x,z,long = input$long)
           saveRDS(tbl, file = paste("sampleAnnotation.rds", sep=""))
         }
       }else{
         if(input$tableType == "Gene Expression"){
-          tbl <- extExp(x,y)
+          tbl <- extExp(x,y,long = input$long)
           #browser()
-          saveRDS(tbl, file = paste("geneExpression.rds", sep=""))
+          if(input$long){
+            saveRDS(tbl, file = paste("geneExpression.long.rds", sep=""))
+          }else{
+            saveRDS(tbl, file = paste("geneExpression.rds", sep=""))
+          }
         }else if(input$tableType == "Gene Annotations"){
-          tbl <- extGene(x,y)
+          tbl <- extGene(x,y,long = input$long)
           saveRDS(tbl, file = paste("geneAnnotation.rds", sep=""))
         }else{
           #browser()
-          tbl <- extSample(x,z)
+          tbl <- extSample(x,z,long = input$long)
           saveRDS(tbl, file = paste("sampleAnnotation.",paste(z,collapse = "."),".rds", sep=""))
         }
       }
     }else if(is.na(z)){
       if(input$tableType == "Gene Expression"){
-        tbl <- extExp(x,y)
+        tbl <- extExp(x,y,long = input$long)
         #browser()
-        saveRDS(tbl, file = paste("geneExpression.",paste(y,collapse = "."),".rds", sep=""))
+        if(input$long){
+          saveRDS(tbl, file = paste("geneExpression.",paste(y,collapse = "."),".long.rds", sep=""))
+        }else{
+          saveRDS(tbl, file = paste("geneExpression.",paste(y,collapse = "."),".rds", sep=""))
+        }
       }else if(input$tableType == "Gene Annotations"){
-        tbl <- extGene(x,y)
+        tbl <- extGene(x,y,long = input$long)
         saveRDS(tbl, file = paste("geneAnnotation.",paste(y,collapse = "."),".rds", sep=""))
       }else{
         #browser()
-        tbl <- extSample(x,z)
+        tbl <- extSample(x,z,long = input$long)
         saveRDS(tbl, file = paste("sampleAnnotation.rds", sep=""))
       }
     }else{
       if(input$tableType == "Gene Expression"){
-        tbl <- extExp(x,y)
+        tbl <- extExp(x,y,long = input$long)
         #browser()
-        saveRDS(tbl, file = paste("geneExpression.",paste(y,collapse = "."),".rds", sep=""))
+        if(input$long){
+          saveRDS(tbl, file = paste("geneExpression.",paste(y,collapse = "."),".long.rds", sep=""))
+        }else{
+          saveRDS(tbl, file = paste("geneExpression.",paste(y,collapse = "."),".rds", sep=""))
+        }
       }else if(input$tableType == "Gene Annotations"){
-        tbl <- extGene(x,y)
+        tbl <- extGene(x,y,long = input$long)
         saveRDS(tbl, file = paste("geneAnnotation.",paste(y,collapse = "."),".rds", sep=""))
       }else{
         #browser()
-        tbl <- extSample(x,z)
+        tbl <- extSample(x,z,long = input$long)
         saveRDS(tbl, file = paste("sampleAnnotation.",paste(z,collapse = "."),".rds", sep=""))
       }
     }
