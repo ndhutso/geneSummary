@@ -123,19 +123,7 @@ extExp = function(data, geneSymbol=NA, long = FALSE) {
       #first lets get symbol and ID vectors
       #samples are a repeat of column names for how many genes there are
       #exp data is going to be each row turn into a column and stacked
-
-      geneName <- c()
-      geneSymbol <- c()
-      sample <- c()
-      exp <- c()
-      for(i in 1:length(expData$Symbol)){
-        geneName <- c(geneName, replicate(length(colnames(expData)), expData$ID[i]))
-        geneSymbol <- c(geneSymbol, replicate(length(colnames(expData)), expData$Symbol[i]))
-        sample <- c(sample, as.character(colnames(expData)))
-        exp <- c(exp, as.numeric(expData[i,-1]))
-      }
-
-      expData <- tibble(ID = geneName,Symbol = geneSymbol,Sample = sample,Expression = exp)
+      expData <- melt(expData, variable.name = "Sample", value.name = "Expression")
     }
   }
   return(list(name,expData))

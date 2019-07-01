@@ -36,6 +36,6 @@ extSample = function(data, sampleName = NA){
       if(!is.na(sampleName)){
         sampleNote <- sampleNote[match(sampleName,sampleNote$title),]
       }
-    }
+  }
   return(list(name,sampleNote))
 }
