@@ -27,4 +27,5 @@
     [x] fix symbol column
     [x] check if other functions need a similar update
     [x] test extGene and extSample for multiple data sets
-[ ]DOCUMENTATION
+[ ] DOCUMENTATION
+[ ] fix package importation
