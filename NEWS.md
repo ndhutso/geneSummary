@@ -1,3 +1,6 @@
+# geneSummary 0.2.0.0004
+# fix long format bug
+
 # geneSummary 0.2.0.0003
 # create new reactive functions for repeated lines in Shiny.R
 

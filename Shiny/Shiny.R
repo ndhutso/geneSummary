@@ -128,14 +128,14 @@ server <- function(input, output) {
 
     if(identical(y, character(0))){
       if(identical(z, character(0))){
-        tbl <- switch(input$tableType, "Gene Expression" = extExp(x), "Gene Annotations" = extGene(x),"Sample Annotations" = extSample(x))
+        tbl <- switch(input$tableType, "Gene Expression" = extExp(x,long = input$long), "Gene Annotations" = extGene(x),"Sample Annotations" = extSample(x))
       }else{
-        tbl <- switch(input$tableType, "Gene Expression" = extExp(x), "Gene Annotations" = extGene(x),"Sample Annotations" = extSample(x,z))
+        tbl <- switch(input$tableType, "Gene Expression" = extExp(x,long = input$long), "Gene Annotations" = extGene(x),"Sample Annotations" = extSample(x,z))
       }
     }else if(identical(z, character(0))){
-      tbl <- switch(input$tableType, "Gene Expression" = extExp(x,y), "Gene Annotations" = extGene(x,y),"Sample Annotations" = extSample(x))
+      tbl <- switch(input$tableType, "Gene Expression" = extExp(x,y,long = input$long), "Gene Annotations" = extGene(x,y),"Sample Annotations" = extSample(x))
     }else{
-      tbl <- switch(input$tableType, "Gene Expression" = extExp(x,y), "Gene Annotations" = extGene(x,y),"Sample Annotations" = extSample(x,z))
+      tbl <- switch(input$tableType, "Gene Expression" = extExp(x,y,long = input$long), "Gene Annotations" = extGene(x,y),"Sample Annotations" = extSample(x,z))
     }
     tbl
   })
