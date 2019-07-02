@@ -16,15 +16,14 @@ ui <- fluidPage(
         checkboxInput("long", "Long format data", value = FALSE)
       ),
       textInput(inputId = "DataID", label = "GEO accession ID:"),
-      conditionalPanel(
-        condition = "input.tableType != 'Sample Annotations'",
-        textInput(inputId = "geneSymbol", label = "Gene Symbol:", placeholder = "All")
-      ),
-      conditionalPanel(
-        condition = "input.tableType == 'Sample Annotations'",
-        textInput(inputId = "sampleName", label = "Sample Name:", placeholder = "All")
-      ),
       actionButton("submit", label = "Submit"),
+      br(),
+      uiOutput("textbox_ui"),
+      br(),
+      actionButton("add_btn", "Add Filter"),
+      actionButton("rm_btn", "Remove Filter"),
+      br(),
+      textOutput("counter"),
       br(),
       br(),
       strong("Graphs for GSE43452:"),
@@ -85,17 +84,15 @@ ui <- fluidPage(
     )
   )
 )
-# Define server logic required to draw a histogram ----
+# Define server logic
 server <- function(input, output) {
 
-  # Histogram of the Old Faithful Geyser Data ----
-  # with requested number of bins
-  # This expression that generates a histogram is wrapped in a call
-  # to renderPlot to indicate that:
-  #
-  # 1. It is "reactive" and therefore should be automatically
-  #    re-executed when inputs (input$bins) change
-  # 2. Its output type is a plot
+  #START: ess with adding filters
+
+
+
+  #END
+
 
   data <- reactive({getGEO(input$DataID)})
 
