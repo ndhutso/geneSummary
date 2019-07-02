@@ -1,7 +1,7 @@
-# geneSummary 1.0.0.0002
+# geneSummary 0.2.0.0002
 # use melt function recommended from Eduardo to create long format
 
-# geneSummary 1.0.0.0001
+# geneSummary 0.2.0.0001
 # first attempt at allowing user to select long data format for gene expression data
 
 # geneSummary 0.1.5.0002
