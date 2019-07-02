@@ -75,7 +75,28 @@ ui <- fluidPage(
 # Define server logic
 server <- function(input, output) {
 
-  #START: mess with adding filters
+  data <- reactive({getGEO(input$DataID)})
+
+  tab <- reactive({
+    x <- data()
+    y <- character(0)
+    z <- character(0)
+
+    if(identical(y, character(0))){
+      if(identical(z, character(0))){
+        tbl <- switch(input$tableType, "Gene Expression" = extExp(x,long = input$long), "Gene Annotations" = extGene(x),"Sample Annotations" = extSample(x))
+      }else{
+        tbl <- switch(input$tableType, "Gene Expression" = extExp(x,long = input$long), "Gene Annotations" = extGene(x),"Sample Annotations" = extSample(x,z))
+      }
+    }else if(identical(z, character(0))){
+      tbl <- switch(input$tableType, "Gene Expression" = extExp(x,y,long = input$long), "Gene Annotations" = extGene(x,y),"Sample Annotations" = extSample(x))
+    }else{
+      tbl <- switch(input$tableType, "Gene Expression" = extExp(x,y,long = input$long), "Gene Annotations" = extGene(x,y),"Sample Annotations" = extSample(x,z))
+    }
+    tbl
+  })
+
+  #START: mess with adding filters, should probably be after submit
 
   # Track the number of input boxes to render
   counter2 <- reactiveValues(n = 0)
@@ -98,13 +119,15 @@ server <- function(input, output) {
 
     if (n > 0) {
       lapply(seq_len(n), function(i) {
+        tbl <- tab()
+        #browser()
         list(
-          selectInput(inputId = paste0("textin", i), #have to pull choices from below
-                    label = paste0("Textbox", i),
-                    choices = NULL),
+          selectInput(inputId = paste0("textin", i),
+                      label = paste0("Filter by:", i),
+                      choices = colnames(tbl[[2]])), #choices are going to be columns of the table, could call tab() now, might have to create diff tab for rendering choices for dataset and here
           selectizeInput(inputId = paste0("selctin", i),
-                         label = paste0("Select", i),
-                         choices = NULL)
+                         label = paste0("Value:", i),
+                         choices = NULL) #choices will be the values in the column selected, so might have to have a function to update choices when selectInput is changed using observe()
         )
       })
     }
@@ -115,37 +138,10 @@ server <- function(input, output) {
 
   #END
 
-  data <- reactive({getGEO(input$DataID)})
-
-  tab <- reactive({
-    x <- data()
-
-    y <- character(0)
-
-    z <- character(0)
-
-    #browser()
-
-    if(identical(y, character(0))){
-      if(identical(z, character(0))){
-        tbl <- switch(input$tableType, "Gene Expression" = extExp(x,long = input$long), "Gene Annotations" = extGene(x),"Sample Annotations" = extSample(x))
-      }else{
-        tbl <- switch(input$tableType, "Gene Expression" = extExp(x,long = input$long), "Gene Annotations" = extGene(x),"Sample Annotations" = extSample(x,z))
-      }
-    }else if(identical(z, character(0))){
-      tbl <- switch(input$tableType, "Gene Expression" = extExp(x,y,long = input$long), "Gene Annotations" = extGene(x,y),"Sample Annotations" = extSample(x))
-    }else{
-      tbl <- switch(input$tableType, "Gene Expression" = extExp(x,y,long = input$long), "Gene Annotations" = extGene(x,y),"Sample Annotations" = extSample(x,z))
-    }
-    tbl
-  })
-
   observeEvent(input$submit, {
     ##create function to "render" data table before it is displayed to pass the length of the list back to the UI
     output$length <- renderUI({
-
         tbl <- tab()
-
         #browser()
         selectInput(inputId = "page", label = "Dataset:",choices = tbl[[1]])
     })
@@ -167,9 +163,7 @@ server <- function(input, output) {
       }else{
         tbl <- tbl[[2]]
       }
-
       tbl
-
     }, rownames = FALSE)
   })
 
@@ -209,9 +203,7 @@ server <- function(input, output) {
     #browser()
 
     x <- data()
-
     y <- character(0)
-
     z <- character(0)
 
     if(identical(y, character(0))){
@@ -225,7 +217,8 @@ server <- function(input, output) {
       z <- NA
     }
 
-    if(is.na(y)){
+    if(is.na(y)){ #will have to change if statements so that the list of parameters chosen is added to end of file
+                  #should simplify if statements, but complicate pasting
       if(is.na(z)){
         if(input$tableType == "Gene Expression"){
           tbl <- extExp(x,y,long = input$long)
