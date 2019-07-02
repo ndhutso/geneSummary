@@ -11,6 +11,10 @@ ui <- fluidPage(
     sidebarPanel(
 
       selectInput(inputId = "tableType", label = "Type of data table:", choices = c("Gene Expression" ,"Gene Annotations","Sample Annotations"), selected = "Gene Expression"),
+      conditionalPanel(
+        condition = "input.tableType == 'Gene Expression'",
+        checkboxInput("long", "Long format data", value = FALSE)
+      ),
       textInput(inputId = "DataID", label = "GEO accession ID:"),
       conditionalPanel(
         condition = "input.tableType != 'Sample Annotations'",
@@ -19,10 +23,6 @@ ui <- fluidPage(
       conditionalPanel(
         condition = "input.tableType == 'Sample Annotations'",
         textInput(inputId = "sampleName", label = "Sample Name:", placeholder = "All")
-      ),
-      conditionalPanel(
-        condition = "input.tableType == 'Gene Expression'",
-        checkboxInput("long", "Long format data", value = FALSE)
       ),
       actionButton("submit", label = "Submit"),
       br(),
