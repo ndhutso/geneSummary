@@ -1,3 +1,6 @@
+# geneSummary 0.2.0.0003
+# create new reactive functions for repeated lines in Shiny.R
+
 # geneSummary 0.2.0.0002
 # use melt function recommended from Eduardo to create long format
 

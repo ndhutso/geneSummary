@@ -18,26 +18,14 @@ ui <- fluidPage(
       textInput(inputId = "DataID", label = "GEO accession ID:"),
       actionButton("submit", label = "Submit"),
       br(),
-      uiOutput("textbox_ui"),
       br(),
       actionButton("add_btn", "Add Filter"),
       actionButton("rm_btn", "Remove Filter"),
       br(),
-      textOutput("counter"),
       br(),
+      textOutput("counter2"),
       br(),
-      strong("Graphs for GSE43452:"),
-      br(),
-      actionButton("graph1", label = "TP53 Concentration"),
-      br(),
-      br(),
-      actionButton("graph2", label = "TP53 in DBTRG and U87"),
-      br(),
-      br(),
-      actionButton("graph3", label = "Top Variance Expressions"),
-      br(),
-      br(),
-      actionButton("reset", label = "Reset")
+      uiOutput("textbox_ui1")
     ),
 
     # Main panel for displaying outputs ----
@@ -87,38 +75,76 @@ ui <- fluidPage(
 # Define server logic
 server <- function(input, output) {
 
-  #START: ess with adding filters
+  #START: mess with adding filters
 
+  # Track the number of input boxes to render
+  counter2 <- reactiveValues(n = 0)
 
+  # Track all user inputs
+  AllInputs <- reactive({
+    x <- reactiveValuesToList(input)
+  })
+
+  observeEvent(input$add_btn, {counter2$n <- counter2$n + 1})
+  observeEvent(input$rm_btn, {
+    if (counter2$n > 0) counter2$n <- counter2$n - 1
+  })
+
+  output$counter2 <- renderPrint(print(counter2$n))
+
+  textboxes1 <- reactive({
+
+    n <- counter2$n
+
+    if (n > 0) {
+      lapply(seq_len(n), function(i) {
+        list(
+          selectInput(inputId = paste0("textin", i), #have to pull choices from below
+                    label = paste0("Textbox", i),
+                    choices = NULL),
+          selectizeInput(inputId = paste0("selctin", i),
+                         label = paste0("Select", i),
+                         choices = NULL)
+        )
+      })
+    }
+
+  })
+
+  output$textbox_ui1 <- renderUI({ textboxes1() })
 
   #END
 
-
   data <- reactive({getGEO(input$DataID)})
+
+  tab <- reactive({
+    x <- data()
+
+    y <- character(0)
+
+    z <- character(0)
+
+    #browser()
+
+    if(identical(y, character(0))){
+      if(identical(z, character(0))){
+        tbl <- switch(input$tableType, "Gene Expression" = extExp(x), "Gene Annotations" = extGene(x),"Sample Annotations" = extSample(x))
+      }else{
+        tbl <- switch(input$tableType, "Gene Expression" = extExp(x), "Gene Annotations" = extGene(x),"Sample Annotations" = extSample(x,z))
+      }
+    }else if(identical(z, character(0))){
+      tbl <- switch(input$tableType, "Gene Expression" = extExp(x,y), "Gene Annotations" = extGene(x,y),"Sample Annotations" = extSample(x))
+    }else{
+      tbl <- switch(input$tableType, "Gene Expression" = extExp(x,y), "Gene Annotations" = extGene(x,y),"Sample Annotations" = extSample(x,z))
+    }
+    tbl
+  })
 
   observeEvent(input$submit, {
     ##create function to "render" data table before it is displayed to pass the length of the list back to the UI
     output$length <- renderUI({
 
-      x <- data()
-
-      y <- strsplit(input$geneSymbol,", ",fixed = TRUE)[[1]]
-
-      z <- strsplit(input$sampleName,", ",fixed = TRUE)[[1]]
-
-      #browser()
-
-      if(identical(y, character(0))){
-        if(identical(z, character(0))){
-          tbl <- switch(input$tableType, "Gene Expression" = extExp(x), "Gene Annotations" = extGene(x),"Sample Annotations" = extSample(x))
-        }else{
-          tbl <- switch(input$tableType, "Gene Expression" = extExp(x), "Gene Annotations" = extGene(x),"Sample Annotations" = extSample(x,z))
-        }
-      }else if(identical(z, character(0))){
-        tbl <- switch(input$tableType, "Gene Expression" = extExp(x,y), "Gene Annotations" = extGene(x,y),"Sample Annotations" = extSample(x))
-      }else{
-        tbl <- switch(input$tableType, "Gene Expression" = extExp(x,y), "Gene Annotations" = extGene(x,y),"Sample Annotations" = extSample(x,z))
-      }
+        tbl <- tab()
 
         #browser()
         selectInput(inputId = "page", label = "Dataset:",choices = tbl[[1]])
@@ -126,25 +152,7 @@ server <- function(input, output) {
 
     output$table <- DT::renderDataTable({
 
-      x <- data()
-
-      y <- strsplit(input$geneSymbol,", ",fixed = TRUE)[[1]]
-
-      z <- strsplit(input$sampleName,", ",fixed = TRUE)[[1]]
-
-      #browser()
-
-      if(identical(y, character(0))){
-        if(identical(z, character(0))){
-          tbl <- switch(input$tableType, "Gene Expression" = extExp(x,long = input$long), "Gene Annotations" = extGene(x),"Sample Annotations" = extSample(x))
-        }else{
-          tbl <- switch(input$tableType, "Gene Expression" = extExp(x,long = input$long), "Gene Annotations" = extGene(x),"Sample Annotations" = extSample(x,z))
-        }
-      }else if(identical(z, character(0))){
-        tbl <- switch(input$tableType, "Gene Expression" = extExp(x,y,long = input$long), "Gene Annotations" = extGene(x,y),"Sample Annotations" = extSample(x))
-      }else{
-        tbl <- switch(input$tableType, "Gene Expression" = extExp(x,y,long = input$long), "Gene Annotations" = extGene(x,y),"Sample Annotations" = extSample(x,z))
-      }
+      tbl <- tab()
 
       #browser()
       if(!is.data.frame(tbl[[2]])){
@@ -202,9 +210,9 @@ server <- function(input, output) {
 
     x <- data()
 
-    y <- strsplit(input$geneSymbol,", ",fixed = TRUE)[[1]]
+    y <- character(0)
 
-    z <- strsplit(input$sampleName,", ",fixed = TRUE)[[1]]
+    z <- character(0)
 
     if(identical(y, character(0))){
       if(identical(z, character(0))){
@@ -289,50 +297,6 @@ server <- function(input, output) {
       }
     }
   })
-
-  ##ONLY WORKS FOR GSE43452
-  #use reactive values to define graph and just call the variable in render plot
-  v <- reactiveValues(data = NULL)
-  dataDef <- reactive({getGEO("GSE43452")})
-
-  observeEvent(input$graph1, {
-    x <- dataDef()
-
-    D1a <- extGene(x)
-    D2a <- extExp(x)
-    D2b <- extSample(x)
-
-    v$graph <- bar(D1a[[2]],D2a[[2]],D2b[[2]])
-  })
-  observeEvent(input$graph2, {
-    x <- dataDef()
-
-    D1a <- extGene(x)
-    D2a <- extExp(x)
-    D2b <- extSample(x)
-
-    v$graph <- box(D1a[[2]],D2a[[2]],D2b[[2]])
-  })
-  observeEvent(input$graph3, {
-    x <- dataDef()
-
-    D1a <- extGene(x)
-    D2a <- extExp(x)
-    D2b <- extSample(x)
-
-    v$graph <- hist(D1a[[2]],D2a[[2]])
-  })
-
-  observeEvent(input$reset, {
-    v$graph <- NULL
-  })
-
-  output$graph <- renderPlot({
-
-    v$graph
-
-  })
-
 }
 
 shinyApp(ui = ui, server = server)
