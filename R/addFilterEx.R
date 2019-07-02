@@ -1,3 +1,6 @@
+#to use this, I have to change it so that a filter by dropdown renders and then a selectize input comes under it. extraction functions will have to take a
+#vector or list of parameters, increment through it, and make sure all parameters match
+
 library(shiny)
 
 ui <- shinyUI(fluidPage(
@@ -40,8 +43,7 @@ server <- shinyServer(function(input, output, session) {
         lapply(seq_len(n), function(i) {
           textInput(inputId = paste0("textin", i),
                     label = paste0("Textbox", i),
-                    value = AllInputs()[[paste0("textin", i)]]) #to use this, I have to change it so that a filter by dropdown and then a selectize input
-                                                                # comes under it. extraction functions will have to take a vector or list of parameters
+                    value = AllInputs()[[paste0("textin", i)]])
         })
       })
     }
