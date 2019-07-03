@@ -19,6 +19,12 @@
     [x] use selectInput to choose which data set and what type of data set to save
     [x] add search by sample ID
     [ ] allow user to choose which variable they want to search by instead of just geneSymbol, potentially allow addition of more filters
+        [x] limit amount of filters based off number of columns
+            [x] take away filters when type of data table is changed
+        [ ] pass choices to selectize (maybe just text input)
+        [ ] get all parameters into a list
+        [ ] updata extraction functions to filter for parameters
+        [ ] remove check numbering
     [x] give checkbox option for long format of data which is easier for graphing
     [x] add ID column to extExp or move gene symbols to rownames
 [x] fix extraction functions to work with lists with multiple data sets as input

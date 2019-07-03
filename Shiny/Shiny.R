@@ -19,12 +19,18 @@ ui <- fluidPage(
       actionButton("submit", label = "Submit"),
       br(),
       br(),
-      actionButton("add_btn", "Add Filter"),
-      actionButton("rm_btn", "Remove Filter"),
-      br(),
-      br(),
-      textOutput("counter2"),
-      br(),
+      conditionalPanel(
+        condition = "output.n",
+        actionButton("add_btn", "Add Filter")
+      ),
+      conditionalPanel(
+        condition = "output.table",
+        actionButton("rm_btn", "Remove Filter"),
+        br(),
+        br(),
+        textOutput("counter2"),
+        br()
+      ),
       uiOutput("textbox_ui1")
     ),
 
@@ -106,40 +112,57 @@ server <- function(input, output) {
     x <- reactiveValuesToList(input)
   })
 
-  observeEvent(input$add_btn, {counter2$n <- counter2$n + 1})
-  observeEvent(input$rm_btn, {
-    if (counter2$n > 0) counter2$n <- counter2$n - 1
-  })
-
-  output$counter2 <- renderPrint(print(counter2$n))
-
-  textboxes1 <- reactive({
-
-    n <- counter2$n
-
-    if (n > 0) {
-      lapply(seq_len(n), function(i) {
-        tbl <- tab()
-        #browser()
-        list(
-          selectInput(inputId = paste0("textin", i),
-                      label = paste0("Filter by:", i),
-                      choices = colnames(tbl[[2]])), #choices are going to be columns of the table, could call tab() now, might have to create diff tab for rendering choices for dataset and here
-          selectizeInput(inputId = paste0("selctin", i),
-                         label = paste0("Value:", i),
-                         choices = NULL) #choices will be the values in the column selected, so might have to have a function to update choices when selectInput is changed using observe()
-        )
-      })
-    }
-
-  })
-
-  output$textbox_ui1 <- renderUI({ textboxes1() })
-
   #END
 
   observeEvent(input$submit, {
     ##create function to "render" data table before it is displayed to pass the length of the list back to the UI
+
+    observeEvent(input$add_btn, {
+      tbl <- tab()
+      counter2$n <- counter2$n + 1
+      })
+    observeEvent(input$rm_btn, {
+      tbl <- tab()
+      if (counter2$n > 0) counter2$n <- counter2$n - 1
+    })
+
+    output$counter2 <- renderPrint(print(counter2$n))
+
+    output$n <- reactive({
+      tbl <- tab()
+      if(counter2$n >= length(colnames(tbl[[2]]))){
+        counter2$n <- length(colnames(tbl[[2]]))
+        FALSE
+      }else{
+        TRUE
+      }
+      #browser()
+    })
+    outputOptions(output, 'n', suspendWhenHidden = FALSE)
+
+    textboxes1 <- reactive({
+
+      n <- counter2$n
+      tbl <- tab()
+
+      if (n > 0) {
+        lapply(seq_len(n), function(i) {
+          #browser()
+          list(
+            selectInput(inputId = paste0("textin", i),
+                        label = paste0("Filter by:", i),
+                        choices = colnames(tbl[[2]])), #choices are going to be columns of the table, could call tab() now, might have to create diff tab for rendering choices for dataset and here
+            selectizeInput(inputId = paste0("selctin", i),
+                           label = paste0("Value:", i),
+                           choices = NULL) #choices will be the values in the column selected, so might have to have a function to update choices when selectInput is changed using observe()
+          )
+        })
+      }
+
+    })
+
+    output$textbox_ui1 <- renderUI({ textboxes1() })
+
     output$length <- renderUI({
         tbl <- tab()
         #browser()
