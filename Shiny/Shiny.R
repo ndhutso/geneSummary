@@ -104,9 +104,6 @@ server <- function(input, output) {
 
   #START: mess with adding filters, should probably be after submit
 
-  # Track the number of input boxes to render
-  counter2 <- reactiveValues(n = 0)
-
   # Track all user inputs
   AllInputs <- reactive({
     x <- reactiveValuesToList(input)
@@ -116,6 +113,9 @@ server <- function(input, output) {
 
   observeEvent(input$submit, {
     ##create function to "render" data table before it is displayed to pass the length of the list back to the UI
+
+    # Track the number of input boxes to render
+    counter2 <- reactiveValues(n = 0)
 
     observeEvent(input$add_btn, {
       tbl <- tab()
@@ -128,6 +128,7 @@ server <- function(input, output) {
 
     output$counter2 <- renderPrint(print(counter2$n))
 
+    #used to remove add button when max filters have been reached
     output$n <- reactive({
       tbl <- tab()
       if(counter2$n >= length(colnames(tbl[[2]]))){
@@ -140,25 +141,27 @@ server <- function(input, output) {
     })
     outputOptions(output, 'n', suspendWhenHidden = FALSE)
 
-    textboxes1 <- reactive({
+    updateVarSelectizeInput(session,grep(pattern = "textin+[[:digit:]]", x = names(input), value = TRUE), choices = )
 
+    textboxes1 <- reactive({
       n <- counter2$n
       tbl <- tab()
+
+      ch <- sapply(grep(pattern = "selctin+[[:digit:]]", x = names(input), value = TRUE), function(x) input[[x]])
 
       if (n > 0) {
         lapply(seq_len(n), function(i) {
           #browser()
           list(
-            selectInput(inputId = paste0("textin", i),
+            selectInput(inputId = paste0("selctin", i),
                         label = paste0("Filter by:", i),
                         choices = colnames(tbl[[2]])), #choices are going to be columns of the table, could call tab() now, might have to create diff tab for rendering choices for dataset and here
-            selectizeInput(inputId = paste0("selctin", i),
+            selectizeInput(inputId = paste0("textin", i),
                            label = paste0("Value:", i),
-                           choices = NULL) #choices will be the values in the column selected, so might have to have a function to update choices when selectInput is changed using observe()
+                           choices = tbl[[2]]$ch) #choices will be the values in the column selected, so might have to have a function to update choices when selectInput is changed using observe()
           )
         })
       }
-
     })
 
     output$textbox_ui1 <- renderUI({ textboxes1() })
@@ -174,6 +177,7 @@ server <- function(input, output) {
       tbl <- tab()
 
       #browser()
+      #code to change "page" or dataset
       if(!is.data.frame(tbl[[2]])){
           n <- input$page #being delayed so is passing a NULL
           n <- match(n, tbl[[1]])
@@ -193,7 +197,6 @@ server <- function(input, output) {
   observe({
     input$DataID
     counter$countervalue <- 1 #sets to one whenever DataID is changed
-    #setwd(counter$choice) #have to pass choice to here
   })
 
   counter <- reactiveValues(countervalue = 0,choice = getwd())

@@ -5,7 +5,7 @@
     [x] ask if all geo data is in same format to implement already written functions
     [x] split up analysis and visualize into separate functions to prep data and graph/tabularize in different ways
     [x] update extraction functions to take a list of BioConductor formatted data, combine them, and look for a specific data set or extract a variable from the combined data
-    [ ] implement generalized graphing
+    [ ] implement generalized graphing (could be implemented more easily after filter is completed)
     [x] change any $Symbol variable to grep search of column names because some data sets use gene symbol instead of just symbol
 [ ] create shiny interface to search, tabularize, and graph different sets of data
     [x] change the amount of inputs based on the type of data table selected
@@ -23,8 +23,8 @@
             [x] take away filters when type of data table is changed
         [ ] pass choices to selectize (maybe just text input)
         [ ] get all parameters into a list
-        [ ] updata extraction functions to filter for parameters
-        [ ] remove check numbering
+        [ ] update extraction functions to filter for parameters
+        [ ] remove debug numbering
     [x] give checkbox option for long format of data which is easier for graphing
     [x] add ID column to extExp or move gene symbols to rownames
 [x] fix extraction functions to work with lists with multiple data sets as input
