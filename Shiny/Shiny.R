@@ -84,21 +84,10 @@ server <- function(input, output, session) {
   data <- reactive({getGEO(input$DataID)})
 
   tab <- reactive({
-    x <- data()
-    y <- character(0)
-    z <- character(0)
 
-    if(identical(y, character(0))){
-      if(identical(z, character(0))){
-        tbl <- switch(input$tableType, "Gene Expression" = extExp(x,long = input$long), "Gene Annotations" = extGene(x),"Sample Annotations" = extSample(x))
-      }else{
-        tbl <- switch(input$tableType, "Gene Expression" = extExp(x,long = input$long), "Gene Annotations" = extGene(x),"Sample Annotations" = extSample(x,z))
-      }
-    }else if(identical(z, character(0))){
-      tbl <- switch(input$tableType, "Gene Expression" = extExp(x,y,long = input$long), "Gene Annotations" = extGene(x,y),"Sample Annotations" = extSample(x))
-    }else{
-      tbl <- switch(input$tableType, "Gene Expression" = extExp(x,y,long = input$long), "Gene Annotations" = extGene(x,y),"Sample Annotations" = extSample(x,z))
-    }
+    x <- data()
+
+    tbl <- switch(input$tableType, "Gene Expression" = extExp(x,long = input$long), "Gene Annotations" = extGene(x),"Sample Annotations" = extSample(x))
     tbl
   })
 
@@ -201,8 +190,27 @@ server <- function(input, output, session) {
     output$table <- DT::renderDataTable({
 
       tbl <- tab()
+      y <- sapply(grep(pattern = "selctin+[[:digit:]]", x = names(input), value = TRUE), function(x) input[[x]])
+      y <- match(y,colnames(tbl[[2]]))
+      y <- y[!is.na(y)]
+      y <- tbl[[2]][,y]
 
       #browser()
+
+      if(typeof(y) == "character"){
+        z <- sapply(grep(pattern = "textin+[[:digit:]]", x = names(input), value = TRUE), function(x) input[[x]])
+        #browser()
+        if(identical(z,character(0))){
+          z <- 0
+        }else{
+          z <- which(y==z, arr.ind = TRUE)
+        }
+      }else{
+        z <- 0
+      }
+
+      #browser()
+
       #code to change "page" or dataset
       if(!is.data.frame(tbl[[2]])){
           n <- input$page #being delayed so is passing a NULL
@@ -216,7 +224,11 @@ server <- function(input, output, session) {
       }else{
         tbl <- tbl[[2]]
       }
-      tbl
+      if(identical(z,0) | identical(z,integer(0))){
+        tbl
+      }else{
+        tbl[z,]
+      }
     }, rownames = FALSE)
   })
 
