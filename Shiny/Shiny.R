@@ -79,7 +79,7 @@ ui <- fluidPage(
   )
 )
 # Define server logic
-server <- function(input, output) {
+server <- function(input, output, session) {
 
   data <- reactive({getGEO(input$DataID)})
 
@@ -106,7 +106,7 @@ server <- function(input, output) {
 
   # Track all user inputs
   AllInputs <- reactive({
-    x <- reactiveValuesToList(input)
+    reactiveValuesToList(input)
   })
 
   #END
@@ -117,10 +117,11 @@ server <- function(input, output) {
     # Track the number of input boxes to render
     counter2 <- reactiveValues(n = 0)
 
-    observeEvent(input$add_btn, {
+    observeEvent(input$add_btn, { #this is called before the inputs are re-rendered, create reactive function to define inputs
       tbl <- tab()
       counter2$n <- counter2$n + 1
       })
+
     observeEvent(input$rm_btn, {
       tbl <- tab()
       if (counter2$n > 0) counter2$n <- counter2$n - 1
@@ -141,26 +142,51 @@ server <- function(input, output) {
     })
     outputOptions(output, 'n', suspendWhenHidden = FALSE)
 
-    updateVarSelectizeInput(session,grep(pattern = "textin+[[:digit:]]", x = names(input), value = TRUE), choices = )
+    #MESSING WITH SELECTIZE
+    chc <- reactiveValues(ch = sapply(grep(pattern = "selctin+[[:digit:]]", x = names(input), value = TRUE), function(x) input[[x]]))
+    upIn <- reactive({ #find way to correctly define eventExpr
+      tbl <- tab()
+      n <- counter2$n
+      ch <- chc$ch
+      browser()
+      ch <- match(ch,colnames(tbl[[2]]))
+      ch <- ch[!is.na(ch)]
+      tbl[[2]][,ch]
+      browser()
+      lapply(seq_len(n), function(i) {
+        updateSelectizeInput(session, inputId = paste0("textin", i), choices = ch)
+      })
+    })
 
-    textboxes1 <- reactive({
+    textboxes1 <- reactive({ #FIND WHAT MAKES THIS BE CALLED WHEN ADD OR REMOVE BUTTONS ARE HIT
       n <- counter2$n
       tbl <- tab()
 
-      ch <- sapply(grep(pattern = "selctin+[[:digit:]]", x = names(input), value = TRUE), function(x) input[[x]])
-
       if (n > 0) {
-        lapply(seq_len(n), function(i) {
-          #browser()
-          list(
-            selectInput(inputId = paste0("selctin", i),
-                        label = paste0("Filter by:", i),
-                        choices = colnames(tbl[[2]])), #choices are going to be columns of the table, could call tab() now, might have to create diff tab for rendering choices for dataset and here
-            selectizeInput(inputId = paste0("textin", i),
-                           label = paste0("Value:", i),
-                           choices = tbl[[2]]$ch) #choices will be the values in the column selected, so might have to have a function to update choices when selectInput is changed using observe()
-          )
-        })
+        if(length(tbl[[2]][,1]) <= 50){ #whenever n or tbl are changed, the inputs are re-rendered
+          lapply(seq_len(n), function(i) {
+            #browser()
+            list(
+              selectInput(inputId = paste0("selctin", i),
+                          label = paste0("Filter by:", i),
+                          choices = colnames(tbl[[2]])), #choices are going to be columns of the table, could call tab() now, might have to create diff tab for rendering choices for dataset and here
+              selectizeInput(inputId = paste0("textin", i),
+                             label = paste0("Value:", i),
+                             choices = tbl[[2]][,1]) #cannot have this function call a reactive variable, causes re-render just like changing table type, or add filter
+            )
+          })
+        }else{
+          lapply(seq_len(n), function(i) {
+            #browser()
+            list(
+              selectInput(inputId = paste0("selctin", i),
+                          label = paste0("Filter by:", i),
+                          choices = colnames(tbl[[2]])), #choices are going to be columns of the table, could call tab() now, might have to create diff tab for rendering choices for dataset and here
+              textInput(inputId = paste0("textin", i),
+                             label = paste0("Value:", i))
+            )
+          })
+        }
       }
     })
 

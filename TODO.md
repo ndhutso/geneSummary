@@ -21,7 +21,8 @@
     [ ] allow user to choose which variable they want to search by instead of just geneSymbol, potentially allow addition of more filters
         [x] limit amount of filters based off number of columns
             [x] take away filters when type of data table is changed
-        [ ] pass choices to selectize (maybe just text input)
+        [x] pass choices to selectize (maybe just text input)
+        [ ] fix reset of selection
         [ ] get all parameters into a list
         [ ] update extraction functions to filter for parameters
         [ ] remove debug numbering
@@ -33,4 +34,5 @@
     [x] fix symbol column
     [x] check if other functions need a similar update
     [x] test extGene and extSample for multiple data sets
-[ ]DOCUMENTATION
+[ ] DOCUMENTATION
+[ ] fix issue where GEOquery, stringr aren't importing - make biobase and them required

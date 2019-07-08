@@ -20,15 +20,16 @@ Imports:
     knitr,
     kableExtra,
     magrittr,
-    Biobase,
-    GEOquery,
     ggplot2,
     shiny,
     DT,
-    reshape2
+    reshape2,
+    stringr
 Suggests: 
     knitr,
-    rmarkdown
+    rmarkdown,
+    BiocManager,
+    GEOquery,
 VignetteBuilder: knitr
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 6.1.1
