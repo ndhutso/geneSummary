@@ -118,31 +118,25 @@ server <- function(input, output, session) {
     #used to remove add button when max filters have been reached
     output$n <- reactive({
       tbl <- tab()
-      if(counter2$n >= length(colnames(tbl[[2]]))){
-        counter2$n <- length(colnames(tbl[[2]]))
-        FALSE
-      }else{
-        TRUE
+      if(input$tableType != "Gene Expression"){
+        if(counter2$n >= length(colnames(tbl[[2]]))){
+          counter2$n <- length(colnames(tbl[[2]]))
+          FALSE
+        }else{
+          TRUE
+        }
+      }else{ #REMOVE WHEN NUMERIC FILTERS IMPLEMENTED
+        if(counter2$n>=2){
+          counter2$n <- 2
+          FALSE
+        }else{
+          TRUE
+        }
       }
+
       #browser()
     })
     outputOptions(output, 'n', suspendWhenHidden = FALSE)
-
-    #MESSING WITH SELECTIZE
-    chc <- reactiveValues(ch = sapply(grep(pattern = "selctin+[[:digit:]]", x = names(input), value = TRUE), function(x) input[[x]]))
-    upIn <- reactive({ #find way to correctly define eventExpr
-      tbl <- tab()
-      n <- counter2$n
-      ch <- chc$ch
-      browser()
-      ch <- match(ch,colnames(tbl[[2]]))
-      ch <- ch[!is.na(ch)]
-      tbl[[2]][,ch]
-      browser()
-      lapply(seq_len(n), function(i) {
-        updateSelectizeInput(session, inputId = paste0("textin", i), choices = ch)
-      })
-    })
 
     #create UI inputs
     textboxes1 <- reactive({ #FIND WHAT MAKES THIS BE CALLED WHEN ADD OR REMOVE BUTTONS ARE HIT
@@ -150,19 +144,19 @@ server <- function(input, output, session) {
       tbl <- tab()
 
       if (n > 0) {
-        if(length(tbl[[2]][,1]) <= 50){ #whenever n or tbl are changed, the inputs are re-rendered
-          lapply(seq_len(n), function(i) {
+        if(input$tableType=="Gene Expression"){ #whenever n or tbl are changed, the inputs are re-rendered
+          isolate({lapply(seq_len(n), function(i) {
             #browser()
             list(
               selectInput(inputId = paste0("selctin", i),
-                          label = paste0("Filter by:", i),
-                          choices = colnames(tbl[[2]]),
+                          label = paste0(i, ". Filter by:"),
+                          choices = colnames(tbl[[2]])[1:2],
                           selected = AllInputs()[[paste0("selctin", i)]]),
-              selectizeInput(inputId = paste0("textin", i),
-                          label = paste0("Value:", i),
-                          choices = tbl[[2]][,1],
-                          value = AllInputs()[[paste0("textin", i)]]) #cannot have this function call a reactive variable, causes re-render just like changing table type, or add filter
+              textInput(inputId = paste0("textin", i),
+                        label = paste0("Value:"),
+                        value = AllInputs()[[paste0("textin", i)]])
             )
+          })
           })
         }else{
           isolate({lapply(seq_len(n), function(i) {

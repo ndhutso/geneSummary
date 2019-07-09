@@ -26,7 +26,7 @@
         [x] fix save function
         [x] remove debug numbering
         [x] only use inputs that exist for filtering
-        [ ] make it so that geneExpression tables only have 2 options for filters
+        [x] make it so that geneExpression tables only have 2 options for filters
         [ ] implement numeric filters
         [ ] make an option for a filter disappear from the list for additional filters/make identical filter by's compatible
     [x] give checkbox option for long format of data which is easier for graphing

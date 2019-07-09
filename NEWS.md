@@ -1,3 +1,6 @@
+# geneSummary 0.3.0.0005
+# make it so that geneExpression tables only have 2 options for filters
+
 # geneSummary 0.3.0.0004
 # only use inputs that exist for filtering
 
