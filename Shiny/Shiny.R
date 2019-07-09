@@ -29,12 +29,12 @@ ui <- fluidPage(
         br(),
         br()
       ),
-      uiOutput("textbox_ui1")
+      uiOutput("textbox_ui1") #displays the filter list output
     ),
 
     # Main panel for displaying outputs ----
     mainPanel(
-
+      #prevents background warnings from being output for the user to see
       tags$style(type="text/css",
                  ".shiny-output-error { visibility: hidden; }",
                  ".shiny-output-error:before { visibility: hidden; }"
@@ -64,14 +64,8 @@ ui <- fluidPage(
       ),
       br(),
 
-      #Hide errors
-      #tags$style(type="text/css",
-      #           ".shiny-output-error { visibility: hidden; }",
-      #           ".shiny-output-error:before { visibility: hidden; }"),
       # Output: Data table ----
       DT::dataTableOutput("table"),
-
-      plotOutput("graph")
 
     )
   )
@@ -81,7 +75,7 @@ server <- function(input, output, session) {
 
   data <- reactive({getGEO(input$DataID)})
 
-  tab <- reactive({
+  tab <- reactive({ #pre-rendered data and table so that the different types of tables can be accessed quickly without having to re-load the data from online
 
     x <- data()
 
@@ -89,14 +83,10 @@ server <- function(input, output, session) {
     tbl
   })
 
-  #START: mess with adding filters, should probably be after submit
-
-  # Track all user inputs
+  # Track all user inputs so that they are not reset when the number of filters is changed (they used to get re-rendered blank)
   AllInputs <- reactive({
     reactiveValuesToList(input)
   })
-
-  #END
 
   observeEvent(input$submit, {
 
@@ -104,12 +94,10 @@ server <- function(input, output, session) {
     counter2 <- reactiveValues(n = 0)
 
     observeEvent(input$add_btn, {
-      tbl <- tab()
       counter2$n <- counter2$n + 1
       })
 
     observeEvent(input$rm_btn, {
-      tbl <- tab()
       if (counter2$n > 0) counter2$n <- counter2$n - 1
     })
 
@@ -139,19 +127,20 @@ server <- function(input, output, session) {
     outputOptions(output, 'n', suspendWhenHidden = FALSE)
 
     #create UI inputs
-    textboxes1 <- reactive({ #FIND WHAT MAKES THIS BE CALLED WHEN ADD OR REMOVE BUTTONS ARE HIT
+    textboxes1 <- reactive({
       n <- counter2$n
       tbl <- tab()
+      #if these 2 values are changed, the filters are re-rendered because they are reactive values
 
       if (n > 0) {
-        if(input$tableType=="Gene Expression"){ #whenever n or tbl are changed, the inputs are re-rendered
+        if(input$tableType=="Gene Expression"){
           isolate({lapply(seq_len(n), function(i) {
             #browser()
             list(
               selectInput(inputId = paste0("selctin", i),
                           label = paste0(i, ". Filter by:"),
                           choices = colnames(tbl[[2]])[1:2],
-                          selected = AllInputs()[[paste0("selctin", i)]]),
+                          selected = AllInputs()[[paste0("selctin", i)]]), #call to AllInputs makes sure the user entered value stays constant through re-rendering
               textInput(inputId = paste0("textin", i),
                         label = paste0("Value:"),
                         value = AllInputs()[[paste0("textin", i)]])
@@ -161,7 +150,7 @@ server <- function(input, output, session) {
         }else{
           isolate({lapply(seq_len(n), function(i) {
             #browser()
-            list(
+            list( #putting these in a list makes sure they come out in the correct order: select1, text1, select2, text2, etc.
               selectInput(inputId = paste0("selctin", i),
                           label = paste0(i, ". Filter by:"),
                           choices = colnames(tbl[[2]]),
@@ -176,6 +165,7 @@ server <- function(input, output, session) {
       }
     })
 
+    #output UI list
     output$textbox_ui1 <- renderUI({ textboxes1() })
 
     #create "page" input
@@ -194,6 +184,7 @@ server <- function(input, output, session) {
       #browser()
 
       if(num > 0){
+        #searches for selct with a number on the end and gets all the inputs from inputId's like this
         y <- sapply(grep(pattern = "selctin+[[:digit:]]", x = names(input), value = TRUE), function(x) input[[x]])
         y <- match(y,colnames(tbl[[2]]))
         y <- y[!is.na(y)]
@@ -201,13 +192,13 @@ server <- function(input, output, session) {
 
         z <- as.character(sapply(grep(pattern = "textin+[[:digit:]]", x = names(input), value = TRUE), function(x) input[[x]]))
         #browser()
-        x <- which(z!="",arr.ind = TRUE)
+        x <- which(z!="",arr.ind = TRUE) #ignores all empty inputs for filters
         z <- z[x]
         #browser()
 
         if(identical(z,character(0))){
           z <- 0
-        }else if(length(x) > 0){
+        }else if(length(x) > 0){ #this statement makes sure the table is only being filtered by existing inputs
           z <- data.frame(strsplit(z,", ",fixed = TRUE)[[1]])
           z <- row.match(z, data.frame(y[,x])) #could make this more generalized and complicated with grep
         }else{
@@ -223,7 +214,7 @@ server <- function(input, output, session) {
       #code to change "page" or dataset
       if(!is.data.frame(tbl[[2]])){
           n <- input$page
-          n <- match(n, tbl[[1]])
+          n <- match(n, tbl[[1]]) #tbl[[1]] is a vector of data set names passed by the extraction functions
           #browser()
           if(is.null(n)){
             n <- 1
@@ -234,6 +225,7 @@ server <- function(input, output, session) {
         tbl <- tbl[[2]]
       }
 
+      #this narrows down the table if the filters exist
       if(num==0 | identical(z,0) | identical(z,integer(0)))  {
         tbl
       }else{
@@ -244,7 +236,7 @@ server <- function(input, output, session) {
 
   observe({
     input$DataID
-    counter$countervalue <- 1 #sets to one whenever DataID is changed
+    counter$countervalue <- 1 #sets to one whenever DataID is changed so that the user is asked which directory they want to save their data in later in the code, whenever this happens
   })
 
   counter <- reactiveValues(countervalue = 0,choice = getwd())
@@ -257,16 +249,16 @@ server <- function(input, output, session) {
     #set correct directory
     if(counter$countervalue == 1){
       if (exists('utils::choose.dir')) {
-        counter$choice <- choose.dir(caption = "Select folder")
+        counter$choice <- choose.dir(caption = "Select folder") #this is only available on Windows
       } else {
         counter$choice <- tk_choose.dir(caption = "Select folder")
       }
       setwd(counter$choice)
         #only call choose.dir if input$DataID is changed after save is hit
-      d <- paste("data.",input$page,sep = "")
+      d <- paste("data.",input$page,sep = "") #sets name of the new folder to data. the "page" or dataset selected
       dir.create(d)
       setwd(d)
-    }else if(counter$countervalue > 1){
+    }else if(counter$countervalue > 1){ #if the data set hasn't been changed, the directory stays the same
       setwd(counter$choice)
       d <- paste("data.",input$page,sep = "")
       dir.create(d)
@@ -277,6 +269,7 @@ server <- function(input, output, session) {
 
     #browser()
 
+    #similar code to above, but has to keep the inputs from the text inputs, so that they can be used in the save names
     tbl <- tab()
     y <- sapply(grep(pattern = "selctin+[[:digit:]]", x = names(input), value = TRUE), function(x) input[[x]])
     y <- match(y,colnames(tbl[[2]]))
@@ -305,14 +298,14 @@ server <- function(input, output, session) {
       z <- 0
     }
 
-    browser()
+    #browser()
 
     if(identical(z,0) | identical(z,integer(0)))  {
       tbl <- tbl[[2]]
       if(input$tableType == "Gene Expression"){
         #browser()
         if(input$long){
-          saveRDS(tbl, file = paste("geneExpression.long.rds", sep=""))
+          saveRDS(tbl, file = paste("geneExpression.long.rds", sep="")) #adds a .long when the long data checkbox has been marked
         }else{
           saveRDS(tbl, file = paste("geneExpression.rds", sep=""))
         }
@@ -322,6 +315,7 @@ server <- function(input, output, session) {
         #browser()
         saveRDS(tbl, file = paste("sampleAnnotation.rds", sep=""))
       }
+      #the next save functions take the vector of user text inputs and add them to the end of the file name
     }else{
       tbl <- tbl[[2]][x,]
       if(input$tableType == "Gene Expression"){
