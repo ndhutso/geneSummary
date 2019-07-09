@@ -1,3 +1,6 @@
+# geneSummary 0.3.0.0001
+# multiple entries per filter
+
 # geneSummary 0.3.0.0000
 # multiple filter usage
 

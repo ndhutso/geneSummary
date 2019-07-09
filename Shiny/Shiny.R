@@ -201,7 +201,7 @@ server <- function(input, output, session) {
         y <- data.frame(tbl[[2]][,y])
         #look at AllInputs to see if this helps the reset bug
 
-        z <- data.frame(sapply(grep(pattern = "textin+[[:digit:]]", x = names(input), value = TRUE), function(x) input[[x]]))
+        z <- data.frame(strsplit(sapply(grep(pattern = "textin+[[:digit:]]", x = names(input), value = TRUE), function(x) input[[x]]),", ",fixed = TRUE)[[1]])
         #browser()
         if(identical(z,character(0))){
           z <- 0
