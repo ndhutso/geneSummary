@@ -195,6 +195,7 @@ server <- function(input, output, session) {
 
       if(num > 0){
         y <- sapply(grep(pattern = "selctin+[[:digit:]]", x = names(input), value = TRUE), function(x) input[[x]])
+        a <- table(y)
         y <- match(y,colnames(tbl[[2]]))
         y <- y[!is.na(y)]
         y <- data.frame(tbl[[2]][,y])
@@ -203,16 +204,19 @@ server <- function(input, output, session) {
         #browser()
         x <- which(z!="",arr.ind = TRUE)
         z <- z[x]
-        #browser()
+
+        browser()
 
         if(identical(z,character(0))){
           z <- 0
-        }else if(length(x) > 0){
-          z <- data.frame(strsplit(z,", ",fixed = TRUE)[[1]])
-          z <- row.match(z, data.frame(y[,x])) #could make this more generalized and complicated with grep
+        }else if(sum(a[-1] > 2) > 0){#good
+          y <- y[,1]
+          z <- unlist(strsplit(z,", ",fixed = TRUE))
+          z <- data.frame(z)
+          z <- row.match(z, data.frame(y)) #could make this more generalized and complicated with grep
         }else{
-          z <- data.frame(strsplit(z,", ",fixed = TRUE)[[1]])
-          z <- row.match(z, y) #could make this more generalized and complicated with grep
+          z <- data.frame(z)
+          z <- row.match(z, data.frame(y[,x])) #could make this more generalized and complicated with grep
         }
       }else{
         z <- 0
