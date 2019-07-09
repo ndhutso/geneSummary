@@ -27,8 +27,6 @@ ui <- fluidPage(
         condition = "output.table",
         actionButton("rm_btn", "Remove Filter"),
         br(),
-        br(),
-        textOutput("counter2"),
         br()
       ),
       uiOutput("textbox_ui1")
@@ -101,12 +99,11 @@ server <- function(input, output, session) {
   #END
 
   observeEvent(input$submit, {
-    ##create function to "render" data table before it is displayed to pass the length of the list back to the UI
 
-    # Track the number of input boxes to render
+    #track the number of input boxes to render
     counter2 <- reactiveValues(n = 0)
 
-    observeEvent(input$add_btn, { #this is called before the inputs are re-rendered, create reactive function to define inputs
+    observeEvent(input$add_btn, {
       tbl <- tab()
       counter2$n <- counter2$n + 1
       })
@@ -147,6 +144,7 @@ server <- function(input, output, session) {
       })
     })
 
+    #create UI inputs
     textboxes1 <- reactive({ #FIND WHAT MAKES THIS BE CALLED WHEN ADD OR REMOVE BUTTONS ARE HIT
       n <- counter2$n
       tbl <- tab()
@@ -159,7 +157,7 @@ server <- function(input, output, session) {
               selectInput(inputId = paste0("selctin", i),
                           label = paste0("Filter by:", i),
                           choices = colnames(tbl[[2]]),
-                          selected = AllInputs()[[paste0("selctin", i)]]), #choices are going to be columns of the table, could call tab() now, might have to create diff tab for rendering choices for dataset and here
+                          selected = AllInputs()[[paste0("selctin", i)]]),
               selectizeInput(inputId = paste0("textin", i),
                           label = paste0("Value:", i),
                           choices = tbl[[2]][,1],
@@ -171,11 +169,11 @@ server <- function(input, output, session) {
             #browser()
             list(
               selectInput(inputId = paste0("selctin", i),
-                          label = paste0("Filter by:", i),
+                          label = paste0(i, ". Filter by:"),
                           choices = colnames(tbl[[2]]),
-                          selected = AllInputs()[[paste0("selctin", i)]]), #choices are going to be columns of the table, could call tab() now, might have to create diff tab for rendering choices for dataset and here
+                          selected = AllInputs()[[paste0("selctin", i)]]),
               textInput(inputId = paste0("textin", i),
-                          label = paste0("Value:", i),
+                          label = paste0("Value:"),
                           value = AllInputs()[[paste0("textin", i)]])
             )
           })
@@ -186,12 +184,14 @@ server <- function(input, output, session) {
 
     output$textbox_ui1 <- renderUI({ textboxes1() })
 
+    #create "page" input
     output$length <- renderUI({
         tbl <- tab()
         #browser()
         selectInput(inputId = "page", label = "Dataset:",choices = tbl[[1]])
     })
 
+    #create data table
     output$table <- DT::renderDataTable({
 
       tbl <- tab()
@@ -204,13 +204,20 @@ server <- function(input, output, session) {
         y <- match(y,colnames(tbl[[2]]))
         y <- y[!is.na(y)]
         y <- data.frame(tbl[[2]][,y])
-        #look at AllInputs to see if this helps the reset bug
 
-        z <- data.frame(strsplit(sapply(grep(pattern = "textin+[[:digit:]]", x = names(input), value = TRUE), function(x) input[[x]]),", ",fixed = TRUE)[[1]])
+        z <- as.character(sapply(grep(pattern = "textin+[[:digit:]]", x = names(input), value = TRUE), function(x) input[[x]]))
         #browser()
+        x <- which(z!="",arr.ind = TRUE)
+        z <- z[x]
+        #browser()
+
         if(identical(z,character(0))){
           z <- 0
+        }else if(length(x) > 0){
+          z <- data.frame(strsplit(z,", ",fixed = TRUE)[[1]])
+          z <- row.match(z, data.frame(y[,x])) #could make this more generalized and complicated with grep
         }else{
+          z <- data.frame(strsplit(z,", ",fixed = TRUE)[[1]])
           z <- row.match(z, y) #could make this more generalized and complicated with grep
         }
       }else{
@@ -221,7 +228,7 @@ server <- function(input, output, session) {
 
       #code to change "page" or dataset
       if(!is.data.frame(tbl[[2]])){
-          n <- input$page #being delayed so is passing a NULL
+          n <- input$page
           n <- match(n, tbl[[1]])
           #browser()
           if(is.null(n)){
@@ -248,6 +255,7 @@ server <- function(input, output, session) {
 
   counter <- reactiveValues(countervalue = 0,choice = getwd())
 
+  #SAVE function
   observeEvent(input$save, {
 
     #browser()
@@ -280,26 +288,33 @@ server <- function(input, output, session) {
     y <- match(y,colnames(tbl[[2]]))
     y <- y[!is.na(y)]
     y <- data.frame(tbl[[2]][,y])
-    #look at AllInputs to see if this helps the reset bug
 
     #browser()
 
     if(dim(y)[2] > 0){
-      z <- strsplit(sapply(grep(pattern = "textin+[[:digit:]]", x = names(input), value = TRUE), function(x) input[[x]]),", ",fixed = TRUE)[[1]]
+      z <- as.character(sapply(grep(pattern = "textin+[[:digit:]]", x = names(input), value = TRUE), function(x) input[[x]]))
       #browser()
+      x <- which(z!="",arr.ind = TRUE)
+      z <- z[x]
+      #browser()
+
       if(identical(z,character(0))){
         z <- 0
+      }else if(length(x) > 0){
+        z <- data.frame(strsplit(z,", ",fixed = TRUE)[[1]])
+        x <- row.match(z, data.frame(y[,x])) #could make this more generalized and complicated with grep
       }else{
-        x <- row.match(data.frame(z), y) #could make this more generalized and complicated with grep
+        z <- data.frame(strsplit(z,", ",fixed = TRUE)[[1]])
+        x <- row.match(z, y) #could make this more generalized and complicated with grep
       }
     }else{
       z <- 0
     }
 
-    #browser()
+    browser()
 
     if(identical(z,0) | identical(z,integer(0)))  {
-      tbl <- tbl
+      tbl <- tbl[[2]]
       if(input$tableType == "Gene Expression"){
         #browser()
         if(input$long){
@@ -318,21 +333,17 @@ server <- function(input, output, session) {
       if(input$tableType == "Gene Expression"){
         #browser()
         if(input$long){
-          saveRDS(tbl, file = paste("geneExpression.long.",paste(z,collapse = "."),".rds", sep=""))
+          saveRDS(tbl, file = paste("geneExpression.long.",paste(z[,1],collapse = "."),".rds", sep=""))
         }else{
-          saveRDS(tbl, file = paste("geneExpression.",paste(z,collapse = "."),".rds", sep=""))
+          saveRDS(tbl, file = paste("geneExpression.",paste(z[,1],collapse = "."),".rds", sep=""))
         }
       }else if(input$tableType == "Gene Annotations"){
-        saveRDS(tbl, file = paste("geneAnnotation.",paste(z,collapse = "."),".rds", sep=""))
+        saveRDS(tbl, file = paste("geneAnnotation.",paste(z[,1],collapse = "."),".rds", sep=""))
       }else{
         #browser()
-        saveRDS(tbl, file = paste("sampleAnnotation.",paste(z,collapse = "."),".rds", sep=""))
+        saveRDS(tbl, file = paste("sampleAnnotation.",paste(z[,1],collapse = "."),".rds", sep=""))
       }
     }
-
-    #will have to change if statements so that the list of parameters chosen is added to end of file
-    #should simplify if statements, but complicate pasting
-    #saveRDS(tbl, file = paste("sampleAnnotation.",paste(z,collapse = "."),".rds", sep=""))
   })
 }
 shinyApp(ui = ui, server = server)

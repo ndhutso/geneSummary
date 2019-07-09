@@ -1,3 +1,6 @@
+# geneSummary 0.3.0.0004
+# only use inputs that exist for filtering
+
 # geneSummary 0.3.0.0003
 # save function fixed
 

@@ -24,7 +24,11 @@
         [x] pass choices to selectize (maybe just text input)
         [x] fix reset of selection
         [x] fix save function
-        [ ] remove debug numbering
+        [x] remove debug numbering
+        [x] only use inputs that exist for filtering
+        [ ] make it so that geneExpression tables only have 2 options for filters
+        [ ] implement numeric filters
+        [ ] make an option for a filter disappear from the list for additional filters/make identical filter by's compatible
     [x] give checkbox option for long format of data which is easier for graphing
     [x] add ID column to extExp or move gene symbols to rownames
 [x] fix extraction functions to work with lists with multiple data sets as input
