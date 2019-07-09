@@ -142,15 +142,24 @@ server <- function(input, output, session) {
     textboxes1 <- reactive({ #FIND WHAT MAKES THIS BE CALLED WHEN ADD OR REMOVE BUTTONS ARE HIT
       n <- counter2$n
       tbl <- tab()
+      opt <- list()
 
       if (n > 0) {
         if(input$tableType=="Gene Expression"){ #whenever n or tbl are changed, the inputs are re-rendered
+          opt[[1]] <- colnames(tbl[[2]])[1:2]
+          browser()
           isolate({lapply(seq_len(n), function(i) {
-            #browser()
+            browser()
+
+            if(i == (n-1)){
+              a <- match(AllInputs()[[paste0("selctin", i)]], opt[[i]])
+              opt[[i+1]] <- opt[[i]][-a] #why is opt being reset as the loop increments, try subtracting from a single vector after creating UI
+            }
+
             list(
               selectInput(inputId = paste0("selctin", i),
                           label = paste0(i, ". Filter by:"),
-                          choices = colnames(tbl[[2]])[1:2],
+                          choices = opt[[i]],
                           selected = AllInputs()[[paste0("selctin", i)]]),
               textInput(inputId = paste0("textin", i),
                         label = paste0("Value:"),
