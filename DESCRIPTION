@@ -25,7 +25,8 @@ Imports:
     DT,
     reshape2,
     stringr,
-    prodlim
+    prodlim,
+    tcltk
 Suggests: 
     knitr,
     rmarkdown,

@@ -32,6 +32,7 @@
 #'@import "DT"
 #'@import "reshape2"
 #'@import "prodlim"
+#'@import "tcltk"
 #'
 #'@export
 

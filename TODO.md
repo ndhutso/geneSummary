@@ -22,8 +22,8 @@
         [x] limit amount of filters based off number of columns
             [x] take away filters when type of data table is changed
         [x] pass choices to selectize (maybe just text input)
-        [ ] fix reset of selection
-        [ ] update extraction functions
+        [x] fix reset of selection
+        [x] fix save function
         [ ] remove debug numbering
     [x] give checkbox option for long format of data which is easier for graphing
     [x] add ID column to extExp or move gene symbols to rownames

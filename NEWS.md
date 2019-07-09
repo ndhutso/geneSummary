@@ -1,3 +1,9 @@
+# geneSummary 0.3.0.0003
+# save function fixed
+
+# geneSummary 0.3.0.0002
+# fix input reset when number of filters is changed
+
 # geneSummary 0.3.0.0001
 # multiple entries per filter
 

@@ -158,23 +158,28 @@ server <- function(input, output, session) {
             list(
               selectInput(inputId = paste0("selctin", i),
                           label = paste0("Filter by:", i),
-                          choices = colnames(tbl[[2]])), #choices are going to be columns of the table, could call tab() now, might have to create diff tab for rendering choices for dataset and here
+                          choices = colnames(tbl[[2]]),
+                          selected = AllInputs()[[paste0("selctin", i)]]), #choices are going to be columns of the table, could call tab() now, might have to create diff tab for rendering choices for dataset and here
               selectizeInput(inputId = paste0("textin", i),
-                             label = paste0("Value:", i),
-                             choices = tbl[[2]][,1]) #cannot have this function call a reactive variable, causes re-render just like changing table type, or add filter
+                          label = paste0("Value:", i),
+                          choices = tbl[[2]][,1],
+                          value = AllInputs()[[paste0("textin", i)]]) #cannot have this function call a reactive variable, causes re-render just like changing table type, or add filter
             )
           })
         }else{
-          lapply(seq_len(n), function(i) {
+          isolate({lapply(seq_len(n), function(i) {
             #browser()
             list(
               selectInput(inputId = paste0("selctin", i),
                           label = paste0("Filter by:", i),
-                          choices = colnames(tbl[[2]])), #choices are going to be columns of the table, could call tab() now, might have to create diff tab for rendering choices for dataset and here
+                          choices = colnames(tbl[[2]]),
+                          selected = AllInputs()[[paste0("selctin", i)]]), #choices are going to be columns of the table, could call tab() now, might have to create diff tab for rendering choices for dataset and here
               textInput(inputId = paste0("textin", i),
-                             label = paste0("Value:", i))
+                          label = paste0("Value:", i),
+                          value = AllInputs()[[paste0("textin", i)]])
             )
           })
+        })
         }
       }
     })
@@ -247,6 +252,7 @@ server <- function(input, output, session) {
 
     #browser()
 
+    #set correct directory
     if(counter$countervalue == 1){
       if (exists('utils::choose.dir')) {
         counter$choice <- choose.dir(caption = "Select folder")
@@ -255,7 +261,6 @@ server <- function(input, output, session) {
       }
       setwd(counter$choice)
         #only call choose.dir if input$DataID is changed after save is hit
-
       d <- paste("data.",input$page,sep = "")
       dir.create(d)
       setwd(d)
@@ -270,94 +275,64 @@ server <- function(input, output, session) {
 
     #browser()
 
-    x <- data()
-    y <- character(0)
-    z <- character(0)
+    tbl <- tab()
+    y <- sapply(grep(pattern = "selctin+[[:digit:]]", x = names(input), value = TRUE), function(x) input[[x]])
+    y <- match(y,colnames(tbl[[2]]))
+    y <- y[!is.na(y)]
+    y <- data.frame(tbl[[2]][,y])
+    #look at AllInputs to see if this helps the reset bug
 
-    if(identical(y, character(0))){
-      if(identical(z, character(0))){
-        y <- NA
-        z <- NA
+    #browser()
+
+    if(dim(y)[2] > 0){
+      z <- strsplit(sapply(grep(pattern = "textin+[[:digit:]]", x = names(input), value = TRUE), function(x) input[[x]]),", ",fixed = TRUE)[[1]]
+      #browser()
+      if(identical(z,character(0))){
+        z <- 0
       }else{
-        y <- NA
+        x <- row.match(data.frame(z), y) #could make this more generalized and complicated with grep
       }
-    }else if(identical(z, character(0))){
-      z <- NA
+    }else{
+      z <- 0
     }
 
-    if(is.na(y)){ #will have to change if statements so that the list of parameters chosen is added to end of file
-                  #should simplify if statements, but complicate pasting
-      if(is.na(z)){
-        if(input$tableType == "Gene Expression"){
-          tbl <- extExp(x,y,long = input$long)
-          #browser()
-          if(input$long){
-            saveRDS(tbl, file = paste("geneExpression.long.rds", sep=""))
-          }else{
-            saveRDS(tbl, file = paste("geneExpression.rds", sep=""))
-          }
-        }else if(input$tableType == "Gene Annotations"){
-          tbl <- extGene(x,y)
-          saveRDS(tbl, file = paste("geneAnnotation.rds", sep=""))
-        }else{
-          #browser()
-          tbl <- extSample(x,z)
-          saveRDS(tbl, file = paste("sampleAnnotation.rds", sep=""))
-        }
-      }else{
-        if(input$tableType == "Gene Expression"){
-          tbl <- extExp(x,y,long = input$long)
-          #browser()
-          if(input$long){
-            saveRDS(tbl, file = paste("geneExpression.long.rds", sep=""))
-          }else{
-            saveRDS(tbl, file = paste("geneExpression.rds", sep=""))
-          }
-        }else if(input$tableType == "Gene Annotations"){
-          tbl <- extGene(x,y)
-          saveRDS(tbl, file = paste("geneAnnotation.rds", sep=""))
-        }else{
-          #browser()
-          tbl <- extSample(x,z)
-          saveRDS(tbl, file = paste("sampleAnnotation.",paste(z,collapse = "."),".rds", sep=""))
-        }
-      }
-    }else if(is.na(z)){
+    #browser()
+
+    if(identical(z,0) | identical(z,integer(0)))  {
+      tbl <- tbl
       if(input$tableType == "Gene Expression"){
-        tbl <- extExp(x,y,long = input$long)
         #browser()
         if(input$long){
-          saveRDS(tbl, file = paste("geneExpression.",paste(y,collapse = "."),".long.rds", sep=""))
+          saveRDS(tbl, file = paste("geneExpression.long.rds", sep=""))
         }else{
-          saveRDS(tbl, file = paste("geneExpression.",paste(y,collapse = "."),".rds", sep=""))
+          saveRDS(tbl, file = paste("geneExpression.rds", sep=""))
         }
       }else if(input$tableType == "Gene Annotations"){
-        tbl <- extGene(x,y)
-        saveRDS(tbl, file = paste("geneAnnotation.",paste(y,collapse = "."),".rds", sep=""))
+        saveRDS(tbl, file = paste("geneAnnotation.rds", sep=""))
       }else{
         #browser()
-        tbl <- extSample(x,z)
         saveRDS(tbl, file = paste("sampleAnnotation.rds", sep=""))
       }
     }else{
+      tbl <- tbl[[2]][x,]
       if(input$tableType == "Gene Expression"){
-        tbl <- extExp(x,y,long = input$long)
         #browser()
         if(input$long){
-          saveRDS(tbl, file = paste("geneExpression.",paste(y,collapse = "."),".long.rds", sep=""))
+          saveRDS(tbl, file = paste("geneExpression.long.",paste(z,collapse = "."),".rds", sep=""))
         }else{
-          saveRDS(tbl, file = paste("geneExpression.",paste(y,collapse = "."),".rds", sep=""))
+          saveRDS(tbl, file = paste("geneExpression.",paste(z,collapse = "."),".rds", sep=""))
         }
       }else if(input$tableType == "Gene Annotations"){
-        tbl <- extGene(x,y)
-        saveRDS(tbl, file = paste("geneAnnotation.",paste(y,collapse = "."),".rds", sep=""))
+        saveRDS(tbl, file = paste("geneAnnotation.",paste(z,collapse = "."),".rds", sep=""))
       }else{
         #browser()
-        tbl <- extSample(x,z)
         saveRDS(tbl, file = paste("sampleAnnotation.",paste(z,collapse = "."),".rds", sep=""))
       }
     }
+
+    #will have to change if statements so that the list of parameters chosen is added to end of file
+    #should simplify if statements, but complicate pasting
+    #saveRDS(tbl, file = paste("sampleAnnotation.",paste(z,collapse = "."),".rds", sep=""))
   })
 }
-
 shinyApp(ui = ui, server = server)
