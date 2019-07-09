@@ -196,14 +196,26 @@ server <- function(input, output, session) {
         z <- z[x]
         #browser()
 
-        if(identical(z,character(0))){
-          z <- 0
-        }else if(length(x) > 0){ #this statement makes sure the table is only being filtered by existing inputs
-          z <- data.frame(strsplit(z,", ",fixed = TRUE)[[1]])
-          z <- row.match(z, data.frame(y[,x])) #could make this more generalized and complicated with grep
+        #x <- 3
+        #a <- "x>2"
+        #eval(parse(text=a))
+        if(input$tableType == "Gene Expression"){
+          #check if y input is not the first 2 column names of tbl
+          #if so, search for rows where the sample gene expression fits the inputted logical expression
+
+
+
+
         }else{
-          z <- data.frame(strsplit(z,", ",fixed = TRUE)[[1]])
-          z <- row.match(z, y) #could make this more generalized and complicated with grep
+          if(identical(z,character(0))){
+            z <- 0
+          }else if(length(x) > 0){ #this statement makes sure the table is only being filtered by existing inputs
+            z <- data.frame(strsplit(z,", ",fixed = TRUE)[[1]])
+            z <- row.match(z, data.frame(y[,x])) #could make this more generalized and complicated with grep
+          }else{
+            z <- data.frame(strsplit(z,", ",fixed = TRUE)[[1]])
+            z <- row.match(z, y) #could make this more generalized and complicated with grep
+          }
         }
       }else{
         z <- 0
