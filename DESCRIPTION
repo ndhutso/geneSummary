@@ -24,7 +24,8 @@ Imports:
     shiny,
     DT,
     reshape2,
-    stringr
+    stringr,
+    prodlim
 Suggests: 
     knitr,
     rmarkdown,

@@ -31,6 +31,7 @@
 #'@import "stringr"
 #'@import "DT"
 #'@import "reshape2"
+#'@import "prodlim"
 #'
 #'@export
 

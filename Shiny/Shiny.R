@@ -190,20 +190,23 @@ server <- function(input, output, session) {
     output$table <- DT::renderDataTable({
 
       tbl <- tab()
-      y <- sapply(grep(pattern = "selctin+[[:digit:]]", x = names(input), value = TRUE), function(x) input[[x]])
-      y <- match(y,colnames(tbl[[2]]))
-      y <- y[!is.na(y)]
-      y <- tbl[[2]][,y]
+      num <- counter2$n
 
       #browser()
 
-      if(typeof(y) == "character"){
-        z <- sapply(grep(pattern = "textin+[[:digit:]]", x = names(input), value = TRUE), function(x) input[[x]])
+      if(num > 0){
+        y <- sapply(grep(pattern = "selctin+[[:digit:]]", x = names(input), value = TRUE), function(x) input[[x]])
+        y <- match(y,colnames(tbl[[2]]))
+        y <- y[!is.na(y)]
+        y <- data.frame(tbl[[2]][,y])
+        #look at AllInputs to see if this helps the reset bug
+
+        z <- data.frame(sapply(grep(pattern = "textin+[[:digit:]]", x = names(input), value = TRUE), function(x) input[[x]]))
         #browser()
         if(identical(z,character(0))){
           z <- 0
         }else{
-          z <- which(y==z, arr.ind = TRUE)
+          z <- row.match(z, y) #could make this more generalized and complicated with grep
         }
       }else{
         z <- 0
@@ -224,7 +227,8 @@ server <- function(input, output, session) {
       }else{
         tbl <- tbl[[2]]
       }
-      if(identical(z,0) | identical(z,integer(0))){
+
+      if(num==0 | identical(z,0) | identical(z,integer(0)))  {
         tbl
       }else{
         tbl[z,]
