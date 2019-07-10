@@ -65,7 +65,7 @@ ui <- fluidPage(
       br(),
 
       # Output: Data table ----
-      DT::dataTableOutput("table"),
+      DT::dataTableOutput("table")
 
     )
   )
@@ -106,22 +106,12 @@ server <- function(input, output, session) {
     #used to remove add button when max filters have been reached
     output$n <- reactive({
       tbl <- tab()
-      if(input$tableType != "Gene Expression"){
-        if(counter2$n >= length(colnames(tbl[[2]]))){
-          counter2$n <- length(colnames(tbl[[2]]))
-          FALSE
-        }else{
-          TRUE
-        }
-      }else{ #REMOVE WHEN NUMERIC FILTERS IMPLEMENTED
-        if(counter2$n>=2){
-          counter2$n <- 2
-          FALSE
-        }else{
-          TRUE
-        }
+      if(counter2$n >= length(colnames(tbl[[2]]))){
+        counter2$n <- length(colnames(tbl[[2]]))
+        FALSE
+      }else{
+        TRUE
       }
-
       #browser()
     })
     outputOptions(output, 'n', suspendWhenHidden = FALSE)
@@ -133,21 +123,6 @@ server <- function(input, output, session) {
       #if these 2 values are changed, the filters are re-rendered because they are reactive values
 
       if (n > 0) {
-        if(input$tableType=="Gene Expression"){
-          isolate({lapply(seq_len(n), function(i) {
-            #browser()
-            list(
-              selectInput(inputId = paste0("selctin", i),
-                          label = paste0(i, ". Filter by:"),
-                          choices = colnames(tbl[[2]])[1:2],
-                          selected = AllInputs()[[paste0("selctin", i)]]), #call to AllInputs makes sure the user entered value stays constant through re-rendering
-              textInput(inputId = paste0("textin", i),
-                        label = paste0("Value:"),
-                        value = AllInputs()[[paste0("textin", i)]])
-            )
-          })
-          })
-        }else{
           isolate({lapply(seq_len(n), function(i) {
             #browser()
             list( #putting these in a list makes sure they come out in the correct order: select1, text1, select2, text2, etc.
@@ -161,7 +136,6 @@ server <- function(input, output, session) {
             )
           })
         })
-        }
       }
     })
 
@@ -188,6 +162,7 @@ server <- function(input, output, session) {
         y <- sapply(grep(pattern = "selctin+[[:digit:]]", x = names(input), value = TRUE), function(x) input[[x]])
         y <- match(y,colnames(tbl[[2]]))
         y <- y[!is.na(y)]
+        w <- colnames(tbl[[2]])[y]
         y <- data.frame(tbl[[2]][,y])
 
         z <- as.character(sapply(grep(pattern = "textin+[[:digit:]]", x = names(input), value = TRUE), function(x) input[[x]]))
@@ -202,9 +177,64 @@ server <- function(input, output, session) {
         if(input$tableType == "Gene Expression"){
           #check if y input is not the first 2 column names of tbl
           #if so, search for rows where the sample gene expression fits the inputted logical expression
+          #going to have to compare row indexes or logical vector with z vector
 
+          if(w %in% colnames(tbl[[2]])[1:2]){
+            if(identical(z,character(0))){
+              z <- 0
+            }else{
+              #browser()
 
+              a <- which(w %in% colnames(tbl[[2]])[1:2], arr.ind = TRUE)#finds symbol and id inputs where there are inputs3
+              colnames(y) <- w
 
+              y1 <- data.frame(y[,a])
+              colnames(y1) <- colnames(y)[a]
+
+              z1 <- z[a]
+              z1 <- data.frame(strsplit(z1,", ",fixed = TRUE)[[1]])
+              z1 <- row.match(z1, y1) #could make this more generalized and complicated with grep
+
+              #browser()
+
+              y2 <- as.character(y[,-a])
+
+              z2 <- z[-a]
+              b <- paste(y2, z2) #should be like "y >4"
+              b <- parse(text = b)
+              #need to have row indice output
+              if(!identical(b, character(0))){
+
+                z2 <- which(lapply(b, eval)==TRUE, arr.ind = TRUE) #still have to parse with for or apply bc it's like putting y > 4 on an entire table
+                #now compare row indices
+                if(z1 %in% z2){
+                  z <- z1
+                }else{
+                  z <- 0
+                }
+              }else{
+                z <- 0
+              }
+            } #should output the row indices for matching "Symbol" and "ID" inputs
+
+          }else{
+            #have to go through each input and find the matching rows for it in the correct column
+            #have to worry about x value
+            if(identical(z,character(0))){
+              z <- 0
+            }else if(length(x) > 0){ #this statement makes sure the table is only being filtered by existing inputs
+              y1 <- as.character(y[,x])
+              #browser()
+              b <- paste(y1, z)
+              b <- parse(text = b)
+              z <- which(lapply(b, eval)==TRUE, arr.ind = TRUE)
+            }else{
+              y1 <- as.character(y)
+              b <- paste(y1, z)
+              b <- parse(text = b)
+              z <- which(lapply(b, eval)==TRUE, arr.ind = TRUE)
+            }
+          }
 
         }else{
           if(identical(z,character(0))){

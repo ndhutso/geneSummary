@@ -1,3 +1,6 @@
+# geneSummary 0.3.1.0000
+# numerical filter can be used on one sample's expression data
+
 # geneSummary 0.3.0.0005
 # make it so that geneExpression tables only have 2 options for filters
 
