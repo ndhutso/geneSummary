@@ -164,78 +164,84 @@ server <- function(input, output, session) {
         y <- y[!is.na(y)]
         w <- colnames(tbl[[2]])[y]
         y <- data.frame(tbl[[2]][,y])
+        colnames(y) <- w
 
-        z <- as.character(sapply(grep(pattern = "textin+[[:digit:]]", x = names(input), value = TRUE), function(x) input[[x]]))
+        z3 <- as.character(sapply(grep(pattern = "textin+[[:digit:]]", x = names(input), value = TRUE), function(x) input[[x]]))
         #browser()
-        x <- which(z!="",arr.ind = TRUE) #ignores all empty inputs for filters
-        z <- z[x]
+        x <- which(z3!="",arr.ind = TRUE) #ignores all empty inputs for filters
+        z <- z3[x]
         #browser()
 
         #x <- 3
         #a <- "x>2"
         #eval(parse(text=a))
-        if(input$tableType == "Gene Expression"){
+        if(input$tableType == "Gene Expression" & input$long == FALSE){
           #check if y input is not the first 2 column names of tbl
           #if so, search for rows where the sample gene expression fits the inputted logical expression
           #going to have to compare row indexes or logical vector with z vector
+          if(identical(z,character(0))){
+            z <- 0
+          }else{
 
-          if(w %in% colnames(tbl[[2]])[1:2]){
-            if(identical(z,character(0))){
-              z <- 0
-            }else{
-              #browser()
+            #browser()
 
-              a <- which(w %in% colnames(tbl[[2]])[1:2], arr.ind = TRUE)#finds symbol and id inputs where there are inputs3
-              colnames(y) <- w
+            a <- which(colnames(y) %in% colnames(tbl[[2]])[1:2], arr.ind = TRUE)#finds symbol and id inputs where there are inputs3
 
+            if(!identical(a, integer(0))){
               y1 <- data.frame(y[,a])
-              colnames(y1) <- colnames(y)[a]
+              z1 <- z3[a]
 
-              z1 <- z[a]
-              z1 <- data.frame(strsplit(z1,", ",fixed = TRUE)[[1]])
+              x2 <- which(z1!="",arr.ind = TRUE)#takeout missing values
+              z1 <- z1[x2]
+              y1 <- y1[x2]
+
+              z1 <- unlist(strsplit(z1,", ",fixed = TRUE)) #split up comma deliminated inputs
               z1 <- row.match(z1, y1) #could make this more generalized and complicated with grep
 
               #browser()
 
               y2 <- as.character(y[,-a])
+              len <- dim(as.data.frame(y2))[1] #1 or 2 or a different way to find the number of elements?
+              z2 <- z3[-a]
+            }else{ #if there is no symbol or ID inputs (z1 = NULL or doesn't exist), what should z1 be
+              y2 <- as.character(y)
+              len <- dim(as.data.frame(y2))[1]
+              z2 <- z3
+            }
 
-              z2 <- z[-a]
+            if(identical(z2, character(0))){ #check if z2 exists and then if y2 has more than 1 element
+              z <- 0
+            }else if(!exists("z1")){
               b <- paste(y2, z2) #should be like "y >4"
               b <- parse(text = b)
               #need to have row indice output
-              if(!identical(b, character(0))){
-
-                z2 <- which(lapply(b, eval)==TRUE, arr.ind = TRUE) #still have to parse with for or apply bc it's like putting y > 4 on an entire table
-                #now compare row indices
-                if(z1 %in% z2){
-                  z <- z1
-                }else{
-                  z <- 0
-                }
+              z <- which(unlist(lapply(b,eval))==TRUE, arr.ind = TRUE)
+            }else if(len > 1){
+              b <- list()
+              for(i in 1:len){
+                b[i] <- paste(y2[i], z2[i]) #should be like "y >4"
+                b[i] <- parse(text = b[i])
+              }
+              z2 <- which(apply(data.frame(b),1,all)==TRUE, arr.ind = TRUE) #false when there's any false
+              #now compare row indices
+              if(z1 %in% z2){
+                z <- z1
               }else{
                 z <- 0
               }
-            } #should output the row indices for matching "Symbol" and "ID" inputs
-
-          }else{
-            #have to go through each input and find the matching rows for it in the correct column
-            #have to worry about x value
-            if(identical(z,character(0))){
-              z <- 0
-            }else if(length(x) > 0){ #this statement makes sure the table is only being filtered by existing inputs
-              y1 <- as.character(y[,x])
-              #browser()
-              b <- paste(y1, z)
-              b <- parse(text = b)
-              z <- which(lapply(b, eval)==TRUE, arr.ind = TRUE)
             }else{
-              y1 <- as.character(y)
-              b <- paste(y1, z)
+              b <- paste(y2, z2) #should be like "y >4"
               b <- parse(text = b)
-              z <- which(lapply(b, eval)==TRUE, arr.ind = TRUE)
+              #need to have row indice output
+              z2 <- which(unlist(lapply(b,eval))==TRUE, arr.ind = TRUE) #still have to parse with for or apply bc it's like putting y > 4 on an entire table
+              #now compare row indices
+              if(z1 %in% z2){
+                z <- z1
+              }else{
+                z <- 0
+              }
             }
-          }
-
+          } #should output the row indices for matching "Symbol" and "ID" inputs
         }else{
           if(identical(z,character(0))){
             z <- 0
