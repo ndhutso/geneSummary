@@ -157,23 +157,12 @@ server <- function(input, output, session) {
       if(num > 0){
         #searches for selct with a number on the end and gets all the inputs from inputId's like this
         y <- sapply(grep(pattern = "selctin+[[:digit:]]", x = names(input), value = TRUE), function(x) input[[x]])
-        y <- match(y,colnames(tbl[[2]]))
-        y <- y[!is.na(y)]
-        w <- colnames(tbl[[2]])[y]
-        y <- data.frame(tbl[[2]][,y])
-        colnames(y) <- w
+        z <- as.character(sapply(grep(pattern = "textin+[[:digit:]]", x = names(input), value = TRUE), function(x) input[[x]]))
 
-        z3 <- as.character(sapply(grep(pattern = "textin+[[:digit:]]", x = names(input), value = TRUE), function(x) input[[x]]))
-        #browser()
-        x <- which(z3!="",arr.ind = TRUE) #ignores all empty inputs for filters
-        z <- z3[x]
-        #browser()
-
-        z <- filterTbl()
+        z <- filterTbl(tbl, input$tableType, input$long, y, z)
       }else{
         z <- 0
       }
-
 
       #code to change "page" or dataset
       if(!is.data.frame(tbl[[2]])){

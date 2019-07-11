@@ -24,14 +24,14 @@ Imports:
     shiny,
     DT,
     reshape2,
-    stringr,
-    prodlim,
-    tcltk
+    stringr
 Suggests: 
     knitr,
     rmarkdown,
     BiocManager,
     GEOquery,
+    prodlim,
+    tcltk
 VignetteBuilder: knitr
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 6.1.1

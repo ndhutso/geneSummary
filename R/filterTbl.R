@@ -1,5 +1,27 @@
-filterTbl <- function(tbl, type, var, input){
-    if(input$tableType == "Gene Expression" & input$long == FALSE){
+#'Filter Data Tables
+#'
+#'@description Filters data tables
+#'
+#'@usage filterTbl(tbl, type, long = FALSE, var, input)
+#'
+#'@author Nicholas Hutson
+#'
+#'@examples
+#'
+#'@export
+
+filterTbl <- function(tbl, type, long = FALSE, var, input){ #OUTPUT ROW INDICES OR 0
+
+  y <- match(var,colnames(tbl[[2]]))
+  y <- y[!is.na(y)]
+  w <- colnames(tbl[[2]])[y]
+
+  x <- which(input!="",arr.ind = TRUE)
+  y <- data.frame(tbl[[2]][,y])[,x]
+  colnames(y) <- w[x]
+  z <- input[x]
+
+    if(input$tableType == "Gene Expression" & long == FALSE){
       #check if y input is not the first 2 column names of tbl
       #if so, search for rows where the sample gene expression fits the inputted logical expression
       #going to have to compare row indexes or logical vector with z vector
@@ -13,11 +35,7 @@ filterTbl <- function(tbl, type, var, input){
 
         if(!identical(a, integer(0))){
           y1 <- data.frame(y[,a])
-          z1 <- z3[a]
-
-          x2 <- which(z1!="",arr.ind = TRUE)#takeout missing values
-          z1 <- z1[x2]
-          y1 <- y1[x2]
+          z1 <- z[a]
 
           z1 <- unlist(strsplit(z1,", ",fixed = TRUE)) #split up comma deliminated inputs
           z1 <- row.match(z1, y1) #could make this more generalized and complicated with grep
@@ -26,11 +44,11 @@ filterTbl <- function(tbl, type, var, input){
 
           y2 <- as.character(y[,-a])
           len <- dim(as.data.frame(y2))[1] #1 or 2 or a different way to find the number of elements?
-          z2 <- z3[-a]
+          z2 <- z[-a]
         }else{ #if there is no symbol or ID inputs (z1 = NULL or doesn't exist), what should z1 be
           y2 <- as.character(y)
           len <- dim(as.data.frame(y2))[1]
-          z2 <- z3
+          z2 <- z
         }
 
         if(identical(z2, character(0))){ #check if z2 exists and then if y2 has more than 1 element
@@ -77,4 +95,5 @@ filterTbl <- function(tbl, type, var, input){
         z <- row.match(z, y) #could make this more generalized and complicated with grep
       }
     }
+  return(z)
 }
