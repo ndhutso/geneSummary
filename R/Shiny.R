@@ -156,9 +156,9 @@ server <- function(input, output, session) {
       num <- counter2$n
       if(num > 0){
         #searches for selct with a number on the end and gets all the inputs from inputId's like this
+        #problem passing values from removed filters, might have to change rmv filter function to remove the value from the list
         y <- sapply(grep(pattern = "selctin+[[:digit:]]", x = names(input), value = TRUE), function(x) input[[x]])
         z <- as.character(sapply(grep(pattern = "textin+[[:digit:]]", x = names(input), value = TRUE), function(x) input[[x]]))
-
         z <- filterTbl(tbl, input$tableType, input$long, y, z)
       }else{
         z <- 0
@@ -179,7 +179,7 @@ server <- function(input, output, session) {
       }
 
       #this narrows down the table if the filters exist
-      if(num==0 | identical(z,integer(0)))  {
+      if(num==0 | identical(z,integer(0)) | identical(z,0))  {
         tbl
       }else{
         tbl[z,]

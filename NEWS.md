@@ -1,3 +1,6 @@
+# geneSummary 0.3.1.0001
+# multiple numerical filters can be used
+
 # geneSummary 0.3.1.0000
 # numerical filter can be used on one sample's expression data
 
