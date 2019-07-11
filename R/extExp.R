@@ -25,11 +25,10 @@
 #'@import "knitr"
 #'@import "kableExtra"
 #'@import "magrittr"
-#'@import "Biobase"
-#'@import "GEOquery"
 #'@import "ggplot2"
 #'@import "tibble"
 #'@import "shiny"
+#'@import "stringr"
 #'@import "DT"
 #'@import "reshape2"
 #'

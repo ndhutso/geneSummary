@@ -1,3 +1,42 @@
+# geneSummary 0.3.1.0002
+# fixed all filters for long data format
+
+# geneSummary 0.3.1.0001
+# multiple numerical filters can be used
+
+# geneSummary 0.3.1.0000
+# numerical filter can be used on one sample's expression data
+
+# geneSummary 0.3.0.0005
+# make it so that geneExpression tables only have 2 options for filters
+
+# geneSummary 0.3.0.0004
+# only use inputs that exist for filtering
+
+# geneSummary 0.3.0.0003
+# save function fixed
+
+# geneSummary 0.3.0.0002
+# fix input reset when number of filters is changed
+
+# geneSummary 0.3.0.0001
+# multiple entries per filter
+
+# geneSummary 0.3.0.0000
+# multiple filter usage
+
+# geneSummary 0.2.1.0001
+# use one filter at one time
+
+# geneSummary 0.2.1.0000
+# ui set up for filtering
+
+# geneSummary 0.2.0.0004
+# fix long format bug
+
+# geneSummary 0.2.0.0003
+# create new reactive functions for repeated lines in Shiny.R
+
 # geneSummary 0.2.0.0002
 # use melt function recommended from Eduardo to create long format
 

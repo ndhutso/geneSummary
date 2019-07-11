@@ -1,7 +1,7 @@
 ---
 title: "geneSummaryVign"
 author: "Nicholas Hutson"
-date: "`r Sys.Date()`"
+date: "6/3/2019"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{geneSummaryVign}
@@ -32,8 +32,5 @@ This function extracts the annotations for each sample. This is information abou
 ## Extract gene annotation (extGene)
 This function extracts the annotations for each gene. This is information about the measurement of each gene such as sequencing of the gene and probe ID. 
 
-## Visualization (box and bar)
-These functions visualize the concentration of the gene TP53. Bar creates a histogram to compare the concentration between samples and box creates a box plot to compare the concentration between the two groups of samples. 
-
-## Comparison and histogram
-These functions creates a table and histogram from the gene concentration for the ten genes with the greatest variances between samples and TP53. The table compares the mean, standard deviation, and median between the two groups of samples and the total gene expression data for each gene. The histogram compares the average gene expression for each of the genes and includes error bars.  
+## Filter data tables (filterTbl)
+This function filters data tables by values in each of their columns. If the table is of the type "Gene Expression", then simple numeric filters with inputs such as "<10" can be used on the sample columns. Other filters require exact value inputs.

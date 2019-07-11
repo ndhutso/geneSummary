@@ -4,12 +4,14 @@
 \alias{extExp}
 \title{Extract Expression Matrix}
 \usage{
-extExp(data, geneSymbol=NA)
+extExp(data, geneSymbol=NA, long=FALSE)
 }
 \arguments{
 \item{data}{data imported using GEOquery}
 
 \item{geneSymbol}{the gene "name" or "symbol"}
+
+\item{long}{a boolean value entered for the data returned to be in a long format}
 }
 \description{
 Extracts the gene expression matrix
@@ -17,7 +19,8 @@ Extracts the gene expression matrix
 \examples{
 data <- getGEO("GSE443452")
 geneSymbol <- "TP53"
-extExp(data, geneSymbol)
+long <- TRUE
+extExp(data, geneSymbol, long)
 
 }
 \author{
