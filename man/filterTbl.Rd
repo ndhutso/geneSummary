@@ -7,7 +7,7 @@
 filterTbl(tbl, type, long = FALSE, var, input)
 }
 \description{
-Filters data tables
+Returns the row indice of the corresponding values to the input.
 }
 \examples{
 

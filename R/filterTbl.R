@@ -1,6 +1,6 @@
 #'Filter Data Tables
 #'
-#'@description Filters data tables
+#'@description Returns the row indice of the corresponding values to the input.
 #'
 #'@usage filterTbl(tbl, type, long = FALSE, var, input)
 #'
@@ -101,7 +101,7 @@ filterTbl <- function(tbl, type, long = FALSE, var, input){ #OUTPUT ROW INDICES 
           }
         }
       } #should output the row indices for matching "Symbol" and "ID" inputs
-    }else if(long==TRUE){
+    }else if(type == "Gene Expression" & long==TRUE){
       #browser()
       if(identical(z,character(0))){
         z <- 0
