@@ -1,3 +1,6 @@
+# geneSummary 0.3.1.0002
+# fixed all filters for long data format
+
 # geneSummary 0.3.1.0001
 # multiple numerical filters can be used
 

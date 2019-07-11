@@ -55,7 +55,7 @@ filterTbl <- function(tbl, type, long = FALSE, var, input){ #OUTPUT ROW INDICES 
           z2 <- z
         }
 
-        browser()
+        #browser()
 
         if(!exists("z1")){
           if(len > 1){
@@ -101,6 +101,31 @@ filterTbl <- function(tbl, type, long = FALSE, var, input){ #OUTPUT ROW INDICES 
           }
         }
       } #should output the row indices for matching "Symbol" and "ID" inputs
+    }else if(long==TRUE){
+      #browser()
+      if(identical(z,character(0))){
+        z <- 0
+      }else{
+
+        zprime <- z
+
+        i <- 1:length(z)
+        z1 <- list()
+
+        z <- lapply(i, function(a){ #try to get list of split character vectors
+          unlist(strsplit(zprime[a],", ",fixed = TRUE))
+          })
+        z <- lapply(i, function(a){
+          j <- length(z[a])
+          z1[a] <- lapply(j, function(b){ #create list of true row indices
+            which(z[a][[b]]==y[,a], arr.ind = TRUE)
+          })
+          reduce(z1[a], intersect)
+        })
+
+        #have to do an intersect for each element of the list, and then the list overall
+        z <- reduce(z, intersect)
+      }
     }else{
       if(identical(z,character(0))){
         z <- 0

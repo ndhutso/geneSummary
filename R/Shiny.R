@@ -224,37 +224,43 @@ server <- function(input, output, session) {
 
     #similar code to above, but has to keep the inputs from the text inputs, so that they can be used in the save names
     tbl <- tab()
-    y <- sapply(grep(pattern = "selctin+[[:digit:]]", x = names(input), value = TRUE), function(x) input[[x]])
-    y <- match(y,colnames(tbl[[2]]))
-    y <- y[!is.na(y)]
-    y <- data.frame(tbl[[2]][,y])
-
-    #browser()
-
-    if(dim(y)[2] > 0){
-      z <- as.character(sapply(grep(pattern = "textin+[[:digit:]]", x = names(input), value = TRUE), function(x) input[[x]]))
-      #browser()
-      x <- which(z!="",arr.ind = TRUE)
-      z <- z[x]
-      #browser()
-
-      if(identical(z,character(0))){
-        z <- 0
-      }else if(length(x) > 0){
-        z <- data.frame(strsplit(z,", ",fixed = TRUE)[[1]])
-        x <- row.match(z, data.frame(y[,x])) #could make this more generalized and complicated with grep
-      }else{
-        z <- data.frame(strsplit(z,", ",fixed = TRUE)[[1]])
-        x <- row.match(z, y) #could make this more generalized and complicated with grep
-      }
+    num <- counter2$n
+    if(num > 0){
+      #searches for selct with a number on the end and gets all the inputs from inputId's like this
+      #problem passing values from removed filters, might have to change rmv filter function to remove the value from the list
+      y <- sapply(grep(pattern = "selctin+[[:digit:]]", x = names(input), value = TRUE), function(x) input[[x]])
+      z1 <- as.character(sapply(grep(pattern = "textin+[[:digit:]]", x = names(input), value = TRUE), function(x) input[[x]]))
+      z <- filterTbl(tbl, input$tableType, input$long, y, z1)
     }else{
       z <- 0
     }
 
+    #code to change "page" or dataset
+    if(!is.data.frame(tbl[[2]])){
+      n <- input$page
+      n <- match(n, tbl[[1]]) #tbl[[1]] is a vector of data set names passed by the extraction functions
+      #browser()
+      if(is.null(n)){
+        n <- 1
+      }
+      #browser()
+      tbl <- tbl[[2]][[n]]
+    }else{
+      tbl <- tbl[[2]]
+    }
+
+    #this narrows down the table if the filters exist
+    if(num==0 | identical(z,integer(0)) | identical(z,0))  {
+      tbl <- tbl
+    }else{
+      tbl <- tbl[z,]
+    }
+
     #browser()
 
+    x <- which(z1!="",arr.ind = TRUE)
+    z1 <- z1[x]
     if(identical(z,0) | identical(z,integer(0)))  {
-      tbl <- tbl[[2]]
       if(input$tableType == "Gene Expression"){
         #browser()
         if(input$long){
@@ -270,19 +276,18 @@ server <- function(input, output, session) {
       }
       #the next save functions take the vector of user text inputs and add them to the end of the file name
     }else{
-      tbl <- tbl[[2]][x,]
       if(input$tableType == "Gene Expression"){
         #browser()
         if(input$long){
-          saveRDS(tbl, file = paste("geneExpression.long.",paste(z[,1],collapse = "."),".rds", sep=""))
+          saveRDS(tbl, file = paste("geneExpression.long.",paste(z1[,1],collapse = "."),".rds", sep=""))
         }else{
-          saveRDS(tbl, file = paste("geneExpression.",paste(z[,1],collapse = "."),".rds", sep=""))
+          saveRDS(tbl, file = paste("geneExpression.",paste(z1[,1],collapse = "."),".rds", sep=""))
         }
       }else if(input$tableType == "Gene Annotations"){
-        saveRDS(tbl, file = paste("geneAnnotation.",paste(z[,1],collapse = "."),".rds", sep=""))
+        saveRDS(tbl, file = paste("geneAnnotation.",paste(z1[,1],collapse = "."),".rds", sep=""))
       }else{
         #browser()
-        saveRDS(tbl, file = paste("sampleAnnotation.",paste(z[,1],collapse = "."),".rds", sep=""))
+        saveRDS(tbl, file = paste("sampleAnnotation.",paste(z1[,1],collapse = "."),".rds", sep=""))
       }
     }
   })

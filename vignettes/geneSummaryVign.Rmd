@@ -33,4 +33,4 @@ This function extracts the annotations for each sample. This is information abou
 This function extracts the annotations for each gene. This is information about the measurement of each gene such as sequencing of the gene and probe ID. 
 
 ## Filter data tables (filterTbl)
-This function filters data tables by values in each of their columns.
+This function filters data tables by values in each of their columns. If the table is of the type "Gene Expression", then simple numeric filters with inputs such as "<10" can be used on the sample columns. Other filters require exact value inputs.
