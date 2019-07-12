@@ -1,3 +1,6 @@
+# geneSummary 1.0.0.0000
+# first release version
+
 # geneSummary 0.3.1.0002
 # fixed all filters for long data format
 
