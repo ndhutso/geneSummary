@@ -129,10 +129,10 @@ server <- function(input, output, session) {
     reactiveValuesToList(input)
   })
 
-  observeEvent(input$submit, {
+  #track the number of input boxes to render
+  counter2 <- reactiveValues(n = 0)
 
-    #track the number of input boxes to render
-    counter2 <- reactiveValues(n = 0)
+  observeEvent(input$submit, {
 
     observeEvent(input$add_btn, {
       counter2$n <- counter2$n + 1
@@ -264,7 +264,7 @@ server <- function(input, output, session) {
   #SAVE function
   observeEvent(input$save, {
 
-    browser()
+    #browser()
 
     #set correct directory
     if(counter$countervalue == 1){

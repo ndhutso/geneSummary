@@ -1,3 +1,6 @@
+# geneSummary 1.0.2.0001
+# fix for save function with GEO data
+
 # geneSummary 1.0.2.0000
 # change filterTbl to work with RSE data and improve it to work with more general data tables
 
