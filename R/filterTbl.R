@@ -12,14 +12,14 @@
 
 filterTbl <- function(tbl, type, long = FALSE, var, input){ #OUTPUT ROW INDICES OR 0
 
-  y <- match(var,colnames(tbl[[2]]))
+  y <- match(var,colnames(tbl))
   y <- y[!is.na(y)]
-  w <- colnames(tbl[[2]])[y]
+  w <- colnames(tbl)[y]
 
-  #browser()
+  browser()
 
   x <- which(input!="",arr.ind = TRUE)
-  y <- data.frame(tbl[[2]][,y])
+  y <- data.frame(tbl[,y])
   #get rid of all empty inputs
   y <- data.frame(y[,x])
   colnames(y) <- w[x]
@@ -35,7 +35,7 @@ filterTbl <- function(tbl, type, long = FALSE, var, input){ #OUTPUT ROW INDICES 
 
         #browser()
 
-        a <- which(colnames(y) %in% colnames(tbl[[2]])[1:2], arr.ind = TRUE)#finds symbol and id inputs where there are inputs3
+        a <- which(colnames(y) %in% colnames(tbl)[1:2], arr.ind = TRUE)#finds symbol and id inputs where there are inputs3
 
         if(!identical(a, integer(0))){
           y1 <- data.frame(y[,a])

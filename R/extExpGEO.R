@@ -34,7 +34,7 @@
 #'
 #'@export
 
-extExp = function(data, geneSymbol=NA, long = FALSE) {
+extExpGEO = function(data, geneSymbol=NA, long = FALSE) {
 
   name <- names(data)
   name <- str_remove(name, "_series_matrix.txt.gz")

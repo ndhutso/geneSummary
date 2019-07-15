@@ -102,8 +102,8 @@ server <- function(input, output, session) {
 
     if(input$importType == "GEO data"){
       #as summarized experiment, gene expressions = exprs(object)
-      x <- makeSummarizedExperimentFromExpressionSet(data()[[1]]) #need to edit for longer expression sets
-      browser()
+      x <- data() #need to edit for longer expression sets
+      #browser()
       tbl <- switch(input$tableType, "Gene Expression" = extExpGEO(x,long = input$long), "Gene Annotations" = extGeneGEO(x),"Sample Annotations" = extSampleGEO(x))
     }else{
       #browser()
@@ -111,7 +111,7 @@ server <- function(input, output, session) {
       #counts(rse_gene) = count of genes at each place
       #rowData = gene annotations
       #colData = sample annotations
-      tbl <- switch(input$tableType, "Gene Expression" = extExpRSE(rse_gene), "Gene Annotations" = rowData(rse_gene),"Sample Annotations" = colData(rse_gene))
+      tbl <- switch(input$tableType, "Gene Expression" = extExpRSE(rse_gene,long = input$long), "Gene Annotations" = rowData(rse_gene),"Sample Annotations" = colData(rse_gene))
       tbl <- data.frame(tbl)
     }
 
@@ -141,8 +141,11 @@ server <- function(input, output, session) {
     #used to remove add button when max filters have been reached
     output$n <- reactive({
       tbl <- tab()
-      if(counter2$n >= length(colnames(tbl[[2]]))){
-        counter2$n <- length(colnames(tbl[[2]]))
+      if(input$importType == "GEO data"){
+        tbl <- tbl[[2]]
+      }
+      if(counter2$n >= length(colnames(tbl))){
+        counter2$n <- length(colnames(tbl))
         FALSE
       }else{
         TRUE
@@ -157,13 +160,17 @@ server <- function(input, output, session) {
       tbl <- tab()
       #if these 2 values are changed, the filters are re-rendered because they are reactive values
 
+      if(input$importType == "GEO data"){
+        tbl <- tbl[[2]]
+      }
+
       if (n > 0) {
           isolate({lapply(seq_len(n), function(i) {
             #browser()
             list( #putting these in a list makes sure they come out in the correct order: select1, text1, select2, text2, etc.
               selectInput(inputId = paste0("selctin", i),
                           label = paste0(i, ". Filter by:"),
-                          choices = colnames(tbl[[2]]),
+                          choices = colnames(tbl),
                           selected = AllInputs()[[paste0("selctin", i)]]),
               textInput(inputId = paste0("textin", i),
                           label = paste0("Value:"),
@@ -195,7 +202,7 @@ server <- function(input, output, session) {
           #problem passing values from removed filters, might have to change rmv filter function to remove the value from the list
           y <- sapply(grep(pattern = "selctin+[[:digit:]]", x = names(input), value = TRUE), function(x) input[[x]])
           z <- as.character(sapply(grep(pattern = "textin+[[:digit:]]", x = names(input), value = TRUE), function(x) input[[x]]))
-          z <- filterTbl(tbl, input$tableType, input$long, y, z)
+          z <- filterTbl(tbl[[2]], input$tableType, input$long, y, z)
         }else{
           z <- 0
         }
@@ -222,7 +229,21 @@ server <- function(input, output, session) {
         }
       }else{
         #browser()
-        tbl
+        if(num > 0){
+          #searches for selct with a number on the end and gets all the inputs from inputId's like this
+          #problem passing values from removed filters, might have to change rmv filter function to remove the value from the list
+          y <- sapply(grep(pattern = "selctin+[[:digit:]]", x = names(input), value = TRUE), function(x) input[[x]])
+          z <- as.character(sapply(grep(pattern = "textin+[[:digit:]]", x = names(input), value = TRUE), function(x) input[[x]]))
+          z <- filterTbl(tbl, input$tableType, input$long, y, z)
+        }else{
+          z <- 0
+        }
+        #this narrows down the table if the filters exist
+        if(num==0 | identical(z,integer(0)) | identical(z,0))  {
+          tbl
+        }else{
+          tbl[z,]
+        }
       }
     }, rownames = FALSE)
   })
