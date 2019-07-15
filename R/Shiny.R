@@ -85,10 +85,10 @@ server <- function(input, output, session) {
 
   data <- reactive({
     if(input$importType == "GEO data"){
-      browser()
+      #browser()
       getGEO(input$DataID1)
     }else{
-      browser()
+      #browser()
       x <- grep("[A-Z]{3}[0-9]{6}", input$DataID2) #outputs "''" at first
       if(identical(x, integer(0))){
         rse_gene <- SummarizedExperiment()
@@ -256,7 +256,8 @@ server <- function(input, output, session) {
   })
 
   observe({
-    input$DataID
+    input$DataID1
+    input$DataID2
     counter$countervalue <- 1 #sets to one whenever DataID is changed so that the user is asked which directory they want to save their data in later in the code, whenever this happens
   })
 
@@ -268,22 +269,42 @@ server <- function(input, output, session) {
     #browser()
 
     #set correct directory
-    if(counter$countervalue == 1){
-      if (exists('utils::choose.dir')) {
-        counter$choice <- choose.dir(caption = "Select folder") #this is only available on Windows
-      } else {
-        counter$choice <- tk_choose.dir(caption = "Select folder")
-      }
-      setwd(counter$choice)
+    if(input$importType == "GEO data"){
+      if(counter$countervalue == 1){
+        if (exists('utils::choose.dir')) {
+          counter$choice <- choose.dir(caption = "Select folder") #this is only available on Windows
+        } else {
+          counter$choice <- tk_choose.dir(caption = "Select folder")
+        }
+        setwd(counter$choice)
         #only call choose.dir if input$DataID is changed after save is hit
-      d <- paste("data.",input$page,sep = "") #sets name of the new folder to data. the "page" or dataset selected
-      dir.create(d)
-      setwd(d)
-    }else if(counter$countervalue > 1){ #if the data set hasn't been changed, the directory stays the same
-      setwd(counter$choice)
-      d <- paste("data.",input$page,sep = "")
-      dir.create(d)
-      setwd(d)
+        d <- paste("data.",input$page,sep = "") #sets name of the new folder to data. the "page" or dataset selected
+        dir.create(d)
+        setwd(d)
+      }else if(counter$countervalue > 1){ #if the data set hasn't been changed, the directory stays the same
+        setwd(counter$choice)
+        d <- paste("data.",input$page,sep = "")
+        dir.create(d)
+        setwd(d)
+      }
+    }else{
+      if(counter$countervalue == 1){
+        if (exists('utils::choose.dir')) {
+          counter$choice <- choose.dir(caption = "Select folder") #this is only available on Windows
+        } else {
+          counter$choice <- tk_choose.dir(caption = "Select folder")
+        }
+        setwd(counter$choice)
+        #only call choose.dir if input$DataID is changed after save is hit
+        d <- paste("data.",input$DataID2,sep = "") #sets name of the new folder to data. the "page" or dataset selected
+        dir.create(d)
+        setwd(d)
+      }else if(counter$countervalue > 1){ #if the data set hasn't been changed, the directory stays the same
+        setwd(counter$choice)
+        d <- paste("data.",input$DataID2,sep = "")
+        dir.create(d)
+        setwd(d)
+      }
     }
 
     counter$countervalue <- counter$countervalue + 1
@@ -320,9 +341,9 @@ server <- function(input, output, session) {
 
       #this narrows down the table if the filters exist
       if(num==0 | identical(z,integer(0)) | identical(z,0))  {
-        tbl
+        tbl <- tbl
       }else{
-        tbl[z,]
+        tbl <- tbl[z,]
       }
     }else{
       #browser()
@@ -337,16 +358,14 @@ server <- function(input, output, session) {
       }
       #this narrows down the table if the filters exist
       if(num==0 | identical(z,integer(0)) | identical(z,0))  {
-        tbl
+        tbl <- tbl
       }else{
-        tbl[z,]
+        tbl <- tbl[z,]
       }
     }
 
     #browser()
 
-    x <- which(z!="",arr.ind = TRUE)
-    z1 <- z[x]
     if(identical(z,0) | identical(z,integer(0)))  {
       if(input$tableType == "Gene Expression"){
         #browser()
@@ -366,15 +385,15 @@ server <- function(input, output, session) {
       if(input$tableType == "Gene Expression"){
         #browser()
         if(input$long){
-          saveRDS(tbl, file = paste("geneExpression.long.",paste(z1[,1],collapse = "."),".rds", sep=""))
+          saveRDS(tbl, file = paste("geneExpression.long.",paste(z,collapse = "."),".rds", sep=""))
         }else{
-          saveRDS(tbl, file = paste("geneExpression.",paste(z1[,1],collapse = "."),".rds", sep=""))
+          saveRDS(tbl, file = paste("geneExpression.",paste(z,collapse = "."),".rds", sep=""))
         }
       }else if(input$tableType == "Gene Annotations"){
-        saveRDS(tbl, file = paste("geneAnnotation.",paste(z1[,1],collapse = "."),".rds", sep=""))
+        saveRDS(tbl, file = paste("geneAnnotation.",paste(z,collapse = "."),".rds", sep=""))
       }else{
         #browser()
-        saveRDS(tbl, file = paste("sampleAnnotation.",paste(z1[,1],collapse = "."),".rds", sep=""))
+        saveRDS(tbl, file = paste("sampleAnnotation.",paste(z,collapse = "."),".rds", sep=""))
       }
     }
   })

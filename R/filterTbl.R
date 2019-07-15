@@ -16,7 +16,7 @@ filterTbl <- function(tbl, type, long = FALSE, var, input){ #OUTPUT ROW INDICES 
   y <- y[!is.na(y)]
   w <- colnames(tbl)[y]
 
-  browser()
+  #browser()
 
   x <- which(input!="",arr.ind = TRUE)
   y <- data.frame(tbl[,y])
@@ -55,7 +55,7 @@ filterTbl <- function(tbl, type, long = FALSE, var, input){ #OUTPUT ROW INDICES 
           z2 <- z
         }
 
-        #browser()
+        browser()
 
         if(!exists("z1")){
           if(len > 1){
