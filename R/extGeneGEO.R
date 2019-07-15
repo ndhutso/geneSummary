@@ -1,8 +1,8 @@
 #'Extract Gene Annotation Matrix
 #'
-#'@description Extracts the gene annotation matrix
+#'@description Extracts the gene annotation matrix for GEO data
 #'
-#'@usage extGene(data, geneSymbol = NA)
+#'@usage extGeneGEO(data, geneSymbol = NA)
 #'
 #'@author Nicholas Hutson
 #'

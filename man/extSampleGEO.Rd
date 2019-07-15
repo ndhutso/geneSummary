@@ -4,7 +4,7 @@
 \alias{extSampleGEO}
 \title{Extract Sample Matrix}
 \usage{
-extSample(data,sampleName)
+extSampleGEO(data,sampleName)
 }
 \arguments{
 \item{data}{data imported using GEOquery}
@@ -12,7 +12,7 @@ extSample(data,sampleName)
 \item{sampleName}{the sample name}
 }
 \description{
-Extracts the sample annotation matrix
+Extracts the sample annotation matrix for GEO data
 }
 \examples{
 data <- getGEO("GSE443452")

@@ -6,7 +6,11 @@
 #'
 #'@author Nicholas Hutson
 #'
-#'@examples
+#'@examples data <- getGEO("GSE443452")
+#'geneSymbol <- "TP53"
+#'long <- TRUE
+#'tbl <- extExp(data, geneSymbol, long)
+#'filterTbl(tbl, "Gene Expression", geneSymbol, long)
 #'
 #'@export
 

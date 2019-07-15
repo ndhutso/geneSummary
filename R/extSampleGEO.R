@@ -1,8 +1,8 @@
 #'Extract Sample Matrix
 #'
-#'@description Extracts the sample annotation matrix
+#'@description Extracts the sample annotation matrix for GEO data
 #'
-#'@usage extSample(data,sampleName)
+#'@usage extSampleGEO(data,sampleName)
 #'
 #'@author Nicholas Hutson
 #'

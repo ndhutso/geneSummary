@@ -1,17 +1,19 @@
 #'Extract Expression Matrix
 #'
-#'@description Extracts the gene expression matrix
+#'@description Extracts the gene expression matrix for RSE data
 #'
-#'@usage extExp(data, geneSymbol=NA, long=FALSE)
+#'@usage extExpRSE(data, geneSymbol=NA, long = FALSE)
 #'
 #'@author Nicholas Hutson
 #'
-#'@examples data <- getGEO("GSE443452")
+#'@examples download_study("SRP009615")
+#'y <- file.path("SRP009615", 'rse_gene.Rdata')
+#'load(y)
 #'geneSymbol <- "TP53"
 #'long <- TRUE
-#'extExp(data, geneSymbol, long)
+#'extExpRSE(rse_gene, geneSymbol, long)
 #'
-#'@param data data imported using GEOquery
+#'@param data data imported using recount2
 #'@param geneSymbol the gene "name" or "symbol"
 #'@param long a boolean value entered for the data returned to be in a long format
 #'

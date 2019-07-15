@@ -4,7 +4,7 @@
 \alias{extGeneGEO}
 \title{Extract Gene Annotation Matrix}
 \usage{
-extGene(data, geneSymbol = NA)
+extGeneGEO(data, geneSymbol = NA)
 }
 \arguments{
 \item{data}{data imported using GEOquery}
@@ -12,7 +12,7 @@ extGene(data, geneSymbol = NA)
 \item{geneSymbol}{the gene "name" or "symbol"}
 }
 \description{
-Extracts the gene annotation matrix
+Extracts the gene annotation matrix for GEO data
 }
 \examples{
 data <- getGEO("GSE443452")

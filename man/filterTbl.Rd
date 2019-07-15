@@ -10,6 +10,11 @@ filterTbl(tbl, type, long = FALSE, var, input)
 Returns the row indice of the corresponding values to the input.
 }
 \examples{
+data <- getGEO("GSE443452")
+geneSymbol <- "TP53"
+long <- TRUE
+tbl <- extExp(data, geneSymbol, long)
+filterTbl(tbl, "Gene Expression", geneSymbol, long)
 
 }
 \author{

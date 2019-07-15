@@ -4,23 +4,25 @@
 \alias{extExpRSE}
 \title{Extract Expression Matrix}
 \usage{
-extExp(data, geneSymbol=NA, long=FALSE)
+extExpRSE(data, geneSymbol=NA, long = FALSE)
 }
 \arguments{
-\item{data}{data imported using GEOquery}
+\item{data}{data imported using recount2}
 
 \item{geneSymbol}{the gene "name" or "symbol"}
 
 \item{long}{a boolean value entered for the data returned to be in a long format}
 }
 \description{
-Extracts the gene expression matrix
+Extracts the gene expression matrix for RSE data
 }
 \examples{
-data <- getGEO("GSE443452")
+download_study("SRP009615")
+y <- file.path("SRP009615", 'rse_gene.Rdata')
+load(y)
 geneSymbol <- "TP53"
 long <- TRUE
-extExp(data, geneSymbol, long)
+extExpRSE(rse_gene, geneSymbol, long)
 
 }
 \author{

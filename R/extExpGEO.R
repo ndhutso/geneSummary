@@ -1,8 +1,8 @@
 #'Extract Expression Matrix
 #'
-#'@description Extracts the gene expression matrix
+#'@description Extracts the gene expression matrix for GEO data
 #'
-#'@usage extExp(data, geneSymbol=NA, long=FALSE)
+#'@usage extExpGEO(data, geneSymbol=NA, long=FALSE)
 #'
 #'@author Nicholas Hutson
 #'

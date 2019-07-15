@@ -4,7 +4,7 @@
 \alias{extExpGEO}
 \title{Extract Expression Matrix}
 \usage{
-extExp(data, geneSymbol=NA, long=FALSE)
+extExpGEO(data, geneSymbol=NA, long=FALSE)
 }
 \arguments{
 \item{data}{data imported using GEOquery}
@@ -14,7 +14,7 @@ extExp(data, geneSymbol=NA, long=FALSE)
 \item{long}{a boolean value entered for the data returned to be in a long format}
 }
 \description{
-Extracts the gene expression matrix
+Extracts the gene expression matrix for GEO data
 }
 \examples{
 data <- getGEO("GSE443452")
