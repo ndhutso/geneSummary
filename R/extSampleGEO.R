@@ -8,14 +8,14 @@
 #'
 #'@examples data <- getGEO("GSE443452")
 #'sampleName <- "DBTRG untreated rep1"
-#'extSample(data,sampleName)
+#'extSampleGEO(data,sampleName)
 #'
 #'@param data data imported using GEOquery
 #'@param sampleName the sample name
 #'
 #'@export
 
-extSample = function(data, sampleName = NA){
+extSampleGEO = function(data, sampleName = NA){
 
   name <- names(data)
   name <- str_remove(name, "_series_matrix.txt.gz")

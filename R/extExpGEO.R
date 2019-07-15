@@ -34,16 +34,16 @@
 #'
 #'@export
 
-extExp = function(data, geneSymbol=NA, long = FALSE) {
+extExpGEO = function(data, geneSymbol=NA, long = FALSE) {
 
   name <- names(data)
   name <- str_remove(name, "_series_matrix.txt.gz")
   if(length(data)>1){
-      data3 <- data
+    data3 <- data
 
-      data1 <- lapply(data3, fData)
-      #CURSED CODE
-      data2 <- lapply(data3, exprs)
+    data1 <- lapply(data3, fData)
+    #CURSED CODE
+    data2 <- lapply(data3, exprs)
 
     ##maybe put in for loop to go through every part of the list
     expData <- list()
@@ -54,11 +54,11 @@ extExp = function(data, geneSymbol=NA, long = FALSE) {
 
       if(is.na(geneSymbol))
       {
-          expData[[i]] <- as.data.frame(data2[[i]])
-          geneSymbol <- data1[[i]][,idxSym]
-          geneName <- data1[[i]][,idxName]
-          expData[[i]] <- add_column(expData[[i]],Symbol = geneSymbol, .before = colnames(expData[[i]])[[1]]) #somehow changing into a list here
-          expData[[i]] <- add_column(expData[[i]],ID = geneName, .before = colnames(expData[[i]])[[1]])
+        expData[[i]] <- as.data.frame(data2[[i]])
+        geneSymbol <- data1[[i]][,idxSym]
+        geneName <- data1[[i]][,idxName]
+        expData[[i]] <- add_column(expData[[i]],Symbol = geneSymbol, .before = colnames(expData[[i]])[[1]]) #somehow changing into a list here
+        expData[[i]] <- add_column(expData[[i]],ID = geneName, .before = colnames(expData[[i]])[[1]])
 
       }else{
 
@@ -99,11 +99,11 @@ extExp = function(data, geneSymbol=NA, long = FALSE) {
 
     if(is.na(geneSymbol))
     {
-        expData <- as.data.frame(data2)
-        geneSymbol <- data1[,idxSym]
-        geneName <- data1[,idxName]
-        expData <- add_column(expData,Symbol = geneSymbol, .before = colnames(expData)[[1]])
-        expData <- add_column(expData,ID = geneName, .before = colnames(expData)[[1]])
+      expData <- as.data.frame(data2)
+      geneSymbol <- data1[,idxSym]
+      geneName <- data1[,idxName]
+      expData <- add_column(expData,Symbol = geneSymbol, .before = colnames(expData)[[1]])
+      expData <- add_column(expData,ID = geneName, .before = colnames(expData)[[1]])
     }else{
 
       geneName <- data1$ID[match(geneSymbol,data1[,idxSym])] #might not account for multiple genes with same symbol
@@ -129,4 +129,3 @@ extExp = function(data, geneSymbol=NA, long = FALSE) {
   }
   return(list(name,expData))
 }
-

@@ -1,3 +1,24 @@
+# geneSummary 1.0.3.0001
+# fix filterTbl for multiple numeric filters
+
+# geneSummary 1.0.3.0000
+# update save function to work with RSE data
+
+# geneSummary 1.0.2.0002
+# fix RSE data so that it updates table when new accession ID's are inputed
+
+# geneSummary 1.0.2.0001
+# fix for save function with GEO data
+
+# geneSummary 1.0.2.0000
+# change filterTbl to work with RSE data and improve it to work with more general data tables
+
+# geneSummary 1.0.1.0001
+# alter Shiny to use new function
+
+# geneSummary 1.0.1.0000
+# start adding separate functions for recount2 data
+
 # geneSummary 1.0.0.0000
 # first release version
 

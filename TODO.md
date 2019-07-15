@@ -29,6 +29,7 @@
         [x] make it so that geneExpression tables only have 2 options for filters
         [x] implement numeric filters
         [ ] make an option for a filter disappear from the list for additional filters/make identical filter by's compatible
+        [x] FIX variable "len" INITIALIZATION
     [ ] look at DT table filters 
     [x] give checkbox option for long format of data which is easier for graphing
     [x] add ID column to extExp or move gene symbols to rownames
@@ -38,6 +39,11 @@
     [x] fix symbol column
     [x] check if other functions need a similar update
     [x] test extGene and extSample for multiple data sets
-[ ] implement recount2 data
+[x] implement recount2 data
+    [x] figure out how pass a text input to get rse objects
+    [x] create new function to extract gene expression for RSE data
+    [x] apply filters
+    [x] make sure long style format works
+    [x] update save function
 [ ] DOCUMENTATION
 [ ] fix issue where GEOquery, stringr aren't importing - make biobase and them required

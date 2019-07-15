@@ -8,14 +8,14 @@
 #'
 #'@examples data <- getGEO("GSE443452")
 #'geneSymbol <- "TP53"
-#'extGene(data, geneSymbol)
+#'extGeneGEO(data, geneSymbol)
 #'
 #'@param data data imported using GEOquery
 #'@param geneSymbol the gene "name" or "symbol"
 #'
 #'@export
 
-extGene = function(data, geneSymbol = NA){
+extGeneGEO = function(data, geneSymbol = NA){
 
   name <- names(data)
   name <- str_remove(name, "_series_matrix.txt.gz")
