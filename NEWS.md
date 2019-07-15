@@ -1,3 +1,6 @@
+# geneSummary 1.0.2.0002
+# fix RSE data so that it updates table when new accession ID's are inputed
+
 # geneSummary 1.0.2.0001
 # fix for save function with GEO data
 

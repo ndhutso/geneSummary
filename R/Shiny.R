@@ -18,11 +18,11 @@ ui <- fluidPage(
       selectInput(inputId = "importType", label = "Data type:", choices = c("GEO data", "RSE data"), selected = "GEO data"),
       conditionalPanel(
         condition = "input.importType == 'GEO data'",
-        textInput(inputId = "DataID", label = "GEO accession ID:")
+        textInput(inputId = "DataID1", label = "GEO accession ID:")
       ),
       conditionalPanel(
         condition = "input.importType == 'RSE data'",
-        textInput(inputId = "DataID", label = "RSE accession ID:")
+        textInput(inputId = "DataID2", label = "RSE accession ID:")
       ),
       actionButton("submit", label = "Submit"),
       br(),
@@ -85,21 +85,19 @@ server <- function(input, output, session) {
 
   data <- reactive({
     if(input$importType == "GEO data"){
-      getGEO(input$DataID)
-    }else{
-      x <- grep("[A-Z]{3}[0-9]{6}", input$DataID) #outputs "''" at first
       browser()
-      #tryCatch()
+      getGEO(input$DataID1)
+    }else{
+      browser()
+      x <- grep("[A-Z]{3}[0-9]{6}", input$DataID2) #outputs "''" at first
       if(identical(x, integer(0))){
         rse_gene <- SummarizedExperiment()
       }else{
-        download_study(input$DataID) #throws an error that stops all code if the study ID doesn't exist
-        load(file.path(input$DataID, 'rse_gene.Rdata'))
+        rse_gene <- NULL
+        download_study(input$DataID2) #throws an error that stops all code if the study ID doesn't exist
+        y <- file.path(input$DataID2, 'rse_gene.Rdata')
+        load(y)
       }
-
-      #download_study('SRP009615')
-      #load(file.path('SRP009615', 'rse_gene.Rdata'))
-      #browser()
       rse_gene
     }
     })
@@ -112,7 +110,7 @@ server <- function(input, output, session) {
       #browser()
       tbl <- switch(input$tableType, "Gene Expression" = extExpGEO(x,long = input$long), "Gene Annotations" = extGeneGEO(x),"Sample Annotations" = extSampleGEO(x))
     }else{
-      browser()
+      #browser()
       rse_gene <- data()
       #counts(rse_gene) = count of genes at each place
       #rowData = gene annotations
@@ -193,8 +191,11 @@ server <- function(input, output, session) {
     #create "page" input
     output$length <- renderUI({
         tbl <- tab()
-        #browser()
-        selectInput(inputId = "page", label = "Dataset:",choices = tbl[[1]])
+        if(input$importType == "GEO data"){
+          selectInput(inputId = "page", label = "Dataset:",choices = tbl[[1]])
+        }else{
+          NULL
+        }
     })
 
     #create data table
