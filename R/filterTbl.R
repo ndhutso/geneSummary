@@ -50,18 +50,18 @@ filterTbl <- function(tbl, type, long = FALSE, var, input){ #OUTPUT ROW INDICES 
           len <- dim(data.frame(y[,-a]))[2] #different way to find the number of elements
           z2 <- z[-a]
         }else{ #if there is no symbol or ID inputs (z1 = NULL or doesn't exist), what should z1 be
-          y2 <- as.character(y)
-          len <- dim(data.frame(y[,-a]))[2]
+          y2 <- y
+          len <- dim(y)[2]
           z2 <- z
         }
 
-        browser()
+        #browser()
 
         if(!exists("z1")){
-          if(len > 1){
+          if(len > 1 | len == 0){
             b <- list()
             for(i in 1:len){
-              b[i] <- paste(y2[i], z2[i]) #should be like "y >4"
+              b[i] <- paste(as.character(y2[i]), z2[i]) #should be like "y >4", only adding operator to end of vector
               b[i] <- parse(text = b[i])
             }
             z <- which(apply(data.frame(b),1,all)==TRUE, arr.ind = TRUE) #false when there's any false
@@ -77,7 +77,7 @@ filterTbl <- function(tbl, type, long = FALSE, var, input){ #OUTPUT ROW INDICES 
           }else if(len > 1){
             b <- list()
             for(i in 1:len){
-              b[i] <- paste(y2[i], z2[i]) #should be like "y >4"
+              b[i] <- paste(as.character(y2[i]), z2[i]) #should be like "y >4"
               b[i] <- parse(text = b[i])
             }
             z2 <- which(apply(data.frame(b),1,all)==TRUE, arr.ind = TRUE) #false when there's any false

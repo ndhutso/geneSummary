@@ -1,3 +1,6 @@
+# geneSummary 1.0.3.0001
+# fix filterTbl for multiple numeric filters
+
 # geneSummary 1.0.3.0000
 # update save function to work with RSE data
 
