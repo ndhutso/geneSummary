@@ -44,5 +44,6 @@
     [x] create new function to extract gene expression for RSE data
     [x] apply filters
     [x] make sure long style format works
+    [ ] update save function
 [ ] DOCUMENTATION
 [ ] fix issue where GEOquery, stringr aren't importing - make biobase and them required

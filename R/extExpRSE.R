@@ -22,10 +22,16 @@ extExpRSE = function(data, geneSymbol=NA, long = FALSE) {
     data1 <- data.frame(rowData(data))
     #CURSED CODE
 
+    #browser()
+
     data2 <- data.frame(assays(data)$counts)
 
     idxSym <- grep("symbol", colnames(data1))
     idxName <- grep("id", colnames(data1))
+
+    if(identical(idxSym, integer(0))){
+      return(data.frame())
+    }
 
     if(is.na(geneSymbol))
     {

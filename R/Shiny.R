@@ -87,12 +87,18 @@ server <- function(input, output, session) {
     if(input$importType == "GEO data"){
       getGEO(input$DataID)
     }else{
-      #x <- paste0("'",input$DataID,"'")
+      x <- grep("[A-Z]{3}[0-9]{6}", input$DataID) #outputs "''" at first
+      browser()
       #tryCatch()
-      #download_study(x)
-      download_study('SRP009615')
-      #load(file.path(x, 'rse_gene.Rdata'))
-      load(file.path('SRP009615', 'rse_gene.Rdata'))
+      if(identical(x, integer(0))){
+        rse_gene <- SummarizedExperiment()
+      }else{
+        download_study(input$DataID) #throws an error that stops all code if the study ID doesn't exist
+        load(file.path(input$DataID, 'rse_gene.Rdata'))
+      }
+
+      #download_study('SRP009615')
+      #load(file.path('SRP009615', 'rse_gene.Rdata'))
       #browser()
       rse_gene
     }
@@ -106,7 +112,7 @@ server <- function(input, output, session) {
       #browser()
       tbl <- switch(input$tableType, "Gene Expression" = extExpGEO(x,long = input$long), "Gene Annotations" = extGeneGEO(x),"Sample Annotations" = extSampleGEO(x))
     }else{
-      #browser()
+      browser()
       rse_gene <- data()
       #counts(rse_gene) = count of genes at each place
       #rowData = gene annotations
@@ -258,7 +264,7 @@ server <- function(input, output, session) {
   #SAVE function
   observeEvent(input$save, {
 
-    #browser()
+    browser()
 
     #set correct directory
     if(counter$countervalue == 1){
@@ -286,41 +292,60 @@ server <- function(input, output, session) {
     #similar code to above, but has to keep the inputs from the text inputs, so that they can be used in the save names
     tbl <- tab()
     num <- counter2$n
-    if(num > 0){
-      #searches for selct with a number on the end and gets all the inputs from inputId's like this
-      #problem passing values from removed filters, might have to change rmv filter function to remove the value from the list
-      y <- sapply(grep(pattern = "selctin+[[:digit:]]", x = names(input), value = TRUE), function(x) input[[x]])
-      z1 <- as.character(sapply(grep(pattern = "textin+[[:digit:]]", x = names(input), value = TRUE), function(x) input[[x]]))
-      z <- filterTbl(tbl, input$tableType, input$long, y, z1)
-    }else{
-      z <- 0
-    }
-
-    #code to change "page" or dataset
-    if(!is.data.frame(tbl[[2]])){
-      n <- input$page
-      n <- match(n, tbl[[1]]) #tbl[[1]] is a vector of data set names passed by the extraction functions
-      #browser()
-      if(is.null(n)){
-        n <- 1
+    if(input$importType == "GEO data"){
+      if(num > 0){
+        #searches for selct with a number on the end and gets all the inputs from inputId's like this
+        #problem passing values from removed filters, might have to change rmv filter function to remove the value from the list
+        y <- sapply(grep(pattern = "selctin+[[:digit:]]", x = names(input), value = TRUE), function(x) input[[x]])
+        z <- as.character(sapply(grep(pattern = "textin+[[:digit:]]", x = names(input), value = TRUE), function(x) input[[x]]))
+        z <- filterTbl(tbl[[2]], input$tableType, input$long, y, z)
+      }else{
+        z <- 0
       }
-      #browser()
-      tbl <- tbl[[2]][[n]]
-    }else{
-      tbl <- tbl[[2]]
-    }
 
-    #this narrows down the table if the filters exist
-    if(num==0 | identical(z,integer(0)) | identical(z,0))  {
-      tbl <- tbl
+      #code to change "page" or dataset
+      if(!is.data.frame(tbl[[2]])){
+        n <- input$page
+        n <- match(n, tbl[[1]]) #tbl[[1]] is a vector of data set names passed by the extraction functions
+        #browser()
+        if(is.null(n)){
+          n <- 1
+        }
+        #browser()
+        tbl <- tbl[[2]][[n]]
+      }else{
+        tbl <- tbl[[2]]
+      }
+
+      #this narrows down the table if the filters exist
+      if(num==0 | identical(z,integer(0)) | identical(z,0))  {
+        tbl
+      }else{
+        tbl[z,]
+      }
     }else{
-      tbl <- tbl[z,]
+      #browser()
+      if(num > 0){
+        #searches for selct with a number on the end and gets all the inputs from inputId's like this
+        #problem passing values from removed filters, might have to change rmv filter function to remove the value from the list
+        y <- sapply(grep(pattern = "selctin+[[:digit:]]", x = names(input), value = TRUE), function(x) input[[x]])
+        z <- as.character(sapply(grep(pattern = "textin+[[:digit:]]", x = names(input), value = TRUE), function(x) input[[x]]))
+        z <- filterTbl(tbl, input$tableType, input$long, y, z)
+      }else{
+        z <- 0
+      }
+      #this narrows down the table if the filters exist
+      if(num==0 | identical(z,integer(0)) | identical(z,0))  {
+        tbl
+      }else{
+        tbl[z,]
+      }
     }
 
     #browser()
 
-    x <- which(z1!="",arr.ind = TRUE)
-    z1 <- z1[x]
+    x <- which(z!="",arr.ind = TRUE)
+    z1 <- z[x]
     if(identical(z,0) | identical(z,integer(0)))  {
       if(input$tableType == "Gene Expression"){
         #browser()
