@@ -3,7 +3,7 @@
 export(bar)
 export(box)
 export(compare)
-export(extExp)
+export(extExpRSE)
 export(extGene)
 export(extSample)
 export(filterTbl)

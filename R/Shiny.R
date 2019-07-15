@@ -64,7 +64,9 @@ ui <- fluidPage(
         )
       ),
 
-      uiOutput("length"),
+      conditionalPanel(
+        condition = "input.importType == 'GEO data'",
+        uiOutput("length")),
 
       conditionalPanel(
         condition = "output.table",
@@ -81,21 +83,35 @@ ui <- fluidPage(
 # Define server logic
 server <- function(input, output, session) {
 
-  #data <- reactive({getGEO(input$DataID)})
+  data <- reactive({
+    if(input$importType == "GEO data"){
+      getGEO(input$DataID)
+    }else{
+      #x <- paste0("'",input$DataID,"'")
+      #tryCatch()
+      #download_study(x)
+      download_study('SRP009615')
+      #load(file.path(x, 'rse_gene.Rdata'))
+      load(file.path('SRP009615', 'rse_gene.Rdata'))
+      browser()
+      rse_gene
+    }
+    })
 
   tab <- reactive({ #pre-rendered data and table so that the different types of tables can be accessed quickly without having to re-load the data from online
 
     if(input$importType == "GEO data"){
-      x <- getGEO(input$DataID)
-      tbl <- switch(input$tableType, "Gene Expression" = extExp(x,long = input$long), "Gene Annotations" = extGene(x),"Sample Annotations" = extSample(x))
-    }else{
+      #as summarized experiment, gene expressions = exprs(object)
+      x <- makeSummarizedExperimentFromExpressionSet(data()[[1]]) #need to edit for longer expression sets
       browser()
-      download_study('SRP009615')
-      load(file.path('SRP009615', 'rse_gene.Rdata'))
-      #rse_read_counts
-      #rowData
-      #colData
-      tbl <- switch(input$tableType, "Gene Expression" = rowData(rse_gene), "Gene Annotations" = colData(rse_gene),"Sample Annotations" = colData(rse_gene))
+      tbl <- switch(input$tableType, "Gene Expression" = extExpGEO(x,long = input$long), "Gene Annotations" = extGeneGEO(x),"Sample Annotations" = extSampleGEO(x))
+    }else{
+      #browser()
+      rse_gene <- data()
+      #counts(rse_gene) = count of genes at each place
+      #rowData = gene annotations
+      #colData = sample annotations
+      tbl <- switch(input$tableType, "Gene Expression" = extExpRSE(rse_gene), "Gene Annotations" = extGeneRSE(rse_gene),"Sample Annotations" = extSampleRSE(rse_gene))
       tbl <- data.frame(tbl)
     }
 

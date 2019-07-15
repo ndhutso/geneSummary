@@ -39,5 +39,8 @@
     [x] check if other functions need a similar update
     [x] test extGene and extSample for multiple data sets
 [ ] implement recount2 data
+    [ ] figure out how pass a text input to get rse objects
+    [ ] use on disk data to speed up table creation?
+    [ ] update all extraction functions and Shiny.R to use summarizedExperiments instead of expressionSets
 [ ] DOCUMENTATION
 [ ] fix issue where GEOquery, stringr aren't importing - make biobase and them required

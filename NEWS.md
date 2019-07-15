@@ -1,3 +1,6 @@
+# geneSummary 1.0.1.0000
+# start adding separate functions for recount2 data
+
 # geneSummary 0.3.1.0002
 # fixed all filters for long data format
 
