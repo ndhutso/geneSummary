@@ -93,7 +93,7 @@ server <- function(input, output, session) {
       download_study('SRP009615')
       #load(file.path(x, 'rse_gene.Rdata'))
       load(file.path('SRP009615', 'rse_gene.Rdata'))
-      browser()
+      #browser()
       rse_gene
     }
     })
@@ -111,7 +111,7 @@ server <- function(input, output, session) {
       #counts(rse_gene) = count of genes at each place
       #rowData = gene annotations
       #colData = sample annotations
-      tbl <- switch(input$tableType, "Gene Expression" = extExpRSE(rse_gene), "Gene Annotations" = extGeneRSE(rse_gene),"Sample Annotations" = extSampleRSE(rse_gene))
+      tbl <- switch(input$tableType, "Gene Expression" = extExpRSE(rse_gene), "Gene Annotations" = rowData(rse_gene),"Sample Annotations" = colData(rse_gene))
       tbl <- data.frame(tbl)
     }
 

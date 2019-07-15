@@ -1,3 +1,6 @@
+# geneSummary 1.0.1.0001
+# alter Shiny to use new function
+
 # geneSummary 1.0.1.0000
 # start adding separate functions for recount2 data
 

@@ -15,33 +15,12 @@
 #'@param geneSymbol the gene "name" or "symbol"
 #'@param long a boolean value entered for the data returned to be in a long format
 #'
-#'@import "plyr"
-#'@import "tidyverse"
-#'@import "purrr"
-#'@import "dplyr"
-#'@import "sSeq"
-#'@import "matrixStats"
-#'@import "varhandle"
-#'@import "knitr"
-#'@import "kableExtra"
-#'@import "magrittr"
-#'@import "ggplot2"
-#'@import "tibble"
-#'@import "shiny"
-#'@import "stringr"
-#'@import "DT"
-#'@import "reshape2"
-#'
 #'@export
 
 extExpRSE = function(data, geneSymbol=NA, long = FALSE) {
 
-    browser()
-
     data1 <- data.frame(rowData(data))
     #CURSED CODE
-
-    browser()
 
     data2 <- data.frame(assays(data)$counts)
 
