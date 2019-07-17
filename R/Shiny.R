@@ -29,15 +29,19 @@ ui <- fluidPage(
       br(),
       conditionalPanel(
         condition = "output.n",
+        checkboxGroupInput("graphType",
+                           label = c("Histogram", "Boxplot"),
+                           choices = c("Histogram", "Boxplot"),
+                           selected = NULL),
         actionButton("add_btn", "Add Filter")
       ),
       conditionalPanel(
         condition = "output.table",
         actionButton("rm_btn", "Remove Filter"),
         br(),
-        br()
-      ),
-      uiOutput("textbox_ui1") #displays the filter list output
+        br(),
+        uiOutput("textbox_ui1") #displays the filter list output
+      )
     ),
 
     # Main panel for displaying outputs ----
@@ -67,6 +71,8 @@ ui <- fluidPage(
       conditionalPanel(
         condition = "input.importType == 'GEO data'",
         uiOutput("length")),
+
+      plotOutput("graph"),
 
       conditionalPanel(
         condition = "output.table",
@@ -131,7 +137,6 @@ server <- function(input, output, session) {
   counter2 <- reactiveValues(n = 0)
 
   observeEvent(input$submit, {
-
     observeEvent(input$add_btn, {
       counter2$n <- counter2$n + 1
       })
@@ -157,6 +162,72 @@ server <- function(input, output, session) {
       #browser()
     })
     outputOptions(output, 'n', suspendWhenHidden = FALSE)
+
+    output$graph <- renderPlot({
+
+      num <- counter2$n
+      tbl <- tab()
+
+      if(input$importType == "GEO data"){
+        if(num > 0){
+          #searches for selct with a number on the end and gets all the inputs from inputId's like this
+          #problem passing values from removed filters, might have to change rmv filter function to remove the value from the list
+          y <- sapply(grep(pattern = "selctin+[[:digit:]]", x = names(input), value = TRUE), function(x) input[[x]])
+          z <- as.character(sapply(grep(pattern = "textin+[[:digit:]]", x = names(input), value = TRUE), function(x) input[[x]]))
+          z <- filterTbl(tbl[[2]], input$tableType, input$long, y, z)
+        }else{
+          z <- 0
+        }
+
+        #code to change "page" or dataset
+        if(!is.data.frame(tbl[[2]])){
+          n <- input$page
+          n <- match(n, tbl[[1]]) #tbl[[1]] is a vector of data set names passed by the extraction functions
+          #browser()
+          if(is.null(n)){
+            n <- 1
+          }
+          #browser()
+          tbl <- tbl[[2]][[n]]
+        }else{
+          tbl <- tbl[[2]]
+        }
+
+        #this narrows down the table if the filters exist
+        if(num==0 | identical(z,integer(0)) | identical(z,0))  {
+          tbl <- tbl
+        }else{
+          tbl <- tbl[z,]
+        }
+      }else{
+        #browser()
+        if(num > 0){
+          #searches for selct with a number on the end and gets all the inputs from inputId's like this
+          #problem passing values from removed filters, might have to change rmv filter function to remove the value from the list
+          y <- sapply(grep(pattern = "selctin+[[:digit:]]", x = names(input), value = TRUE), function(x) input[[x]])
+          z <- as.character(sapply(grep(pattern = "textin+[[:digit:]]", x = names(input), value = TRUE), function(x) input[[x]]))
+          z <- filterTbl(tbl, input$tableType, input$long, y, z)
+        }else{
+          z <- 0
+        }
+        #this narrows down the table if the filters exist
+        if(num==0 | identical(z,integer(0)) | identical(z,0))  {
+          tbl <- tbl
+        }else{
+          tbl <- tbl[z,]
+        }
+      }
+
+      browser()
+
+      if(input$graphType == "Histogram"){
+        hist(tbl)
+      }else if(input$graphType == "Boxplot"){
+        box(tbl)
+      }else{
+        NULL
+      }
+    })
 
     #create UI inputs
     textboxes1 <- reactive({
