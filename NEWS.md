@@ -1,3 +1,6 @@
+# geneSummary 1.0.4.0000
+# add first version of histogram graphing 
+
 # geneSummary 1.0.3.0001
 # fix filterTbl for multiple numeric filters
 

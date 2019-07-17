@@ -29,10 +29,9 @@ ui <- fluidPage(
       br(),
       conditionalPanel(
         condition = "output.n",
-        checkboxGroupInput("graphType",
-                           label = c("Histogram", "Boxplot"),
-                           choices = c("Histogram", "Boxplot"),
-                           selected = NULL),
+        selectInput("graphType",
+                           label = "Graph",
+                           choices = c("None","Histogram", "Boxplot")),
         actionButton("add_btn", "Add Filter")
       ),
       conditionalPanel(
@@ -72,7 +71,10 @@ ui <- fluidPage(
         condition = "input.importType == 'GEO data'",
         uiOutput("length")),
 
-      plotOutput("graph"),
+      conditionalPanel(
+        condition = "input.graphType != 'None'",
+        plotOutput("graph")
+      ),
 
       conditionalPanel(
         condition = "output.table",
@@ -218,7 +220,7 @@ server <- function(input, output, session) {
         }
       }
 
-      browser()
+      #browser()
 
       if(input$graphType == "Histogram"){
         hist(tbl)

@@ -15,9 +15,14 @@
 
 
 box <- function(tbl){
-  #graph
-  browser()
-  Data <- tibble(Sample = colnames(tbl)[c(-1,-2)], Concentration = tbl[,c(-1,-2)])
+  #need to flesh out how to narrow down the options for this
+  #browser()
+  expData <- as.data.frame(t(tbl[,c(-1,-2)]))
+  samples <- rownames(expData)
+  expData <- add_column(expData,Sample = samples, .before = colnames(expData)[[1]])
+  colnames(expData)[2] <- "Concentration"
+  Data <- as_tibble(expData)
+
   par(mfrow = c(1, 1),mar=c(2,4,2,2))
   graph <- Data %>%
     ggplot(aes(Sample, Concentration)) +

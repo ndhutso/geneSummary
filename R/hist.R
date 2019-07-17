@@ -14,9 +14,14 @@
 #'@export
 
 hist <- function(tbl){
-  #graph
-  browser()
-  Data <- tibble(Sample = colnames(tbl)[c(-1,-2)], Concentration = tbl[,c(-1,-2)])
+  #graphs histogram of first row of table expression data passed so one gene passed is preferred
+  #browser()
+  expData <- as.data.frame(t(tbl[,c(-1,-2)]))
+  samples <- rownames(expData)
+  expData <- add_column(expData,Sample = samples, .before = colnames(expData)[[1]])
+  colnames(expData)[2] <- "Concentration"
+  Data <- as_tibble(expData)
+
   graph <- Data %>%
     ggplot(aes(x = Sample, y=Concentration)) +
     geom_bar(stat="identity", position ="dodge") +
