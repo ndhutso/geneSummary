@@ -1,3 +1,6 @@
+# geneSummary 1.0.3.0003
+# fix for multiple inputs
+
 # geneSummary 1.0.3.0002
 # fix for attaching all required packages
 

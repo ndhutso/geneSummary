@@ -46,7 +46,15 @@ filterTbl <- function(tbl, type, long = FALSE, var, input){ #OUTPUT ROW INDICES 
           z1 <- z[a]
 
           z1 <- unlist(strsplit(z1,", ",fixed = TRUE)) #split up comma deliminated inputs
-          z1 <- row.match(z1, y1) #could make this more generalized and complicated with grep
+
+          i <- 1:length(z1)
+          if(length(i)>1){
+            z1 <- unlist(lapply(i, function(a){
+              row.match(z1[a], y1)
+            }))
+          }else{
+            z1 <- row.match(z1, y1)
+          }
 
           #browser()
 
