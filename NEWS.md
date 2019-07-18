@@ -1,3 +1,6 @@
+# geneSummary 1.0.3.0002
+# fix for attaching all required packages
+
 # geneSummary 1.0.3.0001
 # fix filterTbl for multiple numeric filters
 

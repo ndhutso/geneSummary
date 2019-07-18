@@ -25,9 +25,10 @@ Imports:
     DT,
     reshape2,
     stringr
-Suggests: 
-    knitr,
+Suggests:
     rmarkdown,
+    knitr
+Depends:
     BiocManager,
     GEOquery,
     prodlim,
