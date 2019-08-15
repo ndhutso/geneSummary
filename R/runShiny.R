@@ -11,7 +11,7 @@
 #'@export
 runShiny <- function(){
 
-  appDir <- system.file("Shiny", "Shiny.R", package = "geneSummary")
+  appDir <- system.file("Shiny", "~R/Shiny.R", package = "geneSummary")
 
   if (appDir == "") {
     stop("Could not find example directory. Try re-installing `geneSummary`.", call. = FALSE)
