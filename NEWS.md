@@ -1,3 +1,6 @@
+# geneSummary 1.0.3.0004
+#fix bug where 2 filters at a time will be added for RSE data
+
 # geneSummary 1.0.3.0003
 # fix for multiple inputs
 

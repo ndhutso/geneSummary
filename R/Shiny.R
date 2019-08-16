@@ -134,6 +134,8 @@ server <- function(input, output, session) {
 
     observeEvent(input$add_btn, {
       counter2$n <- counter2$n + 1
+      Sys.sleep(1)
+      #browser()
       })
 
     observeEvent(input$rm_btn, {
