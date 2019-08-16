@@ -16,7 +16,7 @@
 #'@export
 
 extSampleGEO = function(data, sampleName = NA){
-
+#browser()
   name <- names(data)
   name <- str_remove(name, "_series_matrix.txt.gz")
   if(length(data)>1){

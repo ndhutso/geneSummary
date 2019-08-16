@@ -52,6 +52,9 @@ extExpGEO = function(data, geneSymbol=NA, long = FALSE) {
       idxSym <- grep("Symbol", colnames(data1[[i]]))
       idxName <- match("ID", colnames(data1[[i]]))
 
+      if(is.na(idxName)){
+        idxName <- integer(0)
+      }
       if(is.na(geneSymbol))
       {
         expData[[i]] <- as.data.frame(data2[[i]])

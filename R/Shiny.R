@@ -221,7 +221,7 @@ server <- function(input, output, session) {
           n <- input$page
           n <- match(n, tbl[[1]]) #tbl[[1]] is a vector of data set names passed by the extraction functions
           #browser()
-          if(is.null(n)){
+          if(is.null(n) | identical(n, integer(0))){
             n <- 1
           }
           #browser()

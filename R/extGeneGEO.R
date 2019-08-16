@@ -16,7 +16,7 @@
 #'@export
 
 extGeneGEO = function(data, geneSymbol = NA){
-
+#browser()
   name <- names(data)
   name <- str_remove(name, "_series_matrix.txt.gz")
   if(length(data)>1){
