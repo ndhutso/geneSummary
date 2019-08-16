@@ -1,7 +1,7 @@
 Package: geneSummary
 Type: Package
 Title: Summarize GEOquery data
-Version: 0.9999.3.0006
+Version: 0.9999.3.0007
 Author: Nicholas Hutson
 Maintainer: <nicholas.hutson@roswellpark.org>
 Description: This package extracts three different types of data from GEOquery data. These include a gene expression matrix, a sample annotation matrix,and a gene annotation matrix.

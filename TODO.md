@@ -45,6 +45,6 @@
     [x] apply filters
     [x] make sure long style format works
     [x] update save function
-[ ] fix runShiny
+[x] fix runShiny
 [ ] DOCUMENTATION
 [ ] fix issue where GEOquery, stringr aren't importing - make biobase and them required

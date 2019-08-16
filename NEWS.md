@@ -1,3 +1,6 @@
+# geneSummary 0.9999.3.0007
+# fix runShiny
+
 # geneSummary 0.9999.3.0006
 # add some comments 
 
