@@ -37,7 +37,7 @@
 extExpGEO = function(data, geneSymbol=NA, long = FALSE) {
 #browser()
   name <- names(data)
-  name <- str_remove(name, "_series_matrix.txt.gz")
+  name <- str_remove(name, "_series_matrix.txt.gz") #pull off extra text added by R
   if(length(data)>1){
     data3 <- data
 
@@ -53,19 +53,19 @@ extExpGEO = function(data, geneSymbol=NA, long = FALSE) {
       idxName <- match("ID", colnames(data1[[i]]))
 
       if(is.na(idxName)){
-        idxName <- integer(0)
+        idxName <- integer(0) #sets idxName to an empty integer when a table is not formatted properly
       }
       if(is.na(geneSymbol))
       {
         expData[[i]] <- as.data.frame(data2[[i]])
         Symbol <- data1[[i]][,idxSym]
         geneName <- data1[[i]][,idxName]
-        expData[[i]] <- add_column(expData[[i]],Symbol = Symbol, .before = colnames(expData[[i]])[[1]]) #somehow changing into a list here
+        expData[[i]] <- add_column(expData[[i]],Symbol = Symbol, .before = colnames(expData[[i]])[[1]])
         expData[[i]] <- add_column(expData[[i]],ID = geneName, .before = colnames(expData[[i]])[[1]])
 
       }else{
 
-        geneName <- data1[[i]]$ID[match(geneSymbol,data1[[i]][,idxSym])] #might not account for multiple genes with same symbol
+        geneName <- data1[[i]]$ID[match(geneSymbol,data1[[i]][,idxSym])]
 
         if(length(geneName)==1){
           expData[[i]] <- data.frame(t(data2[[i]][match(geneName,rownames(data2[[i]])),]))
@@ -73,7 +73,7 @@ extExpGEO = function(data, geneSymbol=NA, long = FALSE) {
           expData[[i]] <- add_column(expData[[i]],ID = replicate(length(rownames(expData[[i]])), geneName), .before = colnames(expData[[i]])[[1]])
         }else{
           geneSymbol <- data1[[i]][match(geneName,data1[[i]]$ID),idxSym] #have to set geneSymbol to length of columns bc some gene symbols repeat
-          expData[[i]] <- data.frame(data2[[i]][match(geneName,rownames(data2[[i]])),]) #may have to use if statement for t() if there is one or more appearances of a symbol
+          expData[[i]] <- data.frame(data2[[i]][match(geneName,rownames(data2[[i]])),])
           expData[[i]] <- add_column(expData[[i]],Symbol = geneSymbol, .before = colnames(expData[[i]])[[1]])
           expData[[i]] <- add_column(expData[[i]],ID = geneName, .before = colnames(expData[[i]])[[1]])
         }
@@ -109,7 +109,7 @@ extExpGEO = function(data, geneSymbol=NA, long = FALSE) {
       expData <- add_column(expData,ID = geneName, .before = colnames(expData)[[1]])
     }else{
 
-      geneName <- data1$ID[match(geneSymbol,data1[,idxSym])] #might not account for multiple genes with same symbol
+      geneName <- data1$ID[match(geneSymbol,data1[,idxSym])]
 
       if(length(geneName)==1){
         expData <- data.frame(data2[match(geneName,rownames(data2)),])
@@ -117,7 +117,7 @@ extExpGEO = function(data, geneSymbol=NA, long = FALSE) {
         expData <- add_column(expData,ID = replicate(length(rownames(expData)), geneName), .before = colnames(expData)[[1]])
       }else{
         geneSymbol <- data1[match(geneName,data1$ID),idxSym] #have to set geneSymbol to length of columns bc some gene symbols repeat
-        expData <- data.frame(data2[match(geneName,rownames(data2)),]) #may have to use if statement for t() if there is one or more appearances of a symbol
+        expData <- data.frame(data2[match(geneName,rownames(data2)),])
         expData <- add_column(expData,Symbol = geneSymbol, .before = colnames(expData)[[1]])
         expData <- add_column(expData,ID = geneName, .before = colnames(expData)[[1]])
       }

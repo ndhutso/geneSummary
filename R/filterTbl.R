@@ -37,7 +37,7 @@ filterTbl <- function(tbl, type, long = FALSE, var, input){ #OUTPUT ROW INDICES 
         z <- 0
       }else{
 
-        #browser()
+        browser()
 
         a <- which(colnames(y) %in% colnames(tbl)[1:2], arr.ind = TRUE)#finds symbol and id inputs where there are inputs3
 
@@ -60,8 +60,8 @@ filterTbl <- function(tbl, type, long = FALSE, var, input){ #OUTPUT ROW INDICES 
 
           y2 <- as.character(y[,-a])
           len <- dim(data.frame(y[,-a]))[2] #different way to find the number of elements
-          z2 <- z[-a]
-        }else{ #if there is no symbol or ID inputs (z1 = NULL or doesn't exist), what should z1 be
+          z2 <- z[-a] #remove ID and Symbol rows
+        }else{ #runs when none of the filters are ID or Symbol filters
           y2 <- y
           len <- dim(y)[2]
           z2 <- z
@@ -69,11 +69,12 @@ filterTbl <- function(tbl, type, long = FALSE, var, input){ #OUTPUT ROW INDICES 
 
         #browser()
 
+        #ifelse statements to determine the correct rows to output
         if(!exists("z1")){
           if(len > 1 | len == 0){
             b <- list()
             for(i in 1:len){
-              b[i] <- paste(as.character(y2[i]), z2[i]) #should be like "y >4", only adding operator to end of vector
+              b[i] <- paste(as.character(y2[i]), z2[i])
               b[i] <- parse(text = b[i])
             }
             z <- which(apply(data.frame(b),1,all)==TRUE, arr.ind = TRUE) #false when there's any false
@@ -89,7 +90,7 @@ filterTbl <- function(tbl, type, long = FALSE, var, input){ #OUTPUT ROW INDICES 
           }else if(len > 1){
             b <- list()
             for(i in 1:len){
-              b[i] <- paste(as.character(y2[i]), z2[i]) #should be like "y >4"
+              b[i] <- paste(as.character(y2[i]), z2[i])
               b[i] <- parse(text = b[i])
             }
             z2 <- which(apply(data.frame(b),1,all)==TRUE, arr.ind = TRUE) #false when there's any false
@@ -100,10 +101,10 @@ filterTbl <- function(tbl, type, long = FALSE, var, input){ #OUTPUT ROW INDICES 
               z <- 0
             }
           }else{
-            b <- paste(y2, z2) #should be like "y >4"
+            b <- paste(y2, z2)
             b <- parse(text = b)
             #need to have row indice output
-            z2 <- which(unlist(lapply(b,eval))==TRUE, arr.ind = TRUE) #still have to parse with for or apply bc it's like putting y > 4 on an entire table
+            z2 <- which(unlist(lapply(b,eval))==TRUE, arr.ind = TRUE)
             #now compare row indices
             if(z1 %in% z2){
               z <- z1
@@ -143,7 +144,7 @@ filterTbl <- function(tbl, type, long = FALSE, var, input){ #OUTPUT ROW INDICES 
         z <- 0
       }else{
         z <- data.frame(strsplit(z,", ",fixed = TRUE)[[1]])
-        z <- row.match(z, y) #could make this more generalized and complicated with grep
+        z <- row.match(z, y) #find the matching row indices
       }
     }
   return(z)
