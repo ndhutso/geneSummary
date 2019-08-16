@@ -35,7 +35,7 @@
 #'@export
 
 extExpGEO = function(data, geneSymbol=NA, long = FALSE) {
-
+#browser()
   name <- names(data)
   name <- str_remove(name, "_series_matrix.txt.gz")
   if(length(data)>1){
@@ -55,9 +55,9 @@ extExpGEO = function(data, geneSymbol=NA, long = FALSE) {
       if(is.na(geneSymbol))
       {
         expData[[i]] <- as.data.frame(data2[[i]])
-        geneSymbol <- data1[[i]][,idxSym]
+        Symbol <- data1[[i]][,idxSym]
         geneName <- data1[[i]][,idxName]
-        expData[[i]] <- add_column(expData[[i]],Symbol = geneSymbol, .before = colnames(expData[[i]])[[1]]) #somehow changing into a list here
+        expData[[i]] <- add_column(expData[[i]],Symbol = Symbol, .before = colnames(expData[[i]])[[1]]) #somehow changing into a list here
         expData[[i]] <- add_column(expData[[i]],ID = geneName, .before = colnames(expData[[i]])[[1]])
 
       }else{

@@ -18,7 +18,7 @@
     [x] pass names of data sets back when returning a list
     [x] use selectInput to choose which data set and what type of data set to save
     [x] add search by sample ID
-    [ ] allow user to choose which variable they want to search by instead of just geneSymbol, potentially allow addition of more filters
+    [x] allow user to choose which variable they want to search by instead of just geneSymbol, potentially allow addition of more filters
         [x] limit amount of filters based off number of columns
             [x] take away filters when type of data table is changed
         [x] pass choices to selectize (maybe just text input)
